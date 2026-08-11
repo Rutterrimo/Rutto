@@ -129,32 +129,6 @@ const places = [
         gambling: "Unknown",
         toilets: "Normal. Men and women separated.",
         notes: ""
-    },
-
-    {
-        id: 6,
-        name: "Magical Cavern",
-        lat: 50.081331,
-        lng: 14.400029,
-        smoking: "No",
-        music: "No",
-        locals: "No",
-        gambling: "No",
-        toilets: "Private room/laundry style. Unisex.",
-        notes: ""
-    },
-
-    {
-        id: 7,
-        name: "Petřínské sady",
-        lat: 50.0833,
-        lng: 14.3983,
-        smoking: "No",
-        music: "No",
-        locals: "No",
-        gambling: "No",
-        toilets: "Park public facilities, basic.",
-        notes: ""
     }
 
 ];
