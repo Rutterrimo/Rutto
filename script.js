@@ -68,19 +68,95 @@ const places = [
     {
         id: 1,
 
-        name: "Café Somewhere",
+        name: "Kafana Šindra",
 
-        lat: 41.3275,
-        lng: 19.8187,
+        lat: 44.81394,
+        lng: 20.45596,
 
         smoking: "Yes",
-        music: "Unknown",
+        music: "No",
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Downstairs. Surprisingly clean.",
+        toilets: "Squat toilets, unisex, very dirty.",
 
-        notes: "The owner starts singing around midnight."
+        notes: ""
+    },
+
+
+    {
+        id: 2,
+
+        name: "Langosi, mici, cafea",
+
+        lat: 45.8642,
+        lng: 22.9684,
+
+        smoking: "No indoor area",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+
+        toilets: "Chemical toilets, extremely dirty, unisex.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 3,
+
+        name: "Dabar",
+
+        lat: 43.09365,
+        lng: 18.15879,
+
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "Unknown",
+
+        toilets: "Normal. Men and women separated.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 4,
+
+        name: "Pri Hladniku",
+
+        lat: 45.926166,
+        lng: 14.043124,
+
+        smoking: "No",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+
+        toilets: "Normal. Men and women separated.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 5,
+
+        name: "Restaurant Bastion La Strada",
+
+        lat: 46.219019,
+        lng: 24.791593,
+
+        smoking: "Unknown",
+        music: "Yes",
+        locals: "No",
+        gambling: "Unknown",
+
+        toilets: "Normal. Men and women separated.",
+
+        notes: ""
     }
 
 ];
