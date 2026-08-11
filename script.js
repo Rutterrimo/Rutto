@@ -38,6 +38,7 @@ function fitWorldToScreen() {
 const width = window.innerWidth;
 const height = window.innerHeight;
 
+```
 const worldWidth = 360;
 const worldHeight = 170;
 
@@ -45,12 +46,14 @@ const zoomX = Math.log2(width / worldWidth);
 const zoomY = Math.log2(height / worldHeight);
 
 const idealZoom = Math.max(
-2,
-Math.ceil(Math.max(zoomX, zoomY))
+    2,
+    Math.ceil(Math.max(zoomX, zoomY))
 );
 
 map.setMinZoom(idealZoom);
 map.setZoom(idealZoom);
+```
+
 }
 
 fitWorldToScreen();
@@ -61,161 +64,72 @@ window.addEventListener("resize", fitWorldToScreen);
 
 const places = [
 
+```
 {
-id: 1,
-name: "Kafana Šindra",
-lat: 44.81394,
-lng: 20.45596,
-smoking: "Yes",
-music: "No",
-locals: "Yes",
-gambling: "No",
-toilets: "Squat toilets, unisex, very dirty.",
-notes: ""
+    id: 1,
+    name: "Kafana Šindra",
+    lat: 44.81394,
+    lng: 20.45596,
+    smoking: "Yes",
+    music: "No",
+    locals: "Yes",
+    gambling: "No",
+    toilets: "Squat toilets, unisex, very dirty.",
+    notes: ""
 },
 
 {
-id: 2,
-name: "Langosi, mici, cafea",
-lat: 45.8642,
-lng: 22.9684,
-smoking: "No indoor area",
-music: "No",
-locals: "Yes",
-gambling: "No",
-toilets: "Chemical toilets, extremely dirty, unisex.",
-notes: ""
+    id: 2,
+    name: "Langosi, mici, cafea",
+    lat: 45.8642,
+    lng: 22.9684,
+    smoking: "No indoor area",
+    music: "No",
+    locals: "Yes",
+    gambling: "No",
+    toilets: "Chemical toilets, extremely dirty, unisex.",
+    notes: ""
 },
 
 {
-id: 3,
-name: "Dabar",
-lat: 43.09365,
-lng: 18.15879,
-smoking: "Yes",
-music: "No",
-locals: "Yes",
-gambling: "Unknown",
-toilets: "Normal. Men and women separated.",
-notes: ""
+    id: 3,
+    name: "Dabar",
+    lat: 43.09365,
+    lng: 18.15879,
+    smoking: "Yes",
+    music: "No",
+    locals: "Yes",
+    gambling: "Unknown",
+    toilets: "Normal. Men and women separated.",
+    notes: ""
 },
 
 {
-id: 4,
-name: "Pri Hladniku",
-lat: 45.926166,
-lng: 14.043124,
-smoking: "No",
-music: "No",
-locals: "Yes",
-gambling: "No",
-toilets: "Normal. Men and women separated.",
-notes: ""
+    id: 4,
+    name: "Pri Hladniku",
+    lat: 45.926166,
+    lng: 14.043124,
+    smoking: "No",
+    music: "No",
+    locals: "Yes",
+    gambling: "No",
+    toilets: "Normal. Men and women separated.",
+    notes: ""
 },
 
 {
-id: 5,
-name: "Restaurant Bastion La Strada",
-lat: 46.219019,
-lng: 24.791593,
-smoking: "Unknown",
-music: "Yes",
-locals: "No",
-gambling: "Unknown",
-toilets: "Normal. Men and women separated.",
-notes: ""
-},
-
-{
-id: 6,
-name: "Caffe Bar Milano",
-lat: 45.43148,
-lng: 14.90542,
-smoking: "Yes",
-music: "No",
-locals: "Yes",
-gambling: "No",
-toilets: "Unknown",
-notes: ""
-},
-
-{
-id: 7,
-name: "Caffe Bar Gold",
-lat: 45.32495,
-lng: 15.695158,
-smoking: "Yes",
-music: "No",
-locals: "Yes",
-gambling: "No",
-toilets: "Normal. Men and women separated.",
-notes: ""
-},
-
-{
-id: 8,
-name: "Magická Jeskyně – Magical Cavern",
-lat: 50.08139,
-lng: 14.40013,
-smoking: "No",
-music: "No",
-locals: "No",
-gambling: "No",
-toilets: "Unisex. Looks like a private laundry room.",
-notes: ""
-},
-
-{
-id: 9,
-name: "Birtija",
-lat: 43.86155,
-lng: 18.43528,
-smoking: "Yes",
-music: "No",
-locals: "Yes",
-gambling: "Unknown",
-toilets: "Unknown",
-notes: ""
-},
-
-{
-id: 10,
-name: "Lucky Bar",
-lat: 45.4695,
-lng: 9.8680,
-smoking: "No",
-music: "No",
-locals: "Yes",
-gambling: "Yes",
-toilets: "Unisex, extremely dirty.",
-notes: ""
-},
-
-{
-id: 11,
-name: "Sala Admiral",
-lat: 45.40789,
-lng: 9.93636,
-smoking: "Yes",
-music: "No",
-locals: "Yes",
-gambling: "Yes",
-toilets: "Unknown",
-notes: ""
-},
-
-{
-id: 12,
-name: "Bar 10 Damijana Kodelija",
-lat: 45.88361,
-lng: 14.02297,
-smoking: "No",
-music: "No",
-locals: "Yes",
-gambling: "No",
-toilets: "Normal. Men and women separated.",
-notes: ""
+    id: 5,
+    name: "Restaurant Bastion La Strada",
+    lat: 46.219019,
+    lng: 24.791593,
+    smoking: "Unknown",
+    music: "Yes",
+    locals: "No",
+    gambling: "Unknown",
+    toilets: "Normal. Men and women separated.",
+    notes: ""
 }
+```
 
 ];
 
@@ -223,16 +137,18 @@ notes: ""
 
 places.forEach(place => {
 
+```
 const marker = L.circleMarker(
-[place.lat, place.lng],
-{
-radius: 3,
-color: "#3a3a38",
-fillColor: "#3a3a38",
-fillOpacity: 1,
-weight: 0
-}
+    [place.lat, place.lng],
+    {
+        radius: 3,
+        color: "#3a3a38",
+        fillColor: "#3a3a38",
+        fillOpacity: 1,
+        weight: 0
+    }
 ).addTo(map);
+```
 
 /* PLACE TOOLTIP */
 
