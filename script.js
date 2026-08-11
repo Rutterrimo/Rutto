@@ -8,10 +8,14 @@ const map = L.map('map-container', {
     maxBoundsViscosity: 1.0
 }).setView([20, 0], 2);
 
+
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     noWrap: true,
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
 }).addTo(map);
+
+
+/* KEEP THE WORLD FILLED WITH THE SCREEN */
 
 function fitWorldToScreen() {
     const width = window.innerWidth;
@@ -23,7 +27,10 @@ function fitWorldToScreen() {
     const zoomX = Math.log2(width / worldWidth);
     const zoomY = Math.log2(height / worldHeight);
 
-    const idealZoom = Math.max(2, Math.ceil(Math.max(zoomX, zoomY)));
+    const idealZoom = Math.max(
+        2,
+        Math.ceil(Math.max(zoomX, zoomY))
+    );
 
     map.setMinZoom(idealZoom);
     map.setZoom(idealZoom);
@@ -34,78 +41,160 @@ fitWorldToScreen();
 window.addEventListener('resize', fitWorldToScreen);
 
 
-/* TEST PLACE */
+/* PLACES */
 
-const testPlace = {
-    name: "Café Somewhere",
-    lat: 41.3275,
-    lng: 19.8187,
-
-    smoking: "Yes",
-    music: "Unknown",
-    locals: "Yes",
-    gambling: "No",
-
-    toilets: "Downstairs. Surprisingly clean.",
-    notes: "The owner starts singing around midnight."
-};
-
-
-const testMarker = L.circleMarker(
-    [testPlace.lat, testPlace.lng],
+const places = [
     {
-        radius: 5,
-        color: "#171717",
-        fillColor: "#171717",
-        fillOpacity: 1,
-        weight: 0
+        id: 1,
+        name: "Café Somewhere",
+        lat: 41.3275,
+        lng: 19.8187,
+
+        smoking: "Yes",
+        music: "Unknown",
+        locals: "Yes",
+        gambling: "No",
+
+        toilets: "Downstairs. Surprisingly clean.",
+        notes: "The owner starts singing around midnight."
     }
-).addTo(map);
+];
 
 
-const popupContent = `
-    <div class="place-popup">
+/* CREATE MARKERS AND INDEX */
 
-        <h3>${testPlace.name}</h3>
+places.forEach(place => {
 
-        <div class="categories">
-            <div>
-                <span>SMOKING INDOORS</span>
-                <strong>${testPlace.smoking}</strong>
+    const marker = L.circleMarker(
+        [place.lat, place.lng],
+        {
+            radius: 4,
+            color: "#171717",
+            fillColor: "#e8e6df",
+            fillOpacity: 1,
+            weight: 1.5
+        }
+    ).addTo(map);
+
+
+    /* PLACE TOOLTIP */
+
+    const popupContent = `
+        <div class="place-popup">
+
+            <h3>${place.name}</h3>
+
+            <div class="categories">
+
+                <div>
+                    <span>SMOKING INDOORS</span>
+                    <strong>${place.smoking}</strong>
+                </div>
+
+                <div>
+                    <span>SPONTANEOUS MUSIC</span>
+                    <strong>${place.music}</strong>
+                </div>
+
+                <div>
+                    <span>LOCALS</span>
+                    <strong>${place.locals}</strong>
+                </div>
+
+                <div>
+                    <span>GAMBLING</span>
+                    <strong>${place.gambling}</strong>
+                </div>
+
             </div>
 
-            <div>
-                <span>SPONTANEOUS MUSIC</span>
-                <strong>${testPlace.music}</strong>
+            <div class="popup-section">
+
+                <span>TOILETS</span>
+
+                <p>${place.toilets}</p>
+
             </div>
 
-            <div>
-                <span>LOCALS</span>
-                <strong>${testPlace.locals}</strong>
+            <div class="popup-section">
+
+                <span>NOTES</span>
+
+                <p>${place.notes}</p>
+
             </div>
 
-            <div>
-                <span>GAMBLING</span>
-                <strong>${testPlace.gambling}</strong>
-            </div>
         </div>
+    `;
 
-        <div class="popup-section">
-            <span>TOILETS</span>
-            <p>${testPlace.toilets}</p>
-        </div>
 
-        <div class="popup-section">
-            <span>NOTES</span>
-            <p>${testPlace.notes}</p>
-        </div>
+    marker.bindTooltip(popupContent, {
+        direction: "top",
+        offset: [0, -6],
+        opacity: 1,
+        className: "rutto-tooltip"
+    });
 
-    </div>
-`;
 
-testMarker.bindTooltip(popupContent, {
-    direction: "top",
-    offset: [0, -6],
-    opacity: 1,
-    className: "rutto-tooltip"
+    /* ADD PLACE TO INDEX */
+
+    const indexList = document.getElementById("index-list");
+
+    const indexItem = document.createElement("button");
+
+    indexItem.className = "index-item";
+
+    indexItem.innerHTML = `
+        <span class="index-number">
+            ${String(place.id).padStart(2, "0")}
+        </span>
+
+        <span class="index-name">
+            ${place.name}
+        </span>
+
+        <span class="index-coordinates">
+            ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
+        </span>
+    `;
+
+
+    /* CLICK INDEX ITEM */
+
+    indexItem.addEventListener("click", () => {
+
+        map.setView(
+            [place.lat, place.lng],
+            Math.max(map.getZoom(), 8),
+            {
+                animate: true
+            }
+        );
+
+        setTimeout(() => {
+            marker.openTooltip();
+        }, 400);
+
+    });
+
+
+    indexList.appendChild(indexItem);
+
+});
+
+
+/* INDEX OPEN / CLOSE */
+
+const indexButton = document.getElementById("index-button");
+const indexPanel = document.getElementById("index-panel");
+const closeIndex = document.getElementById("close-index");
+
+
+indexButton.addEventListener("click", () => {
+    indexPanel.classList.add("open");
+});
+
+
+closeIndex.addEventListener("click", () => {
+    indexPanel.classList.remove("open");
 });
