@@ -61,9 +61,11 @@ body {
     opacity: 0.45;
 }
 
+
 /* MAPPA */
 
 #map {
+    position: relative;
     width: 100%;
     height: 100vh;
     margin: 0;
@@ -76,6 +78,7 @@ body {
     margin: 0;
     padding: 0;
 }
+
 
 /* RUTTO TOOLTIP */
 
@@ -97,7 +100,8 @@ body {
     margin: 0 !important;
 }
 
-/* CONTENUTO */
+
+/* CONTENUTO DELLA NUVOLA */
 
 .place-popup {
     width: 250px;
@@ -152,4 +156,155 @@ body {
     margin: 0;
     font-size: 12px;
     line-height: 1.45;
+}
+
+
+/* INDEX BUTTON */
+
+#index-button {
+    position: absolute;
+    z-index: 1000;
+    top: 20px;
+    right: 20px;
+
+    background: #e8e6df;
+    color: #171717;
+
+    border: 1px solid #171717;
+    border-radius: 0;
+
+    padding: 9px 12px;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+
+    cursor: pointer;
+}
+
+#index-button:hover {
+    background: #171717;
+    color: #e8e6df;
+}
+
+
+/* INDEX PANEL */
+
+#index-panel {
+    position: absolute;
+    z-index: 1100;
+
+    top: 0;
+    right: 0;
+
+    width: 330px;
+    height: 100%;
+
+    background: #e8e6df;
+    border-left: 1px solid #171717;
+
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+
+    overflow-y: auto;
+}
+
+#index-panel.open {
+    transform: translateX(0);
+}
+
+
+/* INDEX HEADER */
+
+.index-header {
+    position: sticky;
+    top: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px;
+
+    background: #e8e6df;
+    border-bottom: 1px solid rgba(23, 23, 23, 0.25);
+
+    font-size: 11px;
+    letter-spacing: 0.1em;
+}
+
+#close-index {
+    background: none;
+    border: none;
+
+    padding: 0;
+
+    color: #171717;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+
+    cursor: pointer;
+}
+
+#close-index:hover {
+    opacity: 0.45;
+}
+
+
+/* INDEX ITEMS */
+
+#index-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.index-item {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    grid-template-rows: auto auto;
+
+    column-gap: 10px;
+
+    padding: 16px 20px;
+
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(23, 23, 23, 0.15);
+
+    color: #171717;
+
+    text-align: left;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    cursor: pointer;
+}
+
+.index-item:hover {
+    background: rgba(23, 23, 23, 0.05);
+}
+
+.index-number {
+    grid-row: 1 / 3;
+
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+.index-name {
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.index-coordinates {
+    margin-top: 4px;
+
+    font-size: 10px;
+    line-height: 1.3;
+
+    opacity: 0.55;
 }
