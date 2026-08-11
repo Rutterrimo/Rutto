@@ -76,53 +76,6 @@ body {
 }
 
 
-/* PIXEL CAT */
-
-.cat-button {
-    margin-top: 24px;
-
-    padding: 0;
-
-    width: 48px;
-    height: 48px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: none;
-    border: none;
-
-    color: #3a3a38;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.15s ease,
-        opacity 0.15s ease;
-}
-
-.cat-button:hover {
-    transform: translateY(-2px);
-    opacity: 0.65;
-}
-
-.cat-button:active {
-    transform: translateY(1px);
-}
-
-.pixel-cat {
-    width: 38px;
-    height: 38px;
-
-    display: block;
-
-    shape-rendering: crispEdges;
-
-    fill: currentColor;
-}
-
-
 /* MAPPA */
 
 #map {
@@ -171,7 +124,7 @@ body {
 }
 
 
-/* CONTENUTO NUVLETTA */
+/* CONTENUTO DELLA NUVOLA */
 
 .place-popup {
     width: 250px;
@@ -437,5 +390,4 @@ body {
     .place-popup {
         width: 220px;
     }
-
 }
