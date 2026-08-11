@@ -1,23 +1,32 @@
 const map = L.map('map-container', {
     worldCopyJump: false,
+
     minZoom: 2,
+
     maxBounds: [
         [-85, -180],
         [85, 180]
     ],
+
     maxBoundsViscosity: 1.0
 }).setView([20, 0], 2);
 
 
+/* MAP TILES */
+
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+
     noWrap: true,
+
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+
 }).addTo(map);
 
 
 /* KEEP THE WORLD FILLED WITH THE SCREEN */
 
 function fitWorldToScreen() {
+
     const width = window.innerWidth;
     const height = window.innerHeight;
 
@@ -38,15 +47,18 @@ function fitWorldToScreen() {
 
 fitWorldToScreen();
 
-window.addEventListener('resize', fitWorldToScreen);
+window.addEventListener("resize", fitWorldToScreen);
 
 
 /* PLACES */
 
 const places = [
+
     {
         id: 1,
+
         name: "Café Somewhere",
+
         lat: 41.3275,
         lng: 19.8187,
 
@@ -56,8 +68,10 @@ const places = [
         gambling: "No",
 
         toilets: "Downstairs. Surprisingly clean.",
+
         notes: "The owner starts singing around midnight."
     }
+
 ];
 
 
@@ -66,23 +80,32 @@ const places = [
 places.forEach(place => {
 
     const marker = L.circleMarker(
+
         [place.lat, place.lng],
+
         {
-            radius: 4,
-            color: "#171717",
-            fillColor: "#e8e6df",
+            radius: 3,
+
+            color: "#3a3a38",
+
+            fillColor: "#3a3a38",
+
             fillOpacity: 1,
-            weight: 1.5
+
+            weight: 0
         }
+
     ).addTo(map);
 
 
     /* PLACE TOOLTIP */
 
     const popupContent = `
+
         <div class="place-popup">
 
             <h3>${place.name}</h3>
+
 
             <div class="categories">
 
@@ -91,15 +114,18 @@ places.forEach(place => {
                     <strong>${place.smoking}</strong>
                 </div>
 
+
                 <div>
                     <span>SPONTANEOUS MUSIC</span>
                     <strong>${place.music}</strong>
                 </div>
 
+
                 <div>
                     <span>LOCALS</span>
                     <strong>${place.locals}</strong>
                 </div>
+
 
                 <div>
                     <span>GAMBLING</span>
@@ -108,6 +134,7 @@ places.forEach(place => {
 
             </div>
 
+
             <div class="popup-section">
 
                 <span>TOILETS</span>
@@ -115,6 +142,7 @@ places.forEach(place => {
                 <p>${place.toilets}</p>
 
             </div>
+
 
             <div class="popup-section">
 
@@ -125,15 +153,25 @@ places.forEach(place => {
             </div>
 
         </div>
+
     `;
 
 
-    marker.bindTooltip(popupContent, {
-        direction: "top",
-        offset: [0, -6],
-        opacity: 1,
-        className: "rutto-tooltip"
-    });
+    marker.bindTooltip(
+
+        popupContent,
+
+        {
+            direction: "top",
+
+            offset: [0, -6],
+
+            opacity: 1,
+
+            className: "rutto-tooltip"
+        }
+
+    );
 
 
     /* ADD PLACE TO INDEX */
@@ -144,18 +182,29 @@ places.forEach(place => {
 
     indexItem.className = "index-item";
 
+
     indexItem.innerHTML = `
+
         <span class="index-number">
+
             ${String(place.id).padStart(2, "0")}
+
         </span>
+
 
         <span class="index-name">
+
             ${place.name}
+
         </span>
 
+
         <span class="index-coordinates">
+
             ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
+
         </span>
+
     `;
 
 
@@ -164,15 +213,22 @@ places.forEach(place => {
     indexItem.addEventListener("click", () => {
 
         map.setView(
+
             [place.lat, place.lng],
+
             Math.max(map.getZoom(), 8),
+
             {
                 animate: true
             }
+
         );
 
+
         setTimeout(() => {
+
             marker.openTooltip();
+
         }, 400);
 
     });
@@ -186,15 +242,52 @@ places.forEach(place => {
 /* INDEX OPEN / CLOSE */
 
 const indexButton = document.getElementById("index-button");
+
 const indexPanel = document.getElementById("index-panel");
+
 const closeIndex = document.getElementById("close-index");
 
 
 indexButton.addEventListener("click", () => {
+
     indexPanel.classList.add("open");
+
 });
 
 
 closeIndex.addEventListener("click", () => {
+
     indexPanel.classList.remove("open");
+
+});
+
+
+/* ENTER THE MAP */
+
+const enterMapButton = document.getElementById("enter-map");
+
+const homeButton = document.getElementById("home-button");
+
+
+enterMapButton.addEventListener("click", () => {
+
+    document.getElementById("map").scrollIntoView({
+
+        behavior: "smooth"
+
+    });
+
+});
+
+
+/* RETURN HOME */
+
+homeButton.addEventListener("click", () => {
+
+    document.getElementById("home").scrollIntoView({
+
+        behavior: "smooth"
+
+    });
+
 });
