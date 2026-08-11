@@ -192,7 +192,7 @@ body {
 }
 
 
-/* HOME + INDEX BUTTONS */
+/* HOME + INDEX */
 
 #home-button,
 #index-button {
@@ -229,14 +229,6 @@ body {
 #index-button:hover {
     background: #171717;
     color: #e8e6df;
-}
-
-
-/* LEAFLET ZOOM CONTROLS */
-
-.leaflet-top.leaflet-left {
-    top: 65px;
-    left: 20px;
 }
 
 
@@ -389,11 +381,6 @@ body {
 
     #index-button {
         right: 12px;
-    }
-
-    .leaflet-top.leaflet-left {
-        top: 58px;
-        left: 12px;
     }
 
     #index-panel {
