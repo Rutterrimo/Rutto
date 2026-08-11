@@ -168,10 +168,29 @@ places.forEach(place => {
 
             opacity: 1,
 
-            className: "rutto-tooltip"
+            className: "rutto-tooltip",
+
+            interactive: true
         }
 
     );
+
+
+    /* DESKTOP + MOBILE */
+
+    marker.on("click", () => {
+
+        if (marker.isTooltipOpen()) {
+
+            marker.closeTooltip();
+
+        } else {
+
+            marker.openTooltip();
+
+        }
+
+    });
 
 
     /* ADD PLACE TO INDEX */
