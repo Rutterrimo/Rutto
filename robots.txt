@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rutterrimo.github.io/Rutto/sitemap.xml
