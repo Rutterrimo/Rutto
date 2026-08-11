@@ -1,4 +1,5 @@
 const map = L.map('map-container', {
+
     worldCopyJump: false,
 
     minZoom: 2,
@@ -8,8 +9,18 @@ const map = L.map('map-container', {
         [85, 180]
     ],
 
-    maxBoundsViscosity: 1.0
+    maxBoundsViscosity: 1.0,
+
+    zoomControl: false
+
 }).setView([20, 0], 2);
+
+
+/* ZOOM CONTROLS */
+
+L.control.zoom({
+    position: 'bottomleft'
+}).addTo(map);
 
 
 /* MAP TILES */
