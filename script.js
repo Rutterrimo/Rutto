@@ -32,3 +32,80 @@ function fitWorldToScreen() {
 fitWorldToScreen();
 
 window.addEventListener('resize', fitWorldToScreen);
+
+
+/* TEST PLACE */
+
+const testPlace = {
+    name: "Café Somewhere",
+    lat: 41.3275,
+    lng: 19.8187,
+
+    smoking: "Yes",
+    music: "Unknown",
+    locals: "Yes",
+    gambling: "No",
+
+    toilets: "Downstairs. Surprisingly clean.",
+    notes: "The owner starts singing around midnight."
+};
+
+
+const testMarker = L.circleMarker(
+    [testPlace.lat, testPlace.lng],
+    {
+        radius: 5,
+        color: "#171717",
+        fillColor: "#171717",
+        fillOpacity: 1,
+        weight: 0
+    }
+).addTo(map);
+
+
+const popupContent = `
+    <div class="place-popup">
+
+        <h3>${testPlace.name}</h3>
+
+        <div class="categories">
+            <div>
+                <span>SMOKING INDOORS</span>
+                <strong>${testPlace.smoking}</strong>
+            </div>
+
+            <div>
+                <span>SPONTANEOUS MUSIC</span>
+                <strong>${testPlace.music}</strong>
+            </div>
+
+            <div>
+                <span>LOCALS</span>
+                <strong>${testPlace.locals}</strong>
+            </div>
+
+            <div>
+                <span>GAMBLING</span>
+                <strong>${testPlace.gambling}</strong>
+            </div>
+        </div>
+
+        <div class="popup-section">
+            <span>TOILETS</span>
+            <p>${testPlace.toilets}</p>
+        </div>
+
+        <div class="popup-section">
+            <span>NOTES</span>
+            <p>${testPlace.notes}</p>
+        </div>
+
+    </div>
+`;
+
+testMarker.bindTooltip(popupContent, {
+    direction: "top",
+    offset: [0, -6],
+    opacity: 1,
+    className: "rutto-tooltip"
+});
