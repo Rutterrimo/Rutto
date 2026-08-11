@@ -3,9 +3,9 @@ const map = L.map('map-container', {
     minZoom: 2
 }).setView([20, 0], 2);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     noWrap: true,
-    attribution: '&copy; OpenStreetMap contributors'
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
 }).addTo(map);
 
 function fitWorldToScreen() {
