@@ -192,13 +192,15 @@ body {
 }
 
 
-/* HOME BUTTON */
+/* HOME + INDEX BUTTONS */
 
 #home-button,
 #index-button {
     position: absolute;
 
     z-index: 1000;
+
+    top: 20px;
 
     background: #e8e6df;
     color: #171717;
@@ -215,23 +217,26 @@ body {
     cursor: pointer;
 }
 
-
-/* HOME: BELOW ZOOM CONTROLS */
-
 #home-button {
-    left: 10px;
-    top: 90px;
+    left: 20px;
 }
 
 #index-button {
     right: 20px;
-    top: 20px;
 }
 
 #home-button:hover,
 #index-button:hover {
     background: #171717;
     color: #e8e6df;
+}
+
+
+/* LEAFLET ZOOM CONTROLS */
+
+.leaflet-top.leaflet-left {
+    top: 65px;
+    left: 20px;
 }
 
 
@@ -379,12 +384,16 @@ body {
     }
 
     #home-button {
-        top: 70px;
         left: 12px;
     }
 
     #index-button {
         right: 12px;
+    }
+
+    .leaflet-top.leaflet-left {
+        top: 58px;
+        left: 12px;
     }
 
     #index-panel {
