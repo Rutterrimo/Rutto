@@ -200,8 +200,6 @@ body {
 
     z-index: 1000;
 
-    top: 20px;
-
     background: #e8e6df;
     color: #171717;
 
@@ -217,12 +215,17 @@ body {
     cursor: pointer;
 }
 
+
+/* HOME: BELOW ZOOM CONTROLS */
+
 #home-button {
-    left: 20px;
+    left: 10px;
+    top: 90px;
 }
 
 #index-button {
     right: 20px;
+    top: 20px;
 }
 
 #home-button:hover,
@@ -376,6 +379,7 @@ body {
     }
 
     #home-button {
+        top: 70px;
         left: 12px;
     }
 
