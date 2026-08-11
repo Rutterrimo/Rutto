@@ -1,6 +1,11 @@
 const map = L.map('map-container', {
     worldCopyJump: false,
-    minZoom: 2
+    minZoom: 2,
+    maxBounds: [
+        [-85, -180],
+        [85, 180]
+    ],
+    maxBoundsViscosity: 1.0
 }).setView([20, 0], 2);
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
