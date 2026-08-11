@@ -385,12 +385,10 @@ closeIndex.addEventListener("click", () => {
 
 const enterMapButton = document.getElementById("enter-map");
 
-const catButton = document.getElementById("cat-button");
-
 const homeButton = document.getElementById("home-button");
 
 
-function enterTheMap() {
+enterMapButton.addEventListener("click", () => {
 
     document.getElementById("map").scrollIntoView({
 
@@ -398,15 +396,7 @@ function enterTheMap() {
 
     });
 
-}
-
-
-enterMapButton.addEventListener("click", enterTheMap);
-
-
-/* CAT ALSO ENTERS THE MAP */
-
-catButton.addEventListener("click", enterTheMap);
+});
 
 
 /* RETURN HOME */
