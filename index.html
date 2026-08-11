@@ -62,72 +62,6 @@
                 ENTER THE MAP
             </button>
 
-
-            <!-- PIXEL CAT -->
-
-            <button
-                id="cat-button"
-                class="cat-button"
-                aria-label="Enter the map"
-            >
-
-                <svg
-                    class="pixel-cat"
-                    viewBox="0 0 48 48"
-                    aria-hidden="true"
-                >
-
-                    <!-- ears -->
-
-                    <rect x="8" y="10" width="6" height="6"/>
-                    <rect x="10" y="8" width="4" height="4"/>
-
-                    <rect x="34" y="10" width="6" height="6"/>
-                    <rect x="34" y="8" width="4" height="4"/>
-
-
-                    <!-- head -->
-
-                    <rect x="12" y="14" width="24" height="4"/>
-                    <rect x="10" y="18" width="28" height="16"/>
-                    <rect x="12" y="34" width="24" height="4"/>
-
-
-                    <!-- eyes -->
-
-                    <rect x="16" y="21" width="4" height="4"/>
-                    <rect x="28" y="21" width="4" height="4"/>
-
-
-                    <!-- nose -->
-
-                    <rect x="22" y="27" width="4" height="3"/>
-
-
-                    <!-- mouth -->
-
-                    <rect x="18" y="30" width="4" height="2"/>
-                    <rect x="26" y="30" width="4" height="2"/>
-
-
-                    <!-- little body -->
-
-                    <rect x="14" y="38" width="20" height="4"/>
-
-                    <rect x="10" y="40" width="6" height="4"/>
-                    <rect x="32" y="40" width="6" height="4"/>
-
-
-                    <!-- tail -->
-
-                    <rect x="34" y="36" width="6" height="4"/>
-                    <rect x="38" y="32" width="4" height="6"/>
-                    <rect x="40" y="28" width="4" height="6"/>
-
-                </svg>
-
-            </button>
-
         </div>
 
     </main>
@@ -141,4 +75,39 @@
 
         <button id="index-button">
             INDEX
-        </
+        </button>
+
+
+        <aside id="index-panel">
+
+            <div class="index-header">
+
+                <span>
+                    INDEX
+                </span>
+
+                <button id="close-index">
+                    CLOSE
+                </button>
+
+            </div>
+
+            <div id="index-list"></div>
+
+        </aside>
+
+
+        <div id="map-container"></div>
+
+    </section>
+
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
