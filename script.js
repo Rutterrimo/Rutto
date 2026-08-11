@@ -158,5 +158,224 @@ const places = [
 
 {
     id: 8,
-    name: "Magická Jeskyně – Magical Cav
+    name: "Magická Jeskyně – Magical Cavern",
+    lat: 50.08139,
+    lng: 14.40013,
+    smoking: "No",
+    music: "No",
+    locals: "No",
+    gambling: "No",
+    toilets: "Unisex. Looks like a private laundry room.",
+    notes: ""
+},
+
+{
+    id: 9,
+    name: "Birtija",
+    lat: 43.86155,
+    lng: 18.43528,
+    smoking: "Yes",
+    music: "No",
+    locals: "Yes",
+    gambling: "Unknown",
+    toilets: "Unknown",
+    notes: ""
+},
+
+{
+    id: 10,
+    name: "Lucky Bar",
+    lat: 45.4695,
+    lng: 9.8680,
+    smoking: "No",
+    music: "No",
+    locals: "Yes",
+    gambling: "Yes",
+    toilets: "Unisex, extremely dirty.",
+    notes: ""
+},
+
+{
+    id: 11,
+    name: "Sala Admiral",
+    lat: 45.40789,
+    lng: 9.93636,
+    smoking: "Yes",
+    music: "No",
+    locals: "Yes",
+    gambling: "Yes",
+    toilets: "Unknown",
+    notes: ""
+},
+
+{
+    id: 12,
+    name: "Bar 10 Damijana Kodelija",
+    lat: 45.88361,
+    lng: 14.02297,
+    smoking: "No",
+    music: "No",
+    locals: "Yes",
+    gambling: "No",
+    toilets: "Normal. Men and women separated.",
+    notes: ""
+}
 ```
+
+];
+
+/* CREATE MARKERS AND INDEX */
+
+places.forEach(place => {
+
+```
+const marker = L.circleMarker(
+    [place.lat, place.lng],
+    {
+        radius: 3,
+        color: "#3a3a38",
+        fillColor: "#3a3a38",
+        fillOpacity: 1,
+        weight: 0
+    }
+).addTo(map);
+```
+
+/* PLACE TOOLTIP */
+
+const popupContent = ` <div class="place-popup"> <h3>${place.name}</h3>
+
+```
+    <div class="categories">
+        <div>
+            <span>SMOKING INDOORS</span>
+            <strong>${place.smoking}</strong>
+        </div>
+
+        <div>
+            <span>SPONTANEOUS MUSIC</span>
+            <strong>${place.music}</strong>
+        </div>
+
+        <div>
+            <span>LOCALS</span>
+            <strong>${place.locals}</strong>
+        </div>
+
+        <div>
+            <span>GAMBLING</span>
+            <strong>${place.gambling}</strong>
+        </div>
+    </div>
+
+    <div class="popup-section">
+        <span>TOILETS</span>
+        <p>${place.toilets}</p>
+    </div>
+
+    <div class="popup-section">
+        <span>NOTES</span>
+        <p>${place.notes}</p>
+    </div>
+</div>
+```
+
+`;
+
+marker.bindTooltip(
+popupContent,
+{
+direction: "top",
+offset: [0, -6],
+opacity: 1,
+className: "rutto-tooltip",
+interactive: true
+}
+);
+
+/* DESKTOP + MOBILE */
+
+marker.on("click", () => {
+if (marker.isTooltipOpen()) {
+marker.closeTooltip();
+} else {
+marker.openTooltip();
+}
+});
+
+/* ADD PLACE TO INDEX */
+
+const indexList = document.getElementById("index-list");
+const indexItem = document.createElement("button");
+indexItem.className = "index-item";
+
+indexItem.innerHTML = ` <span class="index-number">
+${String(place.id).padStart(2, "0")} </span>
+
+```
+<span class="index-name">
+    ${place.name}
+</span>
+
+<span class="index-coordinates">
+    ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
+</span>
+```
+
+`;
+
+/* CLICK INDEX ITEM */
+
+indexItem.addEventListener("click", () => {
+map.setView(
+[place.lat, place.lng],
+Math.max(map.getZoom(), 8),
+{
+animate: true
+}
+);
+
+```
+setTimeout(() => {
+    marker.openTooltip();
+}, 400);
+```
+
+});
+
+indexList.appendChild(indexItem);
+
+});
+
+/* INDEX OPEN / CLOSE */
+
+const indexButton = document.getElementById("index-button");
+const indexPanel = document.getElementById("index-panel");
+const closeIndex = document.getElementById("close-index");
+
+indexButton.addEventListener("click", () => {
+indexPanel.classList.add("open");
+});
+
+closeIndex.addEventListener("click", () => {
+indexPanel.classList.remove("open");
+});
+
+/* ENTER THE MAP */
+
+const enterMapButton = document.getElementById("enter-map");
+const homeButton = document.getElementById("home-button");
+
+enterMapButton.addEventListener("click", () => {
+document.getElementById("map").scrollIntoView({
+behavior: "smooth"
+});
+});
+
+/* RETURN HOME */
+
+homeButton.addEventListener("click", () => {
+document.getElementById("home").scrollIntoView({
+behavior: "smooth"
+});
+});
