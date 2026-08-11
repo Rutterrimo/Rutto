@@ -140,8 +140,8 @@ const places = [
         music: "No",
         locals: "No",
         gambling: "No",
-        toilets: "Peculiar and unusual; feels more like a private room or a laundry room than a standard public restroom.",
-        notes: "Located on Petřín Hill."
+        toilets: "Private room/laundry style. Unisex.",
+        notes: ""
     },
 
     {
@@ -153,8 +153,8 @@ const places = [
         music: "No",
         locals: "No",
         gambling: "No",
-        toilets: "Park public facilities nearby, basic.",
-        notes: "Expansive green park grounds."
+        toilets: "Park public facilities, basic.",
+        notes: ""
     }
 
 ];
