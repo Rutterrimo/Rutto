@@ -1,3 +1,16 @@
+/* ALWAYS START FROM HOME */
+
+if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+}
+
+window.addEventListener("load", () => {
+
+    window.scrollTo(0, 0);
+
+});
+
+
 const map = L.map('map-container', {
 
     worldCopyJump: false,
