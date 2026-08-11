@@ -5,27 +5,19 @@ if ("scrollRestoration" in history) {
 }
 
 window.addEventListener("load", () => {
-
     window.scrollTo(0, 0);
-
 });
 
 
 const map = L.map('map-container', {
-
     worldCopyJump: false,
-
     minZoom: 2,
-
     maxBounds: [
         [-85, -180],
         [85, 180]
     ],
-
     maxBoundsViscosity: 1.0,
-
     zoomControl: false
-
 }).setView([20, 0], 2);
 
 
@@ -39,18 +31,14 @@ L.control.zoom({
 /* MAP TILES */
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-
     noWrap: true,
-
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-
 }).addTo(map);
 
 
 /* KEEP THE WORLD FILLED WITH THE SCREEN */
 
 function fitWorldToScreen() {
-
     const width = window.innerWidth;
     const height = window.innerHeight;
 
@@ -80,96 +68,93 @@ const places = [
 
     {
         id: 1,
-
         name: "Kafana Šindra",
-
         lat: 44.81394,
         lng: 20.45596,
-
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
-
         toilets: "Squat toilets, unisex, very dirty.",
-
         notes: ""
     },
 
-
     {
         id: 2,
-
         name: "Langosi, mici, cafea",
-
         lat: 45.8642,
         lng: 22.9684,
-
         smoking: "No indoor area",
         music: "No",
         locals: "Yes",
         gambling: "No",
-
         toilets: "Chemical toilets, extremely dirty, unisex.",
-
         notes: ""
     },
 
-
     {
         id: 3,
-
         name: "Dabar",
-
         lat: 43.09365,
         lng: 18.15879,
-
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Unknown",
-
         toilets: "Normal. Men and women separated.",
-
         notes: ""
     },
 
-
     {
         id: 4,
-
         name: "Pri Hladniku",
-
         lat: 45.926166,
         lng: 14.043124,
-
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "No",
-
         toilets: "Normal. Men and women separated.",
-
         notes: ""
     },
 
-
     {
         id: 5,
-
         name: "Restaurant Bastion La Strada",
-
         lat: 46.219019,
         lng: 24.791593,
-
         smoking: "Unknown",
         music: "Yes",
         locals: "No",
         gambling: "Unknown",
-
         toilets: "Normal. Men and women separated.",
-
         notes: ""
+    },
+
+    {
+        id: 6,
+        name: "Magical Cavern",
+        lat: 50.081331,
+        lng: 14.400029,
+        smoking: "No",
+        music: "No",
+        locals: "No",
+        gambling: "No",
+        toilets: "Peculiar and unusual; feels more like a private room or a laundry room than a standard public restroom.",
+        notes: "Located on Petřín Hill."
+    },
+
+    {
+        id: 7,
+        name: "Petřínské sady",
+        lat: 50.0833,
+        lng: 14.3983,
+        smoking: "No",
+        music: "No",
+        locals: "No",
+        gambling: "No",
+        toilets: "Park public facilities nearby, basic.",
+        notes: "Expansive green park grounds."
     }
 
 ];
@@ -180,178 +165,116 @@ const places = [
 places.forEach(place => {
 
     const marker = L.circleMarker(
-
         [place.lat, place.lng],
-
         {
             radius: 3,
-
             color: "#3a3a38",
-
             fillColor: "#3a3a38",
-
             fillOpacity: 1,
-
             weight: 0
         }
-
     ).addTo(map);
 
 
     /* PLACE TOOLTIP */
 
     const popupContent = `
-
         <div class="place-popup">
-
             <h3>${place.name}</h3>
 
-
             <div class="categories">
-
                 <div>
                     <span>SMOKING INDOORS</span>
                     <strong>${place.smoking}</strong>
                 </div>
-
 
                 <div>
                     <span>SPONTANEOUS MUSIC</span>
                     <strong>${place.music}</strong>
                 </div>
 
-
                 <div>
                     <span>LOCALS</span>
                     <strong>${place.locals}</strong>
                 </div>
 
-
                 <div>
                     <span>GAMBLING</span>
                     <strong>${place.gambling}</strong>
                 </div>
-
             </div>
 
-
             <div class="popup-section">
-
                 <span>TOILETS</span>
-
                 <p>${place.toilets}</p>
-
             </div>
-
 
             <div class="popup-section">
-
                 <span>NOTES</span>
-
                 <p>${place.notes}</p>
-
             </div>
-
         </div>
-
     `;
 
-
     marker.bindTooltip(
-
         popupContent,
-
         {
             direction: "top",
-
             offset: [0, -6],
-
             opacity: 1,
-
             className: "rutto-tooltip",
-
             interactive: true
         }
-
     );
 
 
     /* DESKTOP + MOBILE */
 
     marker.on("click", () => {
-
         if (marker.isTooltipOpen()) {
-
             marker.closeTooltip();
-
         } else {
-
             marker.openTooltip();
-
         }
-
     });
 
 
     /* ADD PLACE TO INDEX */
 
     const indexList = document.getElementById("index-list");
-
     const indexItem = document.createElement("button");
-
     indexItem.className = "index-item";
 
-
     indexItem.innerHTML = `
-
         <span class="index-number">
-
             ${String(place.id).padStart(2, "0")}
-
         </span>
-
 
         <span class="index-name">
-
             ${place.name}
-
         </span>
-
 
         <span class="index-coordinates">
-
             ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
-
         </span>
-
     `;
 
 
     /* CLICK INDEX ITEM */
 
     indexItem.addEventListener("click", () => {
-
         map.setView(
-
             [place.lat, place.lng],
-
             Math.max(map.getZoom(), 8),
-
             {
                 animate: true
             }
-
         );
 
-
         setTimeout(() => {
-
             marker.openTooltip();
-
         }, 400);
-
     });
-
 
     indexList.appendChild(indexItem);
 
@@ -361,52 +284,34 @@ places.forEach(place => {
 /* INDEX OPEN / CLOSE */
 
 const indexButton = document.getElementById("index-button");
-
 const indexPanel = document.getElementById("index-panel");
-
 const closeIndex = document.getElementById("close-index");
 
-
 indexButton.addEventListener("click", () => {
-
     indexPanel.classList.add("open");
-
 });
 
-
 closeIndex.addEventListener("click", () => {
-
     indexPanel.classList.remove("open");
-
 });
 
 
 /* ENTER THE MAP */
 
 const enterMapButton = document.getElementById("enter-map");
-
 const homeButton = document.getElementById("home-button");
 
-
 enterMapButton.addEventListener("click", () => {
-
     document.getElementById("map").scrollIntoView({
-
         behavior: "smooth"
-
     });
-
 });
 
 
 /* RETURN HOME */
 
 homeButton.addEventListener("click", () => {
-
     document.getElementById("home").scrollIntoView({
-
         behavior: "smooth"
-
     });
-
 });
