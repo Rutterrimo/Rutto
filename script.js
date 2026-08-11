@@ -1,44 +1,75 @@
-/* ALWAYS START FROM HOME */
+
+/* =========================================================
+   RUTTO — MAP SCRIPT
+   ========================================================= */
+
+
+/* =========================================================
+   PREVENT UNWANTED SCROLL RESTORATION
+   ========================================================= */
 
 if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
 }
 
-window.addEventListener("load", () => {
-    window.scrollTo(0, 0);
-});
 
+/* =========================================================
+   MAP INITIALIZATION
+   ========================================================= */
 
-const map = L.map('map-container', {
+const map = L.map("map-container", {
     worldCopyJump: false,
+
     minZoom: 2,
+    maxZoom: 18,
+
     maxBounds: [
         [-85, -180],
         [85, 180]
     ],
+
     maxBoundsViscosity: 1.0,
-    zoomControl: false
+
+    zoomControl: false,
+
+    tap: true,
+
+    touchZoom: true,
+
+    dragging: true
 }).setView([20, 0], 2);
 
 
-/* ZOOM CONTROLS */
+/* =========================================================
+   ZOOM CONTROLS
+   ========================================================= */
 
 L.control.zoom({
-    position: 'bottomleft'
+    position: "bottomleft"
 }).addTo(map);
 
 
-/* MAP TILES */
+/* =========================================================
+   MAP TILES
+   ========================================================= */
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    noWrap: true,
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-}).addTo(map);
+L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    {
+        noWrap: true,
+
+        attribution:
+            "&copy; OpenStreetMap contributors &copy; CARTO"
+    }
+).addTo(map);
 
 
-/* KEEP THE WORLD FILLED WITH THE SCREEN */
+/* =========================================================
+   KEEP WORLD FILLED WITH SCREEN
+   ========================================================= */
 
 function fitWorldToScreen() {
+
     const width = window.innerWidth;
     const height = window.innerHeight;
 
@@ -54,15 +85,52 @@ function fitWorldToScreen() {
     );
 
     map.setMinZoom(idealZoom);
-    map.setZoom(idealZoom);
+
+    map.setZoom(idealZoom, {
+        animate: false
+    });
+
+    map.invalidateSize({
+        pan: false
+    });
 }
 
-fitWorldToScreen();
 
-window.addEventListener("resize", fitWorldToScreen);
+/* Initial map sizing */
+setTimeout(() => {
+    fitWorldToScreen();
+}, 100);
 
 
-/* PLACES */
+/* Resize */
+let resizeTimer;
+
+window.addEventListener("resize", () => {
+
+    clearTimeout(resizeTimer);
+
+    resizeTimer = setTimeout(() => {
+        fitWorldToScreen();
+    }, 150);
+});
+
+
+/* Orientation change */
+window.addEventListener("orientationchange", () => {
+
+    setTimeout(() => {
+        map.invalidateSize({
+            pan: false
+        });
+
+        fitWorldToScreen();
+    }, 300);
+});
+
+
+/* =========================================================
+   PLACES
+   ========================================================= */
 
 const places = [
 
@@ -130,7 +198,7 @@ const places = [
         toilets: "Normal. Men and women separated.",
         notes: ""
     },
-    
+
     {
         id: 6,
         name: "Caffe Bar Milano",
@@ -225,29 +293,79 @@ const places = [
 ];
 
 
-/* CREATE MARKERS AND INDEX */
+/* =========================================================
+   CREATE MARKERS + INDEX
+   ========================================================= */
+
+const indexList = document.getElementById("index-list");
+
 
 places.forEach(place => {
 
+    /*
+     * VISIBLE MARKER
+     *
+     * This stays visually small exactly like before.
+     */
     const marker = L.circleMarker(
         [place.lat, place.lng],
         {
             radius: 3,
+
             color: "#3a3a38",
             fillColor: "#3a3a38",
+
             fillOpacity: 1,
-            weight: 0
+
+            weight: 0,
+
+            interactive: false
         }
     ).addTo(map);
 
 
-    /* PLACE TOOLTIP */
+    /*
+     * INVISIBLE TOUCH TARGET
+     *
+     * This is deliberately much larger than the visible dot.
+     *
+     * Desktop:
+     * the user still sees the same tiny dot.
+     *
+     * Mobile:
+     * the user can tap around the dot much more easily.
+     */
+    const hitMarker = L.circleMarker(
+        [place.lat, place.lng],
+        {
+            radius: 12,
+
+            color: "#000000",
+
+            opacity: 0,
+
+            fillColor: "#000000",
+
+            fillOpacity: 0,
+
+            weight: 0,
+
+            interactive: true
+        }
+    ).addTo(map);
+
+
+    /* =====================================================
+       TOOLTIP CONTENT
+       ===================================================== */
 
     const popupContent = `
         <div class="place-popup">
+
             <h3>${place.name}</h3>
 
             <div class="categories">
+
                 <div>
                     <span>SMOKING INDOORS</span>
                     <strong>${place.smoking}</strong>
@@ -267,47 +385,142 @@ places.forEach(place => {
                     <span>GAMBLING</span>
                     <strong>${place.gambling}</strong>
                 </div>
+
             </div>
 
+
             <div class="popup-section">
+
                 <span>TOILETS</span>
+
                 <p>${place.toilets}</p>
+
             </div>
 
+
             <div class="popup-section">
+
                 <span>NOTES</span>
-                <p>${place.notes}</p>
+
+                <p>${place.notes || ""}</p>
+
             </div>
+
         </div>
     `;
 
-    marker.bindTooltip(
+
+    /* =====================================================
+       TOOLTIP
+       ===================================================== */
+
+    hitMarker.bindTooltip(
         popupContent,
         {
             direction: "top",
-            offset: [0, -6],
+
+            offset: [0, -10],
+
             opacity: 1,
+
             className: "rutto-tooltip",
-            interactive: true
+
+            interactive: true,
+
+            sticky: false,
+
+            permanent: false
         }
     );
 
 
-    /* DESKTOP + MOBILE */
+    /* =====================================================
+       DESKTOP HOVER
+       ===================================================== */
 
-    marker.on("click", () => {
-        if (marker.isTooltipOpen()) {
-            marker.closeTooltip();
-        } else {
-            marker.openTooltip();
+    hitMarker.on("mouseover", () => {
+
+        if (!L.Browser.touch) {
+            hitMarker.openTooltip();
         }
+
     });
 
 
-    /* ADD PLACE TO INDEX */
+    hitMarker.on("mouseout", () => {
 
-    const indexList = document.getElementById("index-list");
+        if (!L.Browser.touch) {
+            hitMarker.closeTooltip();
+        }
+
+    });
+
+
+    /* =====================================================
+       DESKTOP + MOBILE CLICK / TAP
+       ===================================================== */
+
+    hitMarker.on("click", event => {
+
+        /*
+         * Prevent the tap from being interpreted
+         * as a map click/drag.
+         */
+        if (event.originalEvent) {
+            event.originalEvent.preventDefault();
+            event.originalEvent.stopPropagation();
+        }
+
+
+        if (hitMarker.isTooltipOpen()) {
+
+            hitMarker.closeTooltip();
+
+        } else {
+
+            /*
+             * Close other open tooltips first.
+             */
+            map.eachLayer(layer => {
+
+                if (
+                    layer instanceof L.CircleMarker &&
+                    layer !== hitMarker &&
+                    typeof layer.isTooltipOpen === "function" &&
+                    layer.isTooltipOpen()
+                ) {
+                    layer.closeTooltip();
+                }
+
+            });
+
+            hitMarker.openTooltip();
+        }
+
+    });
+
+
+    /* =====================================================
+       TOUCH
+       ===================================================== */
+
+    hitMarker.on("touchstart", event => {
+
+        if (event.originalEvent) {
+            event.originalEvent.stopPropagation();
+        }
+
+    });
+
+
+    /* =====================================================
+       ADD PLACE TO INDEX
+       ===================================================== */
+
     const indexItem = document.createElement("button");
+
+    indexItem.type = "button";
+
     indexItem.className = "index-item";
 
     indexItem.innerHTML = `
@@ -325,58 +538,211 @@ places.forEach(place => {
     `;
 
 
-    /* CLICK INDEX ITEM */
+    /* =====================================================
+       INDEX ITEM CLICK
+       ===================================================== */
 
-    indexItem.addEventListener("click", () => {
-        map.setView(
-            [place.lat, place.lng],
-            Math.max(map.getZoom(), 8),
-            {
-                animate: true
-            }
-        );
+    indexItem.addEventListener("click", event => {
 
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        /*
+         * Close the index first.
+         */
+        indexPanel.classList.remove("open");
+
+
+        /*
+         * Wait for the panel animation before moving
+         * the map, especially on mobile.
+         */
         setTimeout(() => {
-            marker.openTooltip();
-        }, 400);
+
+            map.invalidateSize({
+                pan: false
+            });
+
+
+            map.setView(
+                [place.lat, place.lng],
+                Math.max(map.getZoom(), 8),
+                {
+                    animate: true
+                }
+            );
+
+
+            setTimeout(() => {
+
+                hitMarker.openTooltip();
+
+            }, 400);
+
+        }, 280);
+
     });
+
 
     indexList.appendChild(indexItem);
 
 });
 
 
-/* INDEX OPEN / CLOSE */
+/* =========================================================
+   INDEX OPEN / CLOSE
+   ========================================================= */
 
 const indexButton = document.getElementById("index-button");
+
 const indexPanel = document.getElementById("index-panel");
+
 const closeIndex = document.getElementById("close-index");
 
-indexButton.addEventListener("click", () => {
+
+/* OPEN INDEX */
+
+indexButton.addEventListener("click", event => {
+
+    event.preventDefault();
+    event.stopPropagation();
+
     indexPanel.classList.add("open");
+
+
+    /*
+     * Important on mobile:
+     * opening the panel must NOT scroll the page.
+     */
+    requestAnimationFrame(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    });
+
 });
 
-closeIndex.addEventListener("click", () => {
+
+/* CLOSE INDEX */
+
+closeIndex.addEventListener("click", event => {
+
+    event.preventDefault();
+    event.stopPropagation();
+
     indexPanel.classList.remove("open");
+
+
+    requestAnimationFrame(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    });
+
 });
 
 
-/* ENTER THE MAP */
+/* =========================================================
+   ENTER THE MAP
+   ========================================================= */
 
 const enterMapButton = document.getElementById("enter-map");
-const homeButton = document.getElementById("home-button");
 
-enterMapButton.addEventListener("click", () => {
+
+enterMapButton.addEventListener("click", event => {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+
     document.getElementById("map").scrollIntoView({
-        behavior: "smooth"
+        behavior: "smooth",
+        block: "start"
     });
+
 });
 
 
-/* RETURN HOME */
+/* =========================================================
+   RETURN HOME
+   ========================================================= */
 
-homeButton.addEventListener("click", () => {
+const homeButton = document.getElementById("home-button");
+
+
+homeButton.addEventListener("click", event => {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+
+    /*
+     * If INDEX is open, close it first.
+     */
+    indexPanel.classList.remove("open");
+
+
     document.getElementById("home").scrollIntoView({
-        behavior: "smooth"
+        behavior: "smooth",
+        block: "start"
     });
+
+});
+
+
+/* =========================================================
+   CLOSE INDEX WITH ESC
+   ========================================================= */
+
+document.addEventListener("keydown", event => {
+
+    if (event.key === "Escape") {
+
+        indexPanel.classList.remove("open");
+
+    }
+
+});
+
+
+/* =========================================================
+   CLOSE TOOLTIP WHEN CLICKING EMPTY MAP
+   ========================================================= */
+
+map.on("click", () => {
+
+    map.eachLayer(layer => {
+
+        if (
+            layer instanceof L.CircleMarker &&
+            typeof layer.isTooltipOpen === "function" &&
+            layer.isTooltipOpen()
+        ) {
+            layer.closeTooltip();
+        }
+
+    });
+
+});
+
+
+/* =========================================================
+   FINAL MAP REFRESH
+   ========================================================= */
+
+window.addEventListener("load", () => {
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    }, 300);
+
 });
