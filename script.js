@@ -129,6 +129,97 @@ const places = [
         gambling: "Unknown",
         toilets: "Normal. Men and women separated.",
         notes: ""
+    },
+    
+    {
+        id: 6,
+        name: "Caffe Bar Milano",
+        lat: 45.4278,
+        lng: 14.9111,
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+        toilets: "Unknown",
+        notes: ""
+    },
+
+    {
+        id: 7,
+        name: "Caffe Bar Gold",
+        lat: 45.32495,
+        lng: 15.695158,
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+        toilets: "Normal. Men and women separated.",
+        notes: ""
+    },
+
+    {
+        id: 8,
+        name: "Magical Cavern",
+        lat: 50.0814,
+        lng: 14.4002,
+        smoking: "No",
+        music: "No",
+        locals: "No",
+        gambling: "No",
+        toilets: "Unisex. Looks like a private laundry room.",
+        notes: ""
+    },
+
+    {
+        id: 9,
+        name: "Birtija",
+        lat: 43.86155,
+        lng: 18.43528,
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "Unknown",
+        toilets: "Unknown",
+        notes: ""
+    },
+
+    {
+        id: 10,
+        name: "Lucky Bar",
+        lat: 45.5159,
+        lng: 9.8680,
+        smoking: "No",
+        music: "No",
+        locals: "Yes",
+        gambling: "Yes",
+        toilets: "Unisex, extremely dirty.",
+        notes: ""
+    },
+
+    {
+        id: 11,
+        name: "Sala Admiral",
+        lat: 45.40830,
+        lng: 9.93608,
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "Yes",
+        toilets: "Unknown",
+        notes: ""
+    },
+
+    {
+        id: 12,
+        name: "Bar 10 Damijana Kodelija",
+        lat: 45.8836,
+        lng: 14.0230,
+        smoking: "No",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+        toilets: "Normal. Men and women separated.",
+        notes: ""
     }
 
 ];
