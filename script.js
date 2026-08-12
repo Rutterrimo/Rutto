@@ -348,28 +348,6 @@ const markerReferences = [];
 
 /*
 =========================================================
-TOUCH STATE
-=========================================================
-*/
-
-/*
-    Mobile browsers can fire:
-
-    touchend
-        ↓
-    click
-
-    If both events toggle the tooltip,
-    the tooltip could open and immediately close.
-
-    This variable prevents that.
-*/
-
-let lastTouchTime = 0;
-
-
-/*
-=========================================================
 CLOSE ALL OPEN TOOLTIPS
 =========================================================
 */
@@ -388,6 +366,93 @@ function closeAllTooltips() {
         }
 
     });
+
+}
+
+
+/*
+=========================================================
+FIND PLACE NEAR TOUCH
+=========================================================
+*/
+
+/*
+    This is the important mobile fix.
+
+    Instead of relying on the phone correctly touching
+    the invisible SVG marker, we look at the actual
+    position of the finger on the screen.
+
+    If a place is within TOUCH_RADIUS pixels,
+    we consider that place selected.
+*/
+
+const TOUCH_RADIUS = 30;
+
+function findPlaceNearPoint(containerPoint) {
+
+    let closestReference = null;
+    let closestDistance = Infinity;
+
+    markerReferences.forEach(reference => {
+
+        const markerPoint =
+            map.latLngToContainerPoint(
+                reference.place
+                    ? [
+                        reference.place.lat,
+                        reference.place.lng
+                    ]
+                    : reference.marker.getLatLng()
+            );
+
+
+        const dx =
+            markerPoint.x - containerPoint.x;
+
+        const dy =
+            markerPoint.y - containerPoint.y;
+
+        const distance =
+            Math.sqrt(
+                (dx * dx) +
+                (dy * dy)
+            );
+
+
+        if (
+            distance < TOUCH_RADIUS &&
+            distance < closestDistance
+        ) {
+
+            closestDistance = distance;
+
+            closestReference = reference;
+
+        }
+
+    });
+
+
+    return closestReference;
+}
+
+
+/*
+=========================================================
+OPEN PLACE TOOLTIP
+=========================================================
+*/
+
+function openPlaceTooltip(reference) {
+
+    if (!reference || !reference.marker) {
+        return;
+    }
+
+    closeAllTooltips();
+
+    reference.marker.openTooltip();
 
 }
 
@@ -427,17 +492,7 @@ places.forEach(place => {
 
     /*
     =====================================================
-    INVISIBLE TOUCH TARGET
-    =====================================================
-    
-    The visible dot remains 3px.
-
-    The invisible circle is larger so that
-    touching the point on a phone is easier.
-
-    fillOpacity 0.01 is intentionally used instead
-    of 0 because some mobile browsers handle a
-    completely transparent SVG hit area unreliably.
+    INVISIBLE MARKER
     =====================================================
     */
 
@@ -452,7 +507,7 @@ places.forEach(place => {
 
             fillColor: "#000000",
 
-            fillOpacity: 0.01,
+            fillOpacity: 0,
 
             weight: 0,
 
@@ -572,100 +627,6 @@ places.forEach(place => {
 
     /*
     =====================================================
-    TOUCH START
-    =====================================================
-    */
-
-    marker.on("touchstart", event => {
-
-        lastTouchTime = Date.now();
-
-        if (event.originalEvent) {
-
-            event.originalEvent.stopPropagation();
-
-        }
-
-    });
-
-
-    /*
-    =====================================================
-    TOUCH END
-    =====================================================
-    */
-
-    marker.on("touchend", event => {
-
-        lastTouchTime = Date.now();
-
-        if (event.originalEvent) {
-
-            event.originalEvent.preventDefault();
-
-            event.originalEvent.stopPropagation();
-
-        }
-
-        closeAllTooltips();
-
-        marker.openTooltip();
-
-    });
-
-
-    /*
-    =====================================================
-    CLICK / TAP
-    =====================================================
-    */
-
-    marker.on("click", event => {
-
-        /*
-        If this click was generated immediately after
-        a touch event, the touchend handler already
-        opened the tooltip.
-
-        Do NOT toggle it closed.
-        */
-
-        if (
-            L.Browser.touch &&
-            Date.now() - lastTouchTime < 700
-        ) {
-
-            return;
-
-        }
-
-
-        if (event.originalEvent) {
-
-            event.originalEvent.preventDefault();
-
-            event.originalEvent.stopPropagation();
-
-        }
-
-
-        if (marker.isTooltipOpen()) {
-
-            marker.closeTooltip();
-
-        } else {
-
-            closeAllTooltips();
-
-            marker.openTooltip();
-
-        }
-
-    });
-
-
-    /*
-    =====================================================
     SAVE REFERENCE
     =====================================================
     */
@@ -679,7 +640,7 @@ places.forEach(place => {
 
     /*
     =====================================================
-    CREATE INDEX ITEM
+    INDEX ITEM
     =====================================================
     */
 
@@ -716,24 +677,10 @@ places.forEach(place => {
 
         event.stopPropagation();
 
-
-        /*
-        Close tooltip.
-        */
-
         closeAllTooltips();
-
-
-        /*
-        Close INDEX immediately.
-        */
 
         indexPanel.classList.remove("open");
 
-
-        /*
-        Wait for the panel animation to finish.
-        */
 
         setTimeout(() => {
 
@@ -744,10 +691,6 @@ places.forEach(place => {
 
             let tooltipOpened = false;
 
-
-            /*
-            Open tooltip when map movement finishes.
-            */
 
             const openTooltipAfterMove = () => {
 
@@ -773,10 +716,6 @@ places.forEach(place => {
             );
 
 
-            /*
-            Move to selected place.
-            */
-
             map.setView(
                 [place.lat, place.lng],
                 8,
@@ -786,10 +725,6 @@ places.forEach(place => {
                 }
             );
 
-
-            /*
-            Safety fallback.
-            */
 
             setTimeout(() => {
 
@@ -813,11 +748,58 @@ places.forEach(place => {
     });
 
 
+    indexList.appendChild(indexItem);
+
+});
+
+
+/*
+=========================================================
+MOBILE TAP ON MAP
+=========================================================
+*/
+
+/*
+    Leaflet's map click event works reliably on mobile.
+
+    We use the click position and compare it with all
+    places.
+
+    This means the user does not have to hit a tiny SVG
+    element exactly.
+*/
+
+map.on("click", event => {
+
+    const containerPoint =
+        map.latLngToContainerPoint(
+            event.latlng
+        );
+
+
+    const nearbyPlace =
+        findPlaceNearPoint(
+            containerPoint
+        );
+
+
+    if (nearbyPlace) {
+
+        openPlaceTooltip(
+            nearbyPlace
+        );
+
+        return;
+
+    }
+
+
     /*
-    Add item to INDEX.
+    No place nearby:
+    close any open tooltip.
     */
 
-    indexList.appendChild(indexItem);
+    closeAllTooltips();
 
 });
 
@@ -890,23 +872,11 @@ enterMapButton.addEventListener("click", event => {
     event.stopPropagation();
 
 
-    /*
-    Scroll to map first.
-    */
-
     document.getElementById("map").scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
 
-
-    /*
-    Lock the page AFTER the scroll has completed.
-
-    This is important on mobile:
-    locking overflow immediately could prevent
-    scrollIntoView from actually moving to the map.
-    */
 
     setTimeout(() => {
 
@@ -936,31 +906,11 @@ homeButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
-
-    /*
-    Close INDEX.
-    */
-
     indexPanel.classList.remove("open");
-
-
-    /*
-    Close tooltip.
-    */
 
     closeAllTooltips();
 
-
-    /*
-    Unlock page scrolling.
-    */
-
     document.body.classList.remove("map-active");
-
-
-    /*
-    Return to HOME.
-    */
 
     document.getElementById("home").scrollIntoView({
         behavior: "smooth",
@@ -983,38 +933,6 @@ document.addEventListener("keydown", event => {
         indexPanel.classList.remove("open");
 
     }
-
-});
-
-
-/*
-=========================================================
-CLICK EMPTY MAP → CLOSE TOOLTIP
-=========================================================
-*/
-
-map.on("click", event => {
-
-    /*
-    If the click was on a marker,
-    don't close its tooltip.
-    */
-
-    if (
-        event.originalEvent &&
-        event.originalEvent.target &&
-        event.originalEvent.target.closest &&
-        event.originalEvent.target.closest(
-            ".leaflet-interactive"
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    closeAllTooltips();
 
 });
 
