@@ -4,6 +4,7 @@ RUTTO — MAP SCRIPT
 =========================================================
 */
 
+
 /*
 =========================================================
 SCROLL RESTORATION
@@ -13,6 +14,33 @@ SCROLL RESTORATION
 if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
 }
+
+
+/*
+=========================================================
+ALWAYS START FROM HOME
+=========================================================
+*/
+
+function forceHomePosition() {
+    window.scrollTo(0, 0);
+}
+
+forceHomePosition();
+
+window.addEventListener("load", () => {
+
+    forceHomePosition();
+
+    setTimeout(() => {
+        forceHomePosition();
+    }, 100);
+
+});
+
+window.addEventListener("pageshow", () => {
+    forceHomePosition();
+});
 
 
 /*
@@ -75,16 +103,8 @@ L.tileLayer(
 
 /*
 =========================================================
-MAP SIZE
+MAP REFRESH
 =========================================================
-*/
-
-/*
-    The map already fills the entire #map section
-    through CSS.
-
-    We only need to tell Leaflet to recalculate
-    its dimensions after the page/layout changes.
 */
 
 function refreshMap() {
@@ -328,6 +348,28 @@ const markerReferences = [];
 
 /*
 =========================================================
+TOUCH STATE
+=========================================================
+*/
+
+/*
+    Mobile browsers can fire:
+
+    touchend
+        ↓
+    click
+
+    If both events toggle the tooltip,
+    the tooltip could open and immediately close.
+
+    This variable prevents that.
+*/
+
+let lastTouchTime = 0;
+
+
+/*
+=========================================================
 CLOSE ALL OPEN TOOLTIPS
 =========================================================
 */
@@ -340,7 +382,9 @@ function closeAllTooltips() {
             reference.marker &&
             reference.marker.isTooltipOpen()
         ) {
+
             reference.marker.closeTooltip();
+
         }
 
     });
@@ -355,6 +399,7 @@ CREATE MARKERS AND INDEX
 */
 
 places.forEach(place => {
+
 
     /*
     =====================================================
@@ -384,12 +429,22 @@ places.forEach(place => {
     =====================================================
     INVISIBLE TOUCH TARGET
     =====================================================
+    
+    The visible dot remains 3px.
+
+    The invisible circle is larger so that
+    touching the point on a phone is easier.
+
+    fillOpacity 0.01 is intentionally used instead
+    of 0 because some mobile browsers handle a
+    completely transparent SVG hit area unreliably.
+    =====================================================
     */
 
     const marker = L.circleMarker(
         [place.lat, place.lng],
         {
-            radius: 14,
+            radius: 16,
 
             color: "#000000",
 
@@ -397,7 +452,7 @@ places.forEach(place => {
 
             fillColor: "#000000",
 
-            fillOpacity: 0,
+            fillOpacity: 0.01,
 
             weight: 0,
 
@@ -517,11 +572,73 @@ places.forEach(place => {
 
     /*
     =====================================================
+    TOUCH START
+    =====================================================
+    */
+
+    marker.on("touchstart", event => {
+
+        lastTouchTime = Date.now();
+
+        if (event.originalEvent) {
+
+            event.originalEvent.stopPropagation();
+
+        }
+
+    });
+
+
+    /*
+    =====================================================
+    TOUCH END
+    =====================================================
+    */
+
+    marker.on("touchend", event => {
+
+        lastTouchTime = Date.now();
+
+        if (event.originalEvent) {
+
+            event.originalEvent.preventDefault();
+
+            event.originalEvent.stopPropagation();
+
+        }
+
+        closeAllTooltips();
+
+        marker.openTooltip();
+
+    });
+
+
+    /*
+    =====================================================
     CLICK / TAP
     =====================================================
     */
 
     marker.on("click", event => {
+
+        /*
+        If this click was generated immediately after
+        a touch event, the touchend handler already
+        opened the tooltip.
+
+        Do NOT toggle it closed.
+        */
+
+        if (
+            L.Browser.touch &&
+            Date.now() - lastTouchTime < 700
+        ) {
+
+            return;
+
+        }
+
 
         if (event.originalEvent) {
 
@@ -589,7 +706,7 @@ places.forEach(place => {
 
     /*
     =====================================================
-    GO TO PLACE
+    INDEX → MAP
     =====================================================
     */
 
@@ -599,7 +716,13 @@ places.forEach(place => {
 
         event.stopPropagation();
 
+
+        /*
+        Close tooltip.
+        */
+
         closeAllTooltips();
+
 
         /*
         Close INDEX immediately.
@@ -609,8 +732,7 @@ places.forEach(place => {
 
 
         /*
-        Wait for the panel to disappear,
-        then refresh Leaflet and move to the place.
+        Wait for the panel animation to finish.
         */
 
         setTimeout(() => {
@@ -620,14 +742,12 @@ places.forEach(place => {
             });
 
 
-            /*
-            If there is no animation needed,
-            open tooltip immediately after the map
-            finishes moving.
-            */
-
             let tooltipOpened = false;
 
+
+            /*
+            Open tooltip when map movement finishes.
+            */
 
             const openTooltipAfterMove = () => {
 
@@ -652,6 +772,10 @@ places.forEach(place => {
                 openTooltipAfterMove
             );
 
+
+            /*
+            Move to selected place.
+            */
 
             map.setView(
                 [place.lat, place.lng],
@@ -713,11 +837,6 @@ indexButton.addEventListener("click", event => {
     indexPanel.classList.add("open");
 
 
-    /*
-    Make sure Leaflet knows the available
-    map area changed.
-    */
-
     setTimeout(() => {
 
         map.invalidateSize({
@@ -772,14 +891,7 @@ enterMapButton.addEventListener("click", event => {
 
 
     /*
-    Lock page scrolling once inside the map.
-    */
-
-    document.body.classList.add("map-active");
-
-
-    /*
-    Scroll exactly to the map.
+    Scroll to map first.
     */
 
     document.getElementById("map").scrollIntoView({
@@ -789,16 +901,22 @@ enterMapButton.addEventListener("click", event => {
 
 
     /*
-    Refresh Leaflet after entering.
+    Lock the page AFTER the scroll has completed.
+
+    This is important on mobile:
+    locking overflow immediately could prevent
+    scrollIntoView from actually moving to the map.
     */
 
     setTimeout(() => {
+
+        document.body.classList.add("map-active");
 
         map.invalidateSize({
             pan: false
         });
 
-    }, 500);
+    }, 700);
 
 });
 
@@ -819,7 +937,16 @@ homeButton.addEventListener("click", event => {
     event.stopPropagation();
 
 
+    /*
+    Close INDEX.
+    */
+
     indexPanel.classList.remove("open");
+
+
+    /*
+    Close tooltip.
+    */
 
     closeAllTooltips();
 
@@ -832,7 +959,7 @@ homeButton.addEventListener("click", event => {
 
 
     /*
-    Return to intro.
+    Return to HOME.
     */
 
     document.getElementById("home").scrollIntoView({
@@ -881,7 +1008,9 @@ map.on("click", event => {
             ".leaflet-interactive"
         )
     ) {
+
         return;
+
     }
 
 
