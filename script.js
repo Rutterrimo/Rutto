@@ -1,22 +1,28 @@
-/* =========================================================
-   RUTTO — MAP SCRIPT
-   ========================================================= */
+/*
+=========================================================
+RUTTO — MAP SCRIPT
+=========================================================
+*/
 
-
-/* =========================================================
-   SCROLL RESTORATION
-   ========================================================= */
+/*
+=========================================================
+SCROLL RESTORATION
+=========================================================
+*/
 
 if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
 }
 
 
-/* =========================================================
-   MAP INITIALIZATION
-   ========================================================= */
+/*
+=========================================================
+MAP INITIALIZATION
+=========================================================
+*/
 
 const map = L.map("map-container", {
+
     worldCopyJump: false,
 
     minZoom: 2,
@@ -35,21 +41,26 @@ const map = L.map("map-container", {
     tap: true,
 
     touchZoom: true
+
 }).setView([20, 0], 2);
 
 
-/* =========================================================
-   ZOOM CONTROLS
-   ========================================================= */
+/*
+=========================================================
+ZOOM CONTROLS
+=========================================================
+*/
 
 L.control.zoom({
     position: "bottomleft"
 }).addTo(map);
 
 
-/* =========================================================
-   MAP TILES
-   ========================================================= */
+/*
+=========================================================
+MAP TILES
+=========================================================
+*/
 
 L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
@@ -62,45 +73,39 @@ L.tileLayer(
 ).addTo(map);
 
 
-/* =========================================================
-   KEEP WORLD FILLED WITH SCREEN
-   ========================================================= */
+/*
+=========================================================
+MAP SIZE
+=========================================================
+*/
 
-function fitWorldToScreen() {
+/*
+    The map already fills the entire #map section
+    through CSS.
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    We only need to tell Leaflet to recalculate
+    its dimensions after the page/layout changes.
+*/
 
-    const worldWidth = 360;
-    const worldHeight = 170;
+function refreshMap() {
 
-    const zoomX = Math.log2(width / worldWidth);
-    const zoomY = Math.log2(height / worldHeight);
+    setTimeout(() => {
 
-    const idealZoom = Math.max(
-        2,
-        Math.ceil(Math.max(zoomX, zoomY))
-    );
+        map.invalidateSize({
+            pan: false
+        });
 
-    map.setMinZoom(idealZoom);
+    }, 100);
 
-    map.setZoom(idealZoom, {
-        animate: false
-    });
-
-    map.invalidateSize({
-        pan: false
-    });
 }
 
 
-/* Initial map sizing */
-setTimeout(() => {
-    fitWorldToScreen();
-}, 100);
+/*
+=========================================================
+RESIZE
+=========================================================
+*/
 
-
-/* Resize */
 let resizeTimer;
 
 window.addEventListener("resize", () => {
@@ -109,36 +114,35 @@ window.addEventListener("resize", () => {
 
     resizeTimer = setTimeout(() => {
 
-        map.invalidateSize({
-            pan: false
-        });
-
-        fitWorldToScreen();
+        refreshMap();
 
     }, 200);
 
 });
 
 
-/* Orientation change */
+/*
+=========================================================
+ORIENTATION CHANGE
+=========================================================
+*/
+
 window.addEventListener("orientationchange", () => {
 
     setTimeout(() => {
 
-        map.invalidateSize({
-            pan: false
-        });
-
-        fitWorldToScreen();
+        refreshMap();
 
     }, 400);
 
 });
 
 
-/* =========================================================
-   PLACES
-   ========================================================= */
+/*
+=========================================================
+PLACES
+=========================================================
+*/
 
 const places = [
 
@@ -301,9 +305,11 @@ const places = [
 ];
 
 
-/* =========================================================
-   INDEX ELEMENTS
-   ========================================================= */
+/*
+=========================================================
+INDEX ELEMENTS
+=========================================================
+*/
 
 const indexList = document.getElementById("index-list");
 const indexButton = document.getElementById("index-button");
@@ -311,16 +317,20 @@ const indexPanel = document.getElementById("index-panel");
 const closeIndex = document.getElementById("close-index");
 
 
-/* =========================================================
-   MARKER REFERENCES
-   ========================================================= */
+/*
+=========================================================
+MARKER REFERENCES
+=========================================================
+*/
 
 const markerReferences = [];
 
 
-/* =========================================================
-   CLOSE ALL OPEN TOOLTIPS
-   ========================================================= */
+/*
+=========================================================
+CLOSE ALL OPEN TOOLTIPS
+=========================================================
+*/
 
 function closeAllTooltips() {
 
@@ -338,16 +348,19 @@ function closeAllTooltips() {
 }
 
 
-/* =========================================================
-   CREATE MARKERS AND INDEX
-   ========================================================= */
+/*
+=========================================================
+CREATE MARKERS AND INDEX
+=========================================================
+*/
 
 places.forEach(place => {
 
-
-    /* =====================================================
-       VISIBLE DOT
-       ===================================================== */
+    /*
+    =====================================================
+    VISIBLE DOT
+    =====================================================
+    */
 
     const visibleMarker = L.circleMarker(
         [place.lat, place.lng],
@@ -367,13 +380,11 @@ places.forEach(place => {
     ).addTo(map);
 
 
-    /* =====================================================
-       INVISIBLE TOUCH TARGET
-       
-       The visible dot remains 3px.
-       This second marker creates a larger invisible
-       clickable/touchable area around it.
-       ===================================================== */
+    /*
+    =====================================================
+    INVISIBLE TOUCH TARGET
+    =====================================================
+    */
 
     const marker = L.circleMarker(
         [place.lat, place.lng],
@@ -395,9 +406,11 @@ places.forEach(place => {
     ).addTo(map);
 
 
-    /* =====================================================
-       TOOLTIP CONTENT
-       ===================================================== */
+    /*
+    =====================================================
+    TOOLTIP CONTENT
+    =====================================================
+    */
 
     const popupContent = `
         <div class="place-popup">
@@ -448,14 +461,16 @@ places.forEach(place => {
     `;
 
 
-    /* =====================================================
-       BIND TOOLTIP
-       ===================================================== */
+    /*
+    =====================================================
+    BIND TOOLTIP
+    =====================================================
+    */
 
     marker.bindTooltip(
         popupContent,
         {
-            direction: "top",
+            direction: "auto",
 
             offset: [0, -10],
 
@@ -470,20 +485,20 @@ places.forEach(place => {
     );
 
 
-    /* =====================================================
-       DESKTOP HOVER
-       
-       On desktop:
-       mouse over = open
-       mouse out  = close
-       
-       On touch devices this is disabled.
-       ===================================================== */
+    /*
+    =====================================================
+    DESKTOP HOVER
+    =====================================================
+    */
 
     marker.on("mouseover", () => {
 
         if (!L.Browser.touch) {
+
+            closeAllTooltips();
+
             marker.openTooltip();
+
         }
 
     });
@@ -492,17 +507,19 @@ places.forEach(place => {
     marker.on("mouseout", () => {
 
         if (!L.Browser.touch) {
+
             marker.closeTooltip();
+
         }
 
     });
 
 
-    /* =====================================================
-       CLICK / TAP
-       
-       This is used both by desktop click and mobile tap.
-       ===================================================== */
+    /*
+    =====================================================
+    CLICK / TAP
+    =====================================================
+    */
 
     marker.on("click", event => {
 
@@ -530,27 +547,11 @@ places.forEach(place => {
     });
 
 
-    /* =====================================================
-       TOUCHSTART
-       
-       Prevent the map itself from treating the tap as
-       a separate map interaction.
-       ===================================================== */
-
-    marker.on("touchstart", event => {
-
-        if (event.originalEvent) {
-
-            event.originalEvent.stopPropagation();
-
-        }
-
-    });
-
-
-    /* =====================================================
-       SAVE REFERENCE
-       ===================================================== */
+    /*
+    =====================================================
+    SAVE REFERENCE
+    =====================================================
+    */
 
     markerReferences.push({
         place: place,
@@ -559,9 +560,11 @@ places.forEach(place => {
     });
 
 
-    /* =====================================================
-       CREATE INDEX ITEM
-       ===================================================== */
+    /*
+    =====================================================
+    CREATE INDEX ITEM
+    =====================================================
+    */
 
     const indexItem = document.createElement("button");
 
@@ -584,16 +587,11 @@ places.forEach(place => {
     `;
 
 
-    /* =====================================================
-       INDEX ITEM → MAP
-       
-       EXACT BEHAVIOUR:
-       
-       1. User taps a place.
-       2. INDEX closes immediately.
-       3. Map moves to that place.
-       4. When map movement finishes, tooltip opens.
-       ===================================================== */
+    /*
+    =====================================================
+    GO TO PLACE
+    =====================================================
+    */
 
     indexItem.addEventListener("click", event => {
 
@@ -601,13 +599,19 @@ places.forEach(place => {
 
         event.stopPropagation();
 
+        closeAllTooltips();
 
-        /* CLOSE INDEX IMMEDIATELY */
+        /*
+        Close INDEX immediately.
+        */
 
         indexPanel.classList.remove("open");
 
 
-        /* Make sure Leaflet knows the panel is gone */
+        /*
+        Wait for the panel to disappear,
+        then refresh Leaflet and move to the place.
+        */
 
         setTimeout(() => {
 
@@ -615,90 +619,90 @@ places.forEach(place => {
                 pan: false
             });
 
-        }, 50);
+
+            /*
+            If there is no animation needed,
+            open tooltip immediately after the map
+            finishes moving.
+            */
+
+            let tooltipOpened = false;
 
 
-        /* Close another open tooltip */
+            const openTooltipAfterMove = () => {
 
-        closeAllTooltips();
-
-
-        /*
-         * Open the tooltip when the map has actually
-         * finished moving.
-         */
-
-        let tooltipOpened = false;
-
-
-        const openTooltipAfterMove = () => {
-
-            if (tooltipOpened) {
-                return;
-            }
-
-            tooltipOpened = true;
-
-            map.off("moveend", openTooltipAfterMove);
-
-            marker.openTooltip();
-
-        };
-
-
-        map.once("moveend", openTooltipAfterMove);
-
-
-        /*
-         * Move to the selected place.
-         *
-         * Zoom 8 guarantees that the selected location
-         * is clearly visible.
-         */
-
-        map.setView(
-            [place.lat, place.lng],
-            8,
-            {
-                animate: true,
-                duration: 0.6
-            }
-        );
-
-
-        /*
-         * Safety fallback:
-         * if Leaflet doesn't emit moveend for some reason,
-         * open the tooltip anyway.
-         */
-
-        setTimeout(() => {
-
-            if (!tooltipOpened) {
+                if (tooltipOpened) {
+                    return;
+                }
 
                 tooltipOpened = true;
 
-                map.off("moveend", openTooltipAfterMove);
+                map.off(
+                    "moveend",
+                    openTooltipAfterMove
+                );
 
                 marker.openTooltip();
 
-            }
+            };
 
-        }, 900);
+
+            map.once(
+                "moveend",
+                openTooltipAfterMove
+            );
+
+
+            map.setView(
+                [place.lat, place.lng],
+                8,
+                {
+                    animate: true,
+                    duration: 0.6
+                }
+            );
+
+
+            /*
+            Safety fallback.
+            */
+
+            setTimeout(() => {
+
+                if (!tooltipOpened) {
+
+                    tooltipOpened = true;
+
+                    map.off(
+                        "moveend",
+                        openTooltipAfterMove
+                    );
+
+                    marker.openTooltip();
+
+                }
+
+            }, 900);
+
+        }, 250);
 
     });
 
 
-    /* Add item to INDEX */
+    /*
+    Add item to INDEX.
+    */
 
     indexList.appendChild(indexItem);
 
 });
 
 
-/* =========================================================
-   OPEN INDEX
-   ========================================================= */
+/*
+=========================================================
+OPEN INDEX
+=========================================================
+*/
 
 indexButton.addEventListener("click", event => {
 
@@ -708,12 +712,28 @@ indexButton.addEventListener("click", event => {
 
     indexPanel.classList.add("open");
 
+
+    /*
+    Make sure Leaflet knows the available
+    map area changed.
+    */
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    }, 250);
+
 });
 
 
-/* =========================================================
-   CLOSE INDEX
-   ========================================================= */
+/*
+=========================================================
+CLOSE INDEX
+=========================================================
+*/
 
 closeIndex.addEventListener("click", event => {
 
@@ -723,14 +743,26 @@ closeIndex.addEventListener("click", event => {
 
     indexPanel.classList.remove("open");
 
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    }, 250);
+
 });
 
 
-/* =========================================================
-   ENTER THE MAP
-   ========================================================= */
+/*
+=========================================================
+ENTER THE MAP
+=========================================================
+*/
 
-const enterMapButton = document.getElementById("enter-map");
+const enterMapButton =
+    document.getElementById("enter-map");
 
 enterMapButton.addEventListener("click", event => {
 
@@ -738,19 +770,47 @@ enterMapButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
+
+    /*
+    Lock page scrolling once inside the map.
+    */
+
+    document.body.classList.add("map-active");
+
+
+    /*
+    Scroll exactly to the map.
+    */
+
     document.getElementById("map").scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
 
+
+    /*
+    Refresh Leaflet after entering.
+    */
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    }, 500);
+
 });
 
 
-/* =========================================================
-   RETURN HOME
-   ========================================================= */
+/*
+=========================================================
+RETURN HOME
+=========================================================
+*/
 
-const homeButton = document.getElementById("home-button");
+const homeButton =
+    document.getElementById("home-button");
 
 homeButton.addEventListener("click", event => {
 
@@ -758,9 +818,22 @@ homeButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
+
     indexPanel.classList.remove("open");
 
     closeAllTooltips();
+
+
+    /*
+    Unlock page scrolling.
+    */
+
+    document.body.classList.remove("map-active");
+
+
+    /*
+    Return to intro.
+    */
 
     document.getElementById("home").scrollIntoView({
         behavior: "smooth",
@@ -770,9 +843,11 @@ homeButton.addEventListener("click", event => {
 });
 
 
-/* =========================================================
-   ESCAPE → CLOSE INDEX
-   ========================================================= */
+/*
+=========================================================
+ESCAPE → CLOSE INDEX
+=========================================================
+*/
 
 document.addEventListener("keydown", event => {
 
@@ -785,21 +860,26 @@ document.addEventListener("keydown", event => {
 });
 
 
-/* =========================================================
-   CLICK EMPTY MAP → CLOSE TOOLTIP
-   ========================================================= */
+/*
+=========================================================
+CLICK EMPTY MAP → CLOSE TOOLTIP
+=========================================================
+*/
 
 map.on("click", event => {
 
     /*
-     * If the click was on a marker, don't close it.
-     */
+    If the click was on a marker,
+    don't close its tooltip.
+    */
 
     if (
         event.originalEvent &&
         event.originalEvent.target &&
         event.originalEvent.target.closest &&
-        event.originalEvent.target.closest(".leaflet-interactive")
+        event.originalEvent.target.closest(
+            ".leaflet-interactive"
+        )
     ) {
         return;
     }
@@ -810,9 +890,11 @@ map.on("click", event => {
 });
 
 
-/* =========================================================
-   FINAL MAP REFRESH
-   ========================================================= */
+/*
+=========================================================
+FINAL MAP REFRESH
+=========================================================
+*/
 
 window.addEventListener("load", () => {
 
