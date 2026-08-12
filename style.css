@@ -20,6 +20,7 @@ body {
     overflow-x: hidden;
 }
 
+
 /*
 =========================================================
 MAP ACTIVE
@@ -29,6 +30,7 @@ MAP ACTIVE
 body.map-active {
     overflow: hidden;
 }
+
 
 /*
 =========================================================
@@ -96,6 +98,7 @@ INTRO
     opacity: 0.45;
 }
 
+
 /*
 =========================================================
 MAP
@@ -130,6 +133,7 @@ MAP
     z-index: 1;
 }
 
+
 /*
 =========================================================
 LEAFLET
@@ -143,8 +147,6 @@ LEAFLET
     background: #e8e6df;
 
     font-family: Arial, Helvetica, sans-serif;
-
-    touch-action: pan-x pan-y;
 }
 
 .leaflet-control-zoom {
@@ -166,6 +168,7 @@ LEAFLET
 
     -webkit-tap-highlight-color: transparent;
 }
+
 
 /*
 =========================================================
@@ -197,6 +200,7 @@ RUTTO TOOLTIP
 .rutto-tooltip .leaflet-tooltip-content {
     margin: 0 !important;
 }
+
 
 /*
 =========================================================
@@ -277,6 +281,7 @@ POPUP CONTENT
     overflow-wrap: anywhere;
 }
 
+
 /*
 =========================================================
 HOME + INDEX BUTTONS
@@ -327,6 +332,7 @@ HOME + INDEX BUTTONS
     color: #e8e6df;
 }
 
+
 /*
 =========================================================
 INDEX PANEL
@@ -373,6 +379,7 @@ INDEX PANEL
         transform 0.25s ease,
         visibility 0s linear 0s;
 }
+
 
 /*
 =========================================================
@@ -422,6 +429,7 @@ INDEX HEADER
 #close-index:hover {
     opacity: 0.45;
 }
+
 
 /*
 =========================================================
@@ -489,6 +497,7 @@ INDEX ITEMS
     opacity: 0.55;
 }
 
+
 /*
 =========================================================
 MOBILE
@@ -529,7 +538,6 @@ MOBILE
 
     /*
     INDEX remains a side panel on mobile.
-    It does NOT cover the entire screen.
     */
 
     #index-panel {
@@ -567,7 +575,9 @@ MOBILE
     }
 
     .leaflet-control-zoom {
-        margin-bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+        margin-bottom:
+            calc(12px + env(safe-area-inset-bottom)) !important;
+
         margin-left: 12px !important;
     }
 
@@ -577,6 +587,7 @@ MOBILE
         line-height: 32px !important;
     }
 }
+
 
 /*
 =========================================================
@@ -602,6 +613,7 @@ VERY SMALL PHONES
         gap: 7px;
     }
 }
+
 
 /*
 =========================================================
