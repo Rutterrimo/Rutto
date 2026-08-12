@@ -103,21 +103,98 @@ L.tileLayer(
 
 /*
 =========================================================
-MAP REFRESH
+KEEP WORLD FILLING THE SCREEN
 =========================================================
 */
 
-function refreshMap() {
+/*
+    Leaflet uses 256px as the world width at zoom 0.
 
-    setTimeout(() => {
+    On wide desktop screens, zoom 2 can be too far out:
+    the world becomes narrower than the viewport and
+    the background becomes visible on the left and right.
 
-        map.invalidateSize({
-            pan: false
-        });
+    We therefore calculate the minimum zoom according
+    to the actual width of the map.
+*/
 
-    }, 100);
+function fitWorldToScreen() {
+
+    /*
+    Make sure Leaflet knows the current dimensions
+    before calculating the correct zoom.
+    */
+
+    map.invalidateSize({
+        pan: false
+    });
+
+
+    const width = map.getSize().x;
+
+
+    /*
+    World width at zoom 0 = 256px.
+
+    Calculate the zoom necessary for the world to be
+    at least as wide as the screen.
+    */
+
+    const requiredZoom =
+        Math.log2(width / 256);
+
+
+    /*
+    Never allow a zoom lower than 2.
+
+    Round UP so that the world always covers the
+    complete width of the screen.
+    */
+
+    const idealMinZoom =
+        Math.max(
+            2,
+            Math.ceil(requiredZoom)
+        );
+
+
+    /*
+    Tell Leaflet that this is now the minimum zoom.
+    */
+
+    map.setMinZoom(idealMinZoom);
+
+
+    /*
+    If we are currently zoomed farther out than allowed,
+    move immediately to the correct minimum zoom.
+    */
+
+    if (map.getZoom() < idealMinZoom) {
+
+        map.setZoom(
+            idealMinZoom,
+            {
+                animate: false
+            }
+        );
+
+    }
 
 }
+
+
+/*
+=========================================================
+INITIAL MAP SIZE
+=========================================================
+*/
+
+setTimeout(() => {
+
+    fitWorldToScreen();
+
+}, 100);
 
 
 /*
@@ -134,7 +211,7 @@ window.addEventListener("resize", () => {
 
     resizeTimer = setTimeout(() => {
 
-        refreshMap();
+        fitWorldToScreen();
 
     }, 200);
 
@@ -151,7 +228,7 @@ window.addEventListener("orientationchange", () => {
 
     setTimeout(() => {
 
-        refreshMap();
+        fitWorldToScreen();
 
     }, 400);
 
@@ -376,35 +453,22 @@ FIND PLACE NEAR TOUCH
 =========================================================
 */
 
-/*
-    This is the important mobile fix.
-
-    Instead of relying on the phone correctly touching
-    the invisible SVG marker, we look at the actual
-    position of the finger on the screen.
-
-    If a place is within TOUCH_RADIUS pixels,
-    we consider that place selected.
-*/
-
 const TOUCH_RADIUS = 30;
 
 function findPlaceNearPoint(containerPoint) {
 
     let closestReference = null;
+
     let closestDistance = Infinity;
+
 
     markerReferences.forEach(reference => {
 
         const markerPoint =
-            map.latLngToContainerPoint(
-                reference.place
-                    ? [
-                        reference.place.lat,
-                        reference.place.lng
-                    ]
-                    : reference.marker.getLatLng()
-            );
+            map.latLngToContainerPoint([
+                reference.place.lat,
+                reference.place.lng
+            ]);
 
 
         const dx =
@@ -412,6 +476,7 @@ function findPlaceNearPoint(containerPoint) {
 
         const dy =
             markerPoint.y - containerPoint.y;
+
 
         const distance =
             Math.sqrt(
@@ -492,7 +557,7 @@ places.forEach(place => {
 
     /*
     =====================================================
-    INVISIBLE MARKER
+    INVISIBLE TOUCH MARKER
     =====================================================
     */
 
@@ -640,7 +705,7 @@ places.forEach(place => {
 
     /*
     =====================================================
-    INDEX ITEM
+    CREATE INDEX ITEM
     =====================================================
     */
 
@@ -759,16 +824,6 @@ MOBILE TAP ON MAP
 =========================================================
 */
 
-/*
-    Leaflet's map click event works reliably on mobile.
-
-    We use the click position and compare it with all
-    places.
-
-    This means the user does not have to hit a tiny SVG
-    element exactly.
-*/
-
 map.on("click", event => {
 
     const containerPoint =
@@ -793,11 +848,6 @@ map.on("click", event => {
 
     }
 
-
-    /*
-    No place nearby:
-    close any open tooltip.
-    */
 
     closeAllTooltips();
 
@@ -886,6 +936,8 @@ enterMapButton.addEventListener("click", event => {
             pan: false
         });
 
+        fitWorldToScreen();
+
     }, 700);
 
 });
@@ -950,6 +1002,8 @@ window.addEventListener("load", () => {
         map.invalidateSize({
             pan: false
         });
+
+        fitWorldToScreen();
 
     }, 300);
 
