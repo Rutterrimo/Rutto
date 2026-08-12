@@ -154,154 +154,237 @@ const places = [
         name: "Kafana Šindra",
         lat: 44.813938,
         lng: 20.456848,
+
+        visitedDate: "SEP 2025",
+        visitedTime: "LATE EVENING / NIGHT",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Squat toilets, unisex, very dirty.",
+
         notes: ""
     },
+
 
     {
         id: 2,
         name: "Langosi, mici, cafea",
         lat: 45.850244,
         lng: 22.980534,
+
+        visitedDate: "FEB 2026",
+        visitedTime: "MIDDAY",
+
         smoking: "No indoor area",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Chemical toilets, extremely dirty, unisex.",
+
         notes: ""
     },
+
 
     {
         id: 3,
         name: "Dabar",
         lat: 43.093869,
         lng: 18.158703,
+
+        visitedDate: "AUG 2023",
+        visitedTime: "SUNSET",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Unknown",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     },
+
 
     {
         id: 4,
         name: "Pri Hladniku",
         lat: 45.926297,
         lng: 14.043176,
+
+        visitedDate: "JUL 2025",
+        visitedTime: "LATE AFTERNOON",
+
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     },
+
 
     {
         id: 5,
         name: "Restaurant Bastion La Strada",
         lat: 46.219208,
         lng: 24.791609,
+
+        visitedDate: "FEB 2026",
+        visitedTime: "LATE EVENING / NIGHT",
+
         smoking: "Unknown",
         music: "Yes",
         locals: "No",
         gambling: "Unknown",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     },
+
 
     {
         id: 6,
         name: "Caffe Bar Milano",
         lat: 45.432485,
         lng: 14.905419,
+
+        visitedDate: "AUG 2026",
+        visitedTime: "MORNING / MIDDAY",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Unknown",
+
         notes: ""
     },
+
 
     {
         id: 7,
         name: "Caffe Bar Gold",
         lat: 45.325111,
         lng: 15.695395,
+
+        visitedDate: "AUG 2026",
+        visitedTime: "AFTERNOON",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     },
+
 
     {
         id: 8,
         name: "Magical Cavern",
         lat: 50.081553,
         lng: 14.400084,
+
+        visitedDate: "AUG 2019",
+        visitedTime: "AFTERNOON",
+
         smoking: "No",
         music: "No",
         locals: "No",
         gambling: "No",
+
         toilets: "Unisex. Looks like a private laundry room.",
+
         notes: ""
     },
+
 
     {
         id: 9,
         name: "Birtija",
         lat: 43.860294,
         lng: 18.431862,
+
+        visitedDate: "SEP 2024",
+        visitedTime: "LATE EVENING",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Unknown",
+
         toilets: "Unknown",
+
         notes: ""
     },
+
 
     {
         id: 10,
         name: "Lucky Bar",
         lat: 45.514442,
         lng: 9.869044,
+
+        visitedDate: "DEC 2025",
+        visitedTime: "BEFORE DINNER",
+
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "Yes",
+
         toilets: "Unisex, extremely dirty.",
+
         notes: ""
     },
+
 
     {
         id: 11,
         name: "Sala Admiral",
         lat: 45.409563,
         lng: 9.934405,
+
+        visitedDate: "JUN 2026",
+        visitedTime: "MORNING",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Yes",
+
         toilets: "Unknown",
+
         notes: ""
     },
+
 
     {
         id: 12,
         name: "Bar 10 Damijana Kodelija",
         lat: 45.881229,
         lng: 14.002382,
+
+        visitedDate: "AUG 2026",
+        visitedTime: "BEFORE LUNCH",
+
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     }
 
@@ -313,8 +396,11 @@ const places = [
    ========================================================= */
 
 const indexList = document.getElementById("index-list");
+
 const indexButton = document.getElementById("index-button");
+
 const indexPanel = document.getElementById("index-panel");
+
 const closeIndex = document.getElementById("close-index");
 
 
@@ -431,6 +517,7 @@ places.forEach(place => {
 
             </div>
 
+
             <div class="popup-section">
 
                 <span>TOILETS</span>
@@ -438,6 +525,7 @@ places.forEach(place => {
                 <p>${place.toilets}</p>
 
             </div>
+
 
             <div class="popup-section">
 
@@ -548,7 +636,9 @@ places.forEach(place => {
 
     markerReferences.push({
         place: place,
+
         marker: marker,
+
         visibleMarker: visibleMarker
     });
 
@@ -563,6 +653,7 @@ places.forEach(place => {
 
     indexItem.className = "index-item";
 
+
     indexItem.innerHTML = `
         <span class="index-number">
             ${String(place.id).padStart(2, "0")}
@@ -574,6 +665,10 @@ places.forEach(place => {
 
         <span class="index-coordinates">
             ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
+        </span>
+
+        <span class="index-visited">
+            VISITED · ${place.visitedDate} · ${place.visitedTime}
         </span>
     `;
 
@@ -638,6 +733,7 @@ places.forEach(place => {
             8,
             {
                 animate: true,
+
                 duration: 0.6
             }
         );
@@ -713,6 +809,7 @@ enterMapButton.addEventListener("click", event => {
 
     document.getElementById("map").scrollIntoView({
         behavior: "smooth",
+
         block: "start"
     });
 
@@ -737,6 +834,7 @@ homeButton.addEventListener("click", event => {
 
     document.getElementById("home").scrollIntoView({
         behavior: "smooth",
+
         block: "start"
     });
 
@@ -763,10 +861,6 @@ document.addEventListener("keydown", event => {
    ========================================================= */
 
 map.on("click", event => {
-
-    /*
-     * If the click was on a marker, don't close it.
-     */
 
     if (
         event.originalEvent &&
