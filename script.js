@@ -1,56 +1,22 @@
-/*
-=========================================================
-RUTTO — MAP SCRIPT
-=========================================================
-*/
+/* =========================================================
+   RUTTO — MAP SCRIPT
+   ========================================================= */
 
 
-/*
-=========================================================
-SCROLL RESTORATION
-=========================================================
-*/
+/* =========================================================
+   SCROLL RESTORATION
+   ========================================================= */
 
 if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
 }
 
 
-/*
-=========================================================
-ALWAYS START FROM HOME
-=========================================================
-*/
-
-function forceHomePosition() {
-    window.scrollTo(0, 0);
-}
-
-forceHomePosition();
-
-window.addEventListener("load", () => {
-
-    forceHomePosition();
-
-    setTimeout(() => {
-        forceHomePosition();
-    }, 100);
-
-});
-
-window.addEventListener("pageshow", () => {
-    forceHomePosition();
-});
-
-
-/*
-=========================================================
-MAP INITIALIZATION
-=========================================================
-*/
+/* =========================================================
+   MAP INITIALIZATION
+   ========================================================= */
 
 const map = L.map("map-container", {
-
     worldCopyJump: false,
 
     minZoom: 2,
@@ -69,26 +35,21 @@ const map = L.map("map-container", {
     tap: true,
 
     touchZoom: true
-
 }).setView([20, 0], 2);
 
 
-/*
-=========================================================
-ZOOM CONTROLS
-=========================================================
-*/
+/* =========================================================
+   ZOOM CONTROLS
+   ========================================================= */
 
 L.control.zoom({
     position: "bottomleft"
 }).addTo(map);
 
 
-/*
-=========================================================
-MAP TILES
-=========================================================
-*/
+/* =========================================================
+   MAP TILES
+   ========================================================= */
 
 L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
@@ -101,107 +62,48 @@ L.tileLayer(
 ).addTo(map);
 
 
-/*
-=========================================================
-KEEP WORLD FILLING THE SCREEN
-=========================================================
-*/
-
-/*
-    Leaflet uses 256px as the world width at zoom 0.
-
-    On wide desktop screens, zoom 2 can be too far out:
-    the world becomes narrower than the viewport and
-    the background becomes visible on the left and right.
-
-    We therefore calculate the minimum zoom according
-    to the actual width of the map.
-*/
+/* =========================================================
+   KEEP WORLD FILLED WITH SCREEN
+   ========================================================= */
 
 function fitWorldToScreen() {
 
-    /*
-    Make sure Leaflet knows the current dimensions
-    before calculating the correct zoom.
-    */
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const worldWidth = 360;
+    const worldHeight = 170;
+
+    const zoomX = Math.log2(width / worldWidth);
+    const zoomY = Math.log2(height / worldHeight);
+
+    const idealZoom = Math.max(
+        2,
+        Math.ceil(Math.max(zoomX, zoomY))
+    );
+
+    map.setMinZoom(idealZoom);
+
+    map.setZoom(idealZoom, {
+        animate: false
+    });
 
     map.invalidateSize({
         pan: false
     });
-
-
-    const width = map.getSize().x;
-
-
-    /*
-    World width at zoom 0 = 256px.
-
-    Calculate the zoom necessary for the world to be
-    at least as wide as the screen.
-    */
-
-    const requiredZoom =
-        Math.log2(width / 256);
-
-
-    /*
-    Never allow a zoom lower than 2.
-
-    Round UP so that the world always covers the
-    complete width of the screen.
-    */
-
-    const idealMinZoom =
-        Math.max(
-            2,
-            Math.ceil(requiredZoom)
-        );
-
-
-    /*
-    Tell Leaflet that this is now the minimum zoom.
-    */
-
-    map.setMinZoom(idealMinZoom);
-
-
-    /*
-    If we are currently zoomed farther out than allowed,
-    move immediately to the correct minimum zoom.
-    */
-
-    if (map.getZoom() < idealMinZoom) {
-
-        map.setZoom(
-            idealMinZoom,
-            {
-                animate: false
-            }
-        );
-
-    }
-
 }
 
 
-/*
-=========================================================
-INITIAL MAP SIZE
-=========================================================
-*/
+/* Initial map sizing */
 
 setTimeout(() => {
-
     fitWorldToScreen();
-
 }, 100);
 
 
-/*
-=========================================================
-RESIZE
-=========================================================
-*/
+/* =========================================================
+   RESIZE
+   ========================================================= */
 
 let resizeTimer;
 
@@ -211,6 +113,10 @@ window.addEventListener("resize", () => {
 
     resizeTimer = setTimeout(() => {
 
+        map.invalidateSize({
+            pan: false
+        });
+
         fitWorldToScreen();
 
     }, 200);
@@ -218,15 +124,17 @@ window.addEventListener("resize", () => {
 });
 
 
-/*
-=========================================================
-ORIENTATION CHANGE
-=========================================================
-*/
+/* =========================================================
+   ORIENTATION CHANGE
+   ========================================================= */
 
 window.addEventListener("orientationchange", () => {
 
     setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
 
         fitWorldToScreen();
 
@@ -235,19 +143,17 @@ window.addEventListener("orientationchange", () => {
 });
 
 
-/*
-=========================================================
-PLACES
-=========================================================
-*/
+/* =========================================================
+   PLACES
+   ========================================================= */
 
 const places = [
 
     {
         id: 1,
         name: "Kafana Šindra",
-        lat: 44.81394,
-        lng: 20.45596,
+        lat: 44.813938,
+        lng: 20.456848,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
@@ -259,8 +165,8 @@ const places = [
     {
         id: 2,
         name: "Langosi, mici, cafea",
-        lat: 45.8642,
-        lng: 22.9684,
+        lat: 45.850244,
+        lng: 22.980534,
         smoking: "No indoor area",
         music: "No",
         locals: "Yes",
@@ -272,8 +178,8 @@ const places = [
     {
         id: 3,
         name: "Dabar",
-        lat: 43.09365,
-        lng: 18.15879,
+        lat: 43.093869,
+        lng: 18.158703,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
@@ -285,8 +191,8 @@ const places = [
     {
         id: 4,
         name: "Pri Hladniku",
-        lat: 45.926166,
-        lng: 14.043124,
+        lat: 45.926297,
+        lng: 14.043176,
         smoking: "No",
         music: "No",
         locals: "Yes",
@@ -298,8 +204,8 @@ const places = [
     {
         id: 5,
         name: "Restaurant Bastion La Strada",
-        lat: 46.219019,
-        lng: 24.791593,
+        lat: 46.219208,
+        lng: 24.791609,
         smoking: "Unknown",
         music: "Yes",
         locals: "No",
@@ -311,8 +217,8 @@ const places = [
     {
         id: 6,
         name: "Caffe Bar Milano",
-        lat: 45.4278,
-        lng: 14.9111,
+        lat: 45.432485,
+        lng: 14.905419,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
@@ -324,8 +230,8 @@ const places = [
     {
         id: 7,
         name: "Caffe Bar Gold",
-        lat: 45.32495,
-        lng: 15.695158,
+        lat: 45.325111,
+        lng: 15.695395,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
@@ -337,8 +243,8 @@ const places = [
     {
         id: 8,
         name: "Magical Cavern",
-        lat: 50.0814,
-        lng: 14.4002,
+        lat: 50.081553,
+        lng: 14.400084,
         smoking: "No",
         music: "No",
         locals: "No",
@@ -350,8 +256,8 @@ const places = [
     {
         id: 9,
         name: "Birtija",
-        lat: 43.86155,
-        lng: 18.43528,
+        lat: 43.860294,
+        lng: 18.431862,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
@@ -363,8 +269,8 @@ const places = [
     {
         id: 10,
         name: "Lucky Bar",
-        lat: 45.5159,
-        lng: 9.8680,
+        lat: 45.514442,
+        lng: 9.869044,
         smoking: "No",
         music: "No",
         locals: "Yes",
@@ -376,8 +282,8 @@ const places = [
     {
         id: 11,
         name: "Sala Admiral",
-        lat: 45.40830,
-        lng: 9.93608,
+        lat: 45.409563,
+        lng: 9.934405,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
@@ -389,8 +295,8 @@ const places = [
     {
         id: 12,
         name: "Bar 10 Damijana Kodelija",
-        lat: 45.8836,
-        lng: 14.0230,
+        lat: 45.881229,
+        lng: 14.002382,
         smoking: "No",
         music: "No",
         locals: "Yes",
@@ -402,11 +308,9 @@ const places = [
 ];
 
 
-/*
-=========================================================
-INDEX ELEMENTS
-=========================================================
-*/
+/* =========================================================
+   INDEX ELEMENTS
+   ========================================================= */
 
 const indexList = document.getElementById("index-list");
 const indexButton = document.getElementById("index-button");
@@ -414,20 +318,16 @@ const indexPanel = document.getElementById("index-panel");
 const closeIndex = document.getElementById("close-index");
 
 
-/*
-=========================================================
-MARKER REFERENCES
-=========================================================
-*/
+/* =========================================================
+   MARKER REFERENCES
+   ========================================================= */
 
 const markerReferences = [];
 
 
-/*
-=========================================================
-CLOSE ALL OPEN TOOLTIPS
-=========================================================
-*/
+/* =========================================================
+   CLOSE ALL OPEN TOOLTIPS
+   ========================================================= */
 
 function closeAllTooltips() {
 
@@ -437,9 +337,7 @@ function closeAllTooltips() {
             reference.marker &&
             reference.marker.isTooltipOpen()
         ) {
-
             reference.marker.closeTooltip();
-
         }
 
     });
@@ -447,95 +345,16 @@ function closeAllTooltips() {
 }
 
 
-/*
-=========================================================
-FIND PLACE NEAR TOUCH
-=========================================================
-*/
-
-const TOUCH_RADIUS = 30;
-
-function findPlaceNearPoint(containerPoint) {
-
-    let closestReference = null;
-
-    let closestDistance = Infinity;
-
-
-    markerReferences.forEach(reference => {
-
-        const markerPoint =
-            map.latLngToContainerPoint([
-                reference.place.lat,
-                reference.place.lng
-            ]);
-
-
-        const dx =
-            markerPoint.x - containerPoint.x;
-
-        const dy =
-            markerPoint.y - containerPoint.y;
-
-
-        const distance =
-            Math.sqrt(
-                (dx * dx) +
-                (dy * dy)
-            );
-
-
-        if (
-            distance < TOUCH_RADIUS &&
-            distance < closestDistance
-        ) {
-
-            closestDistance = distance;
-
-            closestReference = reference;
-
-        }
-
-    });
-
-
-    return closestReference;
-}
-
-
-/*
-=========================================================
-OPEN PLACE TOOLTIP
-=========================================================
-*/
-
-function openPlaceTooltip(reference) {
-
-    if (!reference || !reference.marker) {
-        return;
-    }
-
-    closeAllTooltips();
-
-    reference.marker.openTooltip();
-
-}
-
-
-/*
-=========================================================
-CREATE MARKERS AND INDEX
-=========================================================
-*/
+/* =========================================================
+   CREATE MARKERS AND INDEX
+   ========================================================= */
 
 places.forEach(place => {
 
 
-    /*
-    =====================================================
-    VISIBLE DOT
-    =====================================================
-    */
+    /* =====================================================
+       VISIBLE DOT
+       ===================================================== */
 
     const visibleMarker = L.circleMarker(
         [place.lat, place.lng],
@@ -555,16 +374,14 @@ places.forEach(place => {
     ).addTo(map);
 
 
-    /*
-    =====================================================
-    INVISIBLE TOUCH MARKER
-    =====================================================
-    */
+    /* =====================================================
+       INVISIBLE TOUCH TARGET
+       ===================================================== */
 
     const marker = L.circleMarker(
         [place.lat, place.lng],
         {
-            radius: 16,
+            radius: 14,
 
             color: "#000000",
 
@@ -581,11 +398,9 @@ places.forEach(place => {
     ).addTo(map);
 
 
-    /*
-    =====================================================
-    TOOLTIP CONTENT
-    =====================================================
-    */
+    /* =====================================================
+       TOOLTIP CONTENT
+       ===================================================== */
 
     const popupContent = `
         <div class="place-popup">
@@ -636,16 +451,14 @@ places.forEach(place => {
     `;
 
 
-    /*
-    =====================================================
-    BIND TOOLTIP
-    =====================================================
-    */
+    /* =====================================================
+       BIND TOOLTIP
+       ===================================================== */
 
     marker.bindTooltip(
         popupContent,
         {
-            direction: "auto",
+            direction: "top",
 
             offset: [0, -10],
 
@@ -660,15 +473,48 @@ places.forEach(place => {
     );
 
 
-    /*
-    =====================================================
-    DESKTOP HOVER
-    =====================================================
-    */
+    /* =====================================================
+       DESKTOP HOVER
+       ===================================================== */
 
     marker.on("mouseover", () => {
 
         if (!L.Browser.touch) {
+            marker.openTooltip();
+        }
+
+    });
+
+
+    marker.on("mouseout", () => {
+
+        if (!L.Browser.touch) {
+            marker.closeTooltip();
+        }
+
+    });
+
+
+    /* =====================================================
+       CLICK / TAP
+       ===================================================== */
+
+    marker.on("click", event => {
+
+        if (event.originalEvent) {
+
+            event.originalEvent.preventDefault();
+
+            event.originalEvent.stopPropagation();
+
+        }
+
+
+        if (marker.isTooltipOpen()) {
+
+            marker.closeTooltip();
+
+        } else {
 
             closeAllTooltips();
 
@@ -679,22 +525,26 @@ places.forEach(place => {
     });
 
 
-    marker.on("mouseout", () => {
+    /* =====================================================
+       TOUCHSTART
+       ===================================================== */
 
-        if (!L.Browser.touch) {
+    marker.on("touchstart", event => {
 
-            marker.closeTooltip();
+        if (event.originalEvent) {
+
+            event.originalEvent.preventDefault();
+
+            event.originalEvent.stopPropagation();
 
         }
 
     });
 
 
-    /*
-    =====================================================
-    SAVE REFERENCE
-    =====================================================
-    */
+    /* =====================================================
+       SAVE REFERENCE
+       ===================================================== */
 
     markerReferences.push({
         place: place,
@@ -703,11 +553,9 @@ places.forEach(place => {
     });
 
 
-    /*
-    =====================================================
-    CREATE INDEX ITEM
-    =====================================================
-    */
+    /* =====================================================
+       CREATE INDEX ITEM
+       ===================================================== */
 
     const indexItem = document.createElement("button");
 
@@ -730,11 +578,9 @@ places.forEach(place => {
     `;
 
 
-    /*
-    =====================================================
-    INDEX → MAP
-    =====================================================
-    */
+    /* =====================================================
+       INDEX ITEM → MAP
+       ===================================================== */
 
     indexItem.addEventListener("click", event => {
 
@@ -742,10 +588,13 @@ places.forEach(place => {
 
         event.stopPropagation();
 
-        closeAllTooltips();
+
+        /* CLOSE INDEX IMMEDIATELY */
 
         indexPanel.classList.remove("open");
 
+
+        /* Tell Leaflet panel is gone */
 
         setTimeout(() => {
 
@@ -753,112 +602,76 @@ places.forEach(place => {
                 pan: false
             });
 
+        }, 50);
 
-            let tooltipOpened = false;
+
+        /* Close other tooltip */
+
+        closeAllTooltips();
 
 
-            const openTooltipAfterMove = () => {
+        let tooltipOpened = false;
 
-                if (tooltipOpened) {
-                    return;
-                }
+
+        const openTooltipAfterMove = () => {
+
+            if (tooltipOpened) {
+                return;
+            }
+
+            tooltipOpened = true;
+
+            map.off("moveend", openTooltipAfterMove);
+
+            marker.openTooltip();
+
+        };
+
+
+        map.once("moveend", openTooltipAfterMove);
+
+
+        /* Move to selected place */
+
+        map.setView(
+            [place.lat, place.lng],
+            8,
+            {
+                animate: true,
+                duration: 0.6
+            }
+        );
+
+
+        /* Safety fallback */
+
+        setTimeout(() => {
+
+            if (!tooltipOpened) {
 
                 tooltipOpened = true;
 
-                map.off(
-                    "moveend",
-                    openTooltipAfterMove
-                );
+                map.off("moveend", openTooltipAfterMove);
 
                 marker.openTooltip();
 
-            };
+            }
 
-
-            map.once(
-                "moveend",
-                openTooltipAfterMove
-            );
-
-
-            map.setView(
-                [place.lat, place.lng],
-                8,
-                {
-                    animate: true,
-                    duration: 0.6
-                }
-            );
-
-
-            setTimeout(() => {
-
-                if (!tooltipOpened) {
-
-                    tooltipOpened = true;
-
-                    map.off(
-                        "moveend",
-                        openTooltipAfterMove
-                    );
-
-                    marker.openTooltip();
-
-                }
-
-            }, 900);
-
-        }, 250);
+        }, 900);
 
     });
 
+
+    /* Add item to INDEX */
 
     indexList.appendChild(indexItem);
 
 });
 
 
-/*
-=========================================================
-MOBILE TAP ON MAP
-=========================================================
-*/
-
-map.on("click", event => {
-
-    const containerPoint =
-        map.latLngToContainerPoint(
-            event.latlng
-        );
-
-
-    const nearbyPlace =
-        findPlaceNearPoint(
-            containerPoint
-        );
-
-
-    if (nearbyPlace) {
-
-        openPlaceTooltip(
-            nearbyPlace
-        );
-
-        return;
-
-    }
-
-
-    closeAllTooltips();
-
-});
-
-
-/*
-=========================================================
-OPEN INDEX
-=========================================================
-*/
+/* =========================================================
+   OPEN INDEX
+   ========================================================= */
 
 indexButton.addEventListener("click", event => {
 
@@ -868,23 +681,12 @@ indexButton.addEventListener("click", event => {
 
     indexPanel.classList.add("open");
 
-
-    setTimeout(() => {
-
-        map.invalidateSize({
-            pan: false
-        });
-
-    }, 250);
-
 });
 
 
-/*
-=========================================================
-CLOSE INDEX
-=========================================================
-*/
+/* =========================================================
+   CLOSE INDEX
+   ========================================================= */
 
 closeIndex.addEventListener("click", event => {
 
@@ -894,26 +696,14 @@ closeIndex.addEventListener("click", event => {
 
     indexPanel.classList.remove("open");
 
-
-    setTimeout(() => {
-
-        map.invalidateSize({
-            pan: false
-        });
-
-    }, 250);
-
 });
 
 
-/*
-=========================================================
-ENTER THE MAP
-=========================================================
-*/
+/* =========================================================
+   ENTER THE MAP
+   ========================================================= */
 
-const enterMapButton =
-    document.getElementById("enter-map");
+const enterMapButton = document.getElementById("enter-map");
 
 enterMapButton.addEventListener("click", event => {
 
@@ -921,36 +711,19 @@ enterMapButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
-
     document.getElementById("map").scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
 
-
-    setTimeout(() => {
-
-        document.body.classList.add("map-active");
-
-        map.invalidateSize({
-            pan: false
-        });
-
-        fitWorldToScreen();
-
-    }, 700);
-
 });
 
 
-/*
-=========================================================
-RETURN HOME
-=========================================================
-*/
+/* =========================================================
+   RETURN HOME
+   ========================================================= */
 
-const homeButton =
-    document.getElementById("home-button");
+const homeButton = document.getElementById("home-button");
 
 homeButton.addEventListener("click", event => {
 
@@ -962,8 +735,6 @@ homeButton.addEventListener("click", event => {
 
     closeAllTooltips();
 
-    document.body.classList.remove("map-active");
-
     document.getElementById("home").scrollIntoView({
         behavior: "smooth",
         block: "start"
@@ -972,11 +743,9 @@ homeButton.addEventListener("click", event => {
 });
 
 
-/*
-=========================================================
-ESCAPE → CLOSE INDEX
-=========================================================
-*/
+/* =========================================================
+   ESCAPE → CLOSE INDEX
+   ========================================================= */
 
 document.addEventListener("keydown", event => {
 
@@ -989,11 +758,34 @@ document.addEventListener("keydown", event => {
 });
 
 
-/*
-=========================================================
-FINAL MAP REFRESH
-=========================================================
-*/
+/* =========================================================
+   CLICK EMPTY MAP → CLOSE TOOLTIP
+   ========================================================= */
+
+map.on("click", event => {
+
+    /*
+     * If the click was on a marker, don't close it.
+     */
+
+    if (
+        event.originalEvent &&
+        event.originalEvent.target &&
+        event.originalEvent.target.closest &&
+        event.originalEvent.target.closest(".leaflet-interactive")
+    ) {
+        return;
+    }
+
+
+    closeAllTooltips();
+
+});
+
+
+/* =========================================================
+   FINAL MAP REFRESH
+   ========================================================= */
 
 window.addEventListener("load", () => {
 
@@ -1002,8 +794,6 @@ window.addEventListener("load", () => {
         map.invalidateSize({
             pan: false
         });
-
-        fitWorldToScreen();
 
     }, 300);
 
