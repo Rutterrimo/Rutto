@@ -20,13 +20,6 @@ body {
     overflow-x: hidden;
 }
 
-
-/*
-=========================================================
-MAP ACTIVE
-=========================================================
-*/
-
 body.map-active {
     overflow: hidden;
 }
@@ -149,6 +142,48 @@ LEAFLET
     font-family: Arial, Helvetica, sans-serif;
 }
 
+
+/*
+=========================================================
+REMOVE MOBILE FOCUS / ORANGE OUTLINE
+=========================================================
+*/
+
+.leaflet-interactive,
+.leaflet-interactive:focus,
+.leaflet-interactive:active {
+    outline: none !important;
+}
+
+.leaflet-container:focus {
+    outline: none !important;
+}
+
+.leaflet-container svg {
+    outline: none !important;
+}
+
+.leaflet-container path {
+    outline: none !important;
+}
+
+
+/*
+Remove tap highlight on WebKit browsers.
+*/
+
+.leaflet-container,
+.leaflet-container * {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/*
+=========================================================
+ZOOM CONTROLS
+=========================================================
+*/
+
 .leaflet-control-zoom {
     margin-bottom: 12px !important;
     margin-left: 12px !important;
@@ -167,6 +202,8 @@ LEAFLET
     font-size: 14px !important;
 
     -webkit-tap-highlight-color: transparent;
+
+    outline: none !important;
 }
 
 
@@ -330,6 +367,13 @@ HOME + INDEX BUTTONS
 #index-button:hover {
     background: #171717;
     color: #e8e6df;
+}
+
+#home-button:focus,
+#index-button:focus,
+#close-index:focus,
+.index-item:focus {
+    outline: none;
 }
 
 
@@ -535,10 +579,6 @@ MOBILE
     #index-button {
         right: 12px;
     }
-
-    /*
-    INDEX remains a side panel on mobile.
-    */
 
     #index-panel {
         width: min(330px, 86vw);
