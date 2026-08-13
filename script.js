@@ -29,18 +29,15 @@ const map = L.map("map-container", {
         [85, 180]
     ],
 
-    maxBoundsViscosity: 1,
+    maxBoundsViscosity: 1.0,
 
     zoomControl: false,
 
-    touchZoom: true,
+    tap: true,
 
-    tap: true
+    touchZoom: true
 
-}).setView(
-    [20, 0],
-    2
-);
+}).setView([20, 0], 2);
 
 
 /* =========================================================
@@ -68,51 +65,45 @@ L.tileLayer(
 
 
 /* =========================================================
-   MAP SIZING
+   KEEP WORLD FILLED WITH SCREEN
    ========================================================= */
 
 function fitWorldToScreen() {
 
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const worldWidth = 360;
+    const worldHeight = 170;
+
+    const zoomX =
+        Math.log2(width / worldWidth);
+
+    const zoomY =
+        Math.log2(height / worldHeight);
+
+    const idealZoom = Math.max(
+        2,
+        Math.ceil(
+            Math.max(
+                zoomX,
+                zoomY
+            )
+        )
+    );
+
+    map.setMinZoom(idealZoom);
+
+    map.setZoom(
+        idealZoom,
+        {
+            animate: false
+        }
+    );
+
     map.invalidateSize({
         pan: false
     });
-
-
-    /*
-     * Leaflet itself is much better at calculating
-     * the actual world scale than our previous
-     * width / 360 and height / 170 approximation.
-     *
-     * We only make sure the map starts at a useful
-     * world view and remains inside its limits.
-     */
-
-    const size = map.getSize();
-
-    if (
-        !size ||
-        size.x <= 0 ||
-        size.y <= 0
-    ) {
-        return;
-    }
-
-
-    const currentZoom = map.getZoom();
-
-
-    if (
-        !Number.isFinite(currentZoom) ||
-        currentZoom < 2
-    ) {
-        map.setZoom(
-            2,
-            {
-                animate: false
-            }
-        );
-    }
-
 }
 
 
@@ -120,42 +111,38 @@ function fitWorldToScreen() {
    INITIAL MAP SIZING
    ========================================================= */
 
-window.addEventListener(
-    "load",
-    () => {
+setTimeout(() => {
 
-        setTimeout(() => {
+    map.invalidateSize({
+        pan: false
+    });
 
-            fitWorldToScreen();
+    fitWorldToScreen();
 
-        }, 150);
-
-    }
-);
+}, 100);
 
 
 /* =========================================================
    RESIZE
    ========================================================= */
 
-let resizeTimer = null;
+let resizeTimer;
 
+window.addEventListener("resize", () => {
 
-window.addEventListener(
-    "resize",
-    () => {
+    clearTimeout(resizeTimer);
 
-        clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
 
+        map.invalidateSize({
+            pan: false
+        });
 
-        resizeTimer = setTimeout(() => {
+        fitWorldToScreen();
 
-            fitWorldToScreen();
+    }, 200);
 
-        }, 150);
-
-    }
-);
+});
 
 
 /* =========================================================
@@ -167,6 +154,10 @@ window.addEventListener(
     () => {
 
         setTimeout(() => {
+
+            map.invalidateSize({
+                pan: false
+            });
 
             fitWorldToScreen();
 
@@ -438,27 +429,16 @@ const places = [
    ========================================================= */
 
 const indexList =
-    document.getElementById(
-        "index-list"
-    );
-
+    document.getElementById("index-list");
 
 const indexButton =
-    document.getElementById(
-        "index-button"
-    );
-
+    document.getElementById("index-button");
 
 const indexPanel =
-    document.getElementById(
-        "index-panel"
-    );
-
+    document.getElementById("index-panel");
 
 const closeIndex =
-    document.getElementById(
-        "close-index"
-    );
+    document.getElementById("close-index");
 
 
 /* =========================================================
@@ -469,7 +449,7 @@ const markerReferences = [];
 
 
 /* =========================================================
-   CLOSE ALL TOOLTIPS
+   CLOSE ALL OPEN TOOLTIPS
    ========================================================= */
 
 function closeAllTooltips() {
@@ -486,613 +466,356 @@ function closeAllTooltips() {
 
         }
     );
-
 }
 
 
 /* =========================================================
-   REMOVE SVG FOCUS
+   CREATE MARKERS AND INDEX
    ========================================================= */
 
-function removeMarkerFocus(marker) {
+places.forEach(place => {
 
-    const element =
-        marker.getElement();
 
-    if (!element) {
-        return;
-    }
+    /* =====================================================
+       VISIBLE DOT
+       ===================================================== */
 
+    const visibleMarker =
+        L.circleMarker(
+            [place.lat, place.lng],
+            {
+                radius: 3,
 
-    /*
-     * This is important on mobile.
-     *
-     * Leaflet's interactive SVG path can become
-     * focusable. Some browsers then draw a focus
-     * rectangle/ring around it.
-     *
-     * The marker remains clickable without tabindex.
-     */
+                color: "#3a3a38",
 
-    element.removeAttribute(
-        "tabindex"
-    );
+                fillColor: "#3a3a38",
 
-    element.removeAttribute(
-        "focusable"
-    );
+                fillOpacity: 1,
 
-    element.style.outline =
-        "none";
+                weight: 0,
 
-}
+                interactive: false
+            }
+        ).addTo(map);
 
 
-/* =========================================================
-   OPEN / CLOSE MARKER TOOLTIP
-   ========================================================= */
+    /* =====================================================
+       INVISIBLE TOUCH TARGET
+       ===================================================== */
 
-function toggleTooltip(marker) {
+    const marker =
+        L.circleMarker(
+            [place.lat, place.lng],
+            {
+                radius: 14,
 
-    if (
-        marker.isTooltipOpen()
-    ) {
+                color: "#000000",
 
-        marker.closeTooltip();
+                opacity: 0,
 
-        return;
+                fillColor: "#000000",
 
-    }
+                fillOpacity: 0,
 
+                weight: 0,
 
-    closeAllTooltips();
+                interactive: true
+            }
+        ).addTo(map);
 
-    marker.openTooltip();
 
-}
+    /* =====================================================
+       TOOLTIP CONTENT
+       ===================================================== */
 
+    const popupContent = `
+        <div class="place-popup">
 
-/* =========================================================
-   CREATE MARKERS + INDEX
-   ========================================================= */
+            <h3>${place.name}</h3>
 
-places.forEach(
-    place => {
+            <div class="categories">
 
-
-        /* =================================================
-           VISIBLE BLACK DOT
-           ================================================= */
-
-        const visibleMarker =
-            L.circleMarker(
-                [
-                    place.lat,
-                    place.lng
-                ],
-                {
-
-                    radius: 3,
-
-                    color: "#3a3a38",
-
-                    fillColor: "#3a3a38",
-
-                    fillOpacity: 1,
-
-                    weight: 0,
-
-                    interactive: false
-
-                }
-            ).addTo(map);
-
-
-        /* =================================================
-           INVISIBLE TOUCH TARGET
-           ================================================= */
-
-        const marker =
-            L.circleMarker(
-                [
-                    place.lat,
-                    place.lng
-                ],
-                {
-
-                    /*
-                     * Large enough for a finger.
-                     */
-
-                    radius: 18,
-
-                    color: "#171717",
-
-                    opacity: 0,
-
-                    fillColor: "#171717",
-
-                    fillOpacity: 0,
-
-                    weight: 0,
-
-                    stroke: false,
-
-                    interactive: true,
-
-                    bubblingMouseEvents: false
-
-                }
-            ).addTo(map);
-
-
-        /*
-         * Immediately remove possible focusability.
-         */
-
-        removeMarkerFocus(marker);
-
-
-        /* =================================================
-           TOOLTIP CONTENT
-           ================================================= */
-
-        const popupContent = `
-
-            <div class="place-popup">
-
-                <h3>
-                    ${place.name}
-                </h3>
-
-
-                <div class="categories">
-
-                    <div>
-                        <span>
-                            SMOKING INDOORS
-                        </span>
-
-                        <strong>
-                            ${place.smoking}
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>
-                            SPONTANEOUS MUSIC
-                        </span>
-
-                        <strong>
-                            ${place.music}
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>
-                            LOCALS
-                        </span>
-
-                        <strong>
-                            ${place.locals}
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>
-                            GAMBLING
-                        </span>
-
-                        <strong>
-                            ${place.gambling}
-                        </strong>
-                    </div>
-
+                <div>
+                    <span>SMOKING INDOORS</span>
+                    <strong>${place.smoking}</strong>
                 </div>
 
-
-                <div class="popup-section">
-
-                    <span>
-                        TOILETS
-                    </span>
-
-                    <p>
-                        ${place.toilets}
-                    </p>
-
+                <div>
+                    <span>SPONTANEOUS MUSIC</span>
+                    <strong>${place.music}</strong>
                 </div>
 
+                <div>
+                    <span>LOCALS</span>
+                    <strong>${place.locals}</strong>
+                </div>
 
-                <div class="popup-section">
-
-                    <span>
-                        NOTES
-                    </span>
-
-                    <p>
-                        ${place.notes || ""}
-                    </p>
-
+                <div>
+                    <span>GAMBLING</span>
+                    <strong>${place.gambling}</strong>
                 </div>
 
             </div>
 
-        `;
+
+            <div class="popup-section">
+
+                <span>TOILETS</span>
+
+                <p>${place.toilets}</p>
+
+            </div>
 
 
-        /* =================================================
-           TOOLTIP
-           ================================================= */
+            <div class="popup-section">
 
-        marker.bindTooltip(
-            popupContent,
-            {
+                <span>NOTES</span>
 
-                direction: "top",
+                <p>${place.notes || ""}</p>
 
-                offset: [
-                    0,
-                    -10
-                ],
+            </div>
 
-                opacity: 1,
-
-                className:
-                    "rutto-tooltip",
-
-                interactive: true,
-
-                permanent: false,
-
-                /*
-                 * Do not steal focus.
-                 */
-
-                autoPan: false
-
-            }
-        );
+        </div>
+    `;
 
 
-        /* =================================================
-           DESKTOP HOVER
-           ================================================= */
+    /* =====================================================
+       BIND TOOLTIP
+       ===================================================== */
 
-        marker.on(
-            "mouseover",
-            () => {
+    marker.bindTooltip(
+        popupContent,
+        {
+            direction: "top",
 
-                /*
-                 * Only desktop gets true hover.
-                 *
-                 * On phones there is no hover,
-                 * so mobile uses click/tap below.
-                 */
+            offset: [0, -10],
 
-                if (
-                    !L.Browser.touch
-                ) {
+            opacity: 1,
+
+            className: "rutto-tooltip",
+
+            interactive: true,
+
+            permanent: false
+        }
+    );
+
+
+    /* =====================================================
+       DESKTOP HOVER
+       ===================================================== */
+
+    marker.on("mouseover", () => {
+
+        if (!L.Browser.touch) {
+
+            closeAllTooltips();
+
+            marker.openTooltip();
+
+        }
+
+    });
+
+
+    marker.on("mouseout", () => {
+
+        if (!L.Browser.touch) {
+
+            marker.closeTooltip();
+
+        }
+
+    });
+
+
+    /* =====================================================
+       CLICK / TAP
+       =====================================================
+
+       IMPORTANT:
+
+       We deliberately DO NOT use touchstart + preventDefault.
+
+       On mobile Leaflet converts the tap into a click.
+       Blocking touchstart was preventing that behaviour.
+       ===================================================== */
+
+    marker.on("click", event => {
+
+        if (event.originalEvent) {
+
+            event.originalEvent.stopPropagation();
+
+        }
+
+
+        if (marker.isTooltipOpen()) {
+
+            marker.closeTooltip();
+
+        } else {
+
+            closeAllTooltips();
+
+            marker.openTooltip();
+
+        }
+
+    });
+
+
+    /* =====================================================
+       SAVE REFERENCE
+       ===================================================== */
+
+    markerReferences.push({
+
+        place: place,
+
+        marker: marker,
+
+        visibleMarker: visibleMarker
+
+    });
+
+
+    /* =====================================================
+       CREATE INDEX ITEM
+       ===================================================== */
+
+    const indexItem =
+        document.createElement("button");
+
+    indexItem.type = "button";
+
+    indexItem.className = "index-item";
+
+
+    indexItem.innerHTML = `
+        <span class="index-number">
+            ${String(place.id).padStart(2, "0")}
+        </span>
+
+        <span class="index-name">
+            ${place.name}
+        </span>
+
+        <span class="index-coordinates">
+            ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
+        </span>
+
+        <span class="index-visited">
+            VISITED · ${place.visitedDate} · ${place.visitedTime}
+        </span>
+    `;
+
+
+    /* =====================================================
+       INDEX ITEM → MAP
+       ===================================================== */
+
+    indexItem.addEventListener(
+        "click",
+        event => {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            /* CLOSE INDEX */
+
+            indexPanel.classList.remove("open");
+
+
+            /* REFRESH LEAFLET */
+
+            setTimeout(() => {
+
+                map.invalidateSize({
+                    pan: false
+                });
+
+            }, 50);
+
+
+            /* CLOSE OTHER TOOLTIPS */
+
+            closeAllTooltips();
+
+
+            let tooltipOpened = false;
+
+
+            /* OPEN TOOLTIP AFTER MAP MOVEMENT */
+
+            const openTooltipAfterMove =
+                () => {
+
+                    if (tooltipOpened) {
+                        return;
+                    }
+
+                    tooltipOpened = true;
+
+                    map.off(
+                        "moveend",
+                        openTooltipAfterMove
+                    );
+
+                    marker.openTooltip();
+
+                };
+
+
+            map.once(
+                "moveend",
+                openTooltipAfterMove
+            );
+
+
+            /* MOVE TO PLACE */
+
+            map.setView(
+                [place.lat, place.lng],
+                8,
+                {
+                    animate: true,
+
+                    duration: 0.6
+                }
+            );
+
+
+            /* SAFETY FALLBACK */
+
+            setTimeout(() => {
+
+                if (!tooltipOpened) {
+
+                    tooltipOpened = true;
+
+                    map.off(
+                        "moveend",
+                        openTooltipAfterMove
+                    );
 
                     marker.openTooltip();
 
                 }
 
-            }
-        );
+            }, 900);
 
-
-        marker.on(
-            "mouseout",
-            () => {
-
-                if (
-                    !L.Browser.touch
-                ) {
-
-                    marker.closeTooltip();
-
-                }
-
-            }
-        );
-
-
-        /* =================================================
-           CLICK / TAP
-           ================================================= */
-
-        marker.on(
-            "click",
-            event => {
-
-                /*
-                 * Stop the map itself from receiving
-                 * this click.
-                 */
-
-                if (
-                    event.originalEvent
-                ) {
-
-                    L.DomEvent.stopPropagation(
-                        event.originalEvent
-                    );
-
-                }
-
-
-                toggleTooltip(
-                    marker
-                );
-
-
-                /*
-                 * Make absolutely sure the SVG path
-                 * does not remain focused after tap.
-                 */
-
-                setTimeout(
-                    () => {
-
-                        removeMarkerFocus(
-                            marker
-                        );
-
-                    },
-                    0
-                );
-
-            }
-        );
-
-
-        /* =================================================
-           TOOLTIP OPEN
-           ================================================= */
-
-        marker.on(
-            "tooltipopen",
-            () => {
-
-                removeMarkerFocus(
-                    marker
-                );
-
-            }
-        );
-
-
-        /* =================================================
-           SAVE REFERENCE
-           ================================================= */
-
-        markerReferences.push({
-
-            place: place,
-
-            marker: marker,
-
-            visibleMarker:
-                visibleMarker
-
-        });
-
-
-        /* =================================================
-           CREATE INDEX ITEM
-           ================================================= */
-
-        const indexItem =
-            document.createElement(
-                "button"
-            );
-
-
-        indexItem.type =
-            "button";
-
-
-        indexItem.className =
-            "index-item";
-
-
-        indexItem.innerHTML = `
-
-            <span class="index-number">
-                ${String(place.id).padStart(2, "0")}
-            </span>
-
-
-            <span class="index-name">
-                ${place.name}
-            </span>
-
-
-            <span class="index-coordinates">
-                ${place.lat.toFixed(4)},
-                ${place.lng.toFixed(4)}
-            </span>
-
-
-            <span class="index-visited">
-                VISITED ·
-                ${place.visitedDate}
-                ·
-                ${place.visitedTime}
-            </span>
-
-        `;
-
-
-        /* =================================================
-           INDEX ITEM → MAP
-           ================================================= */
-
-        indexItem.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-
-                /*
-                 * Close index.
-                 */
-
-                closeIndexPanel();
-
-
-                /*
-                 * Close existing tooltips.
-                 */
-
-                closeAllTooltips();
-
-
-                let tooltipOpened =
-                    false;
-
-
-                const openTooltipAfterMove =
-                    () => {
-
-                        if (
-                            tooltipOpened
-                        ) {
-                            return;
-                        }
-
-
-                        tooltipOpened =
-                            true;
-
-
-                        map.off(
-                            "moveend",
-                            openTooltipAfterMove
-                        );
-
-
-                        marker.openTooltip();
-
-                        removeMarkerFocus(
-                            marker
-                        );
-
-                    };
-
-
-                map.once(
-                    "moveend",
-                    openTooltipAfterMove
-                );
-
-
-                /*
-                 * Move map to place.
-                 */
-
-                map.setView(
-                    [
-                        place.lat,
-                        place.lng
-                    ],
-                    8,
-                    {
-
-                        animate: true,
-
-                        duration: 0.6
-
-                    }
-                );
-
-
-                /*
-                 * Safety fallback.
-                 */
-
-                setTimeout(
-                    () => {
-
-                        if (
-                            !tooltipOpened
-                        ) {
-
-                            tooltipOpened =
-                                true;
-
-
-                            map.off(
-                                "moveend",
-                                openTooltipAfterMove
-                            );
-
-
-                            marker.openTooltip();
-
-                            removeMarkerFocus(
-                                marker
-                            );
-
-                        }
-
-                    },
-                    900
-                );
-
-            }
-        );
-
-
-        /* =================================================
-           ADD ITEM
-           ================================================= */
-
-        indexList.appendChild(
-            indexItem
-        );
-
-    }
-);
-
-
-/* =========================================================
-   INDEX OPEN / CLOSE
-   ========================================================= */
-
-function openIndexPanel() {
-
-    indexPanel.classList.add(
-        "open"
+        }
     );
 
-    indexPanel.setAttribute(
-        "aria-hidden",
-        "false"
-    );
 
-}
+    /* ADD TO INDEX */
 
+    indexList.appendChild(indexItem);
 
-function closeIndexPanel() {
-
-    indexPanel.classList.remove(
-        "open"
-    );
-
-    indexPanel.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-}
+});
 
 
 /* =========================================================
@@ -1107,7 +830,7 @@ indexButton.addEventListener(
 
         event.stopPropagation();
 
-        openIndexPanel();
+        indexPanel.classList.add("open");
 
     }
 );
@@ -1125,21 +848,18 @@ closeIndex.addEventListener(
 
         event.stopPropagation();
 
-        closeIndexPanel();
+        indexPanel.classList.remove("open");
 
     }
 );
 
 
 /* =========================================================
-   ENTER MAP
+   ENTER THE MAP
    ========================================================= */
 
 const enterMapButton =
-    document.getElementById(
-        "enter-map"
-    );
-
+    document.getElementById("enter-map");
 
 enterMapButton.addEventListener(
     "click",
@@ -1149,15 +869,11 @@ enterMapButton.addEventListener(
 
         event.stopPropagation();
 
-
         document
             .getElementById("map")
             .scrollIntoView({
-
                 behavior: "smooth",
-
                 block: "start"
-
             });
 
     }
@@ -1165,14 +881,11 @@ enterMapButton.addEventListener(
 
 
 /* =========================================================
-   HOME
+   RETURN HOME
    ========================================================= */
 
 const homeButton =
-    document.getElementById(
-        "home-button"
-    );
-
+    document.getElementById("home-button");
 
 homeButton.addEventListener(
     "click",
@@ -1182,20 +895,15 @@ homeButton.addEventListener(
 
         event.stopPropagation();
 
-
-        closeIndexPanel();
+        indexPanel.classList.remove("open");
 
         closeAllTooltips();
-
 
         document
             .getElementById("home")
             .scrollIntoView({
-
                 behavior: "smooth",
-
                 block: "start"
-
             });
 
     }
@@ -1203,20 +911,16 @@ homeButton.addEventListener(
 
 
 /* =========================================================
-   ESCAPE
+   ESCAPE → CLOSE INDEX
    ========================================================= */
 
 document.addEventListener(
     "keydown",
     event => {
 
-        if (
-            event.key === "Escape"
-        ) {
+        if (event.key === "Escape") {
 
-            closeIndexPanel();
-
-            closeAllTooltips();
+            indexPanel.classList.remove("open");
 
         }
 
@@ -1225,31 +929,25 @@ document.addEventListener(
 
 
 /* =========================================================
-   EMPTY MAP CLICK
+   CLICK EMPTY MAP → CLOSE TOOLTIP
    ========================================================= */
 
-map.on(
-    "click",
-    event => {
+map.on("click", event => {
 
-        if (
-            event.originalEvent &&
-            event.originalEvent.target &&
-            event.originalEvent.target.closest &&
-            event.originalEvent.target.closest(
-                ".leaflet-interactive"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        closeAllTooltips();
-
+    if (
+        event.originalEvent &&
+        event.originalEvent.target &&
+        event.originalEvent.target.closest &&
+        event.originalEvent.target.closest(
+            ".leaflet-interactive"
+        )
+    ) {
+        return;
     }
-);
+
+    closeAllTooltips();
+
+});
 
 
 /* =========================================================
@@ -1260,16 +958,13 @@ window.addEventListener(
     "load",
     () => {
 
-        setTimeout(
-            () => {
+        setTimeout(() => {
 
-                map.invalidateSize({
-                    pan: false
-                });
+            map.invalidateSize({
+                pan: false
+            });
 
-            },
-            300
-        );
+        }, 300);
 
     }
 );
