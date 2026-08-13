@@ -27,11 +27,13 @@
         href="https://rutterrimo.github.io/Rutto/"
     >
 
+    <!-- Leaflet -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     >
 
+    <!-- Site CSS -->
     <link
         rel="stylesheet"
         href="style.css"
@@ -41,6 +43,10 @@
 
 
 <body>
+
+    <!-- =====================================================
+         INTRO
+         ===================================================== -->
 
     <main
         class="intro"
@@ -68,8 +74,13 @@
     </main>
 
 
+    <!-- =====================================================
+         MAP
+         ===================================================== -->
+
     <section id="map">
 
+        <!-- HOME -->
         <button
             id="home-button"
             type="button"
@@ -77,6 +88,8 @@
             HOME
         </button>
 
+
+        <!-- INDEX -->
         <button
             id="index-button"
             type="button"
@@ -84,6 +97,10 @@
             INDEX
         </button>
 
+
+        <!-- =================================================
+             INDEX PANEL
+             ================================================= -->
 
         <aside
             id="index-panel"
@@ -108,14 +125,27 @@
         </aside>
 
 
+        <!-- =================================================
+             MAP CONTAINER
+             ================================================= -->
+
         <div id="map-container"></div>
 
     </section>
 
 
+    <!-- =====================================================
+         LEAFLET
+         ===================================================== -->
+
     <script
         src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     ></script>
+
+
+    <!-- =====================================================
+         SITE JS
+         ===================================================== -->
 
     <script src="script.js"></script>
 
