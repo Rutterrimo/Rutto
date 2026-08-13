@@ -20,12 +20,7 @@ const map = L.map("map-container", {
 
     worldCopyJump: false,
 
-    /*
-    Zoom 1 allows the entire world to remain visible even
-    on narrow mobile screens.
-    */
-
-    minZoom: 1,
+    minZoom: 2,
 
     maxZoom: 18,
 
@@ -38,7 +33,15 @@ const map = L.map("map-container", {
 
     zoomControl: false,
 
-    touchZoom: true
+    /*
+    Leaflet handles taps/clicks on touch devices.
+    */
+
+    tap: true,
+
+    touchZoom: true,
+
+    doubleClickZoom: true
 
 }).setView([20, 0], 2);
 
@@ -68,65 +71,67 @@ L.tileLayer(
 
 
 /* =========================================================
-   INITIAL WORLD VIEW
+   KEEP WORLD FILLED WITH SCREEN
    ========================================================= */
 
-/*
-Leaflet calculates the correct zoom based on the actual
-size of the screen instead of trying to calculate it from
-degrees and pixels manually.
-*/
-
 function fitWorldToScreen() {
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const worldWidth = 360;
+    const worldHeight = 170;
+
+    const zoomX = Math.log2(width / worldWidth);
+    const zoomY = Math.log2(height / worldHeight);
+
+    const idealZoom = Math.max(
+        2,
+        Math.ceil(Math.max(zoomX, zoomY))
+    );
+
+    map.setMinZoom(idealZoom);
+
+    map.setZoom(idealZoom, {
+        animate: false
+    });
+
+    map.invalidateSize({
+        pan: false
+    });
+}
+
+
+/* =========================================================
+   INITIAL MAP SIZING
+   ========================================================= */
+
+setTimeout(() => {
 
     map.invalidateSize({
         pan: false
     });
 
-
-    const worldBounds = L.latLngBounds(
-        [-60, -180],
-        [60, 180]
-    );
-
-
-    map.fitBounds(
-        worldBounds,
-        {
-            padding: [0, 0],
-
-            animate: false,
-
-            maxZoom: 2
-        }
-    );
-}
-
-
-/*
-Initial sizing after the browser has created the map.
-*/
-
-setTimeout(() => {
-
     fitWorldToScreen();
 
-}, 100);
+}, 150);
 
 
 /* =========================================================
    RESIZE
    ========================================================= */
 
-let resizeTimer = null;
-
+let resizeTimer;
 
 window.addEventListener("resize", () => {
 
     clearTimeout(resizeTimer);
 
-
     resizeTimer = setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
 
         fitWorldToScreen();
 
@@ -142,6 +147,10 @@ window.addEventListener("resize", () => {
 window.addEventListener("orientationchange", () => {
 
     setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
 
         fitWorldToScreen();
 
@@ -402,13 +411,17 @@ const places = [
    INDEX ELEMENTS
    ========================================================= */
 
-const indexList = document.getElementById("index-list");
+const indexList =
+    document.getElementById("index-list");
 
-const indexButton = document.getElementById("index-button");
+const indexButton =
+    document.getElementById("index-button");
 
-const indexPanel = document.getElementById("index-panel");
+const indexPanel =
+    document.getElementById("index-panel");
 
-const closeIndex = document.getElementById("close-index");
+const closeIndex =
+    document.getElementById("close-index");
 
 
 /* =========================================================
@@ -419,7 +432,7 @@ const markerReferences = [];
 
 
 /* =========================================================
-   CLOSE ALL OPEN TOOLTIPS
+   CLOSE ALL TOOLTIPS
    ========================================================= */
 
 function closeAllTooltips() {
@@ -435,6 +448,25 @@ function closeAllTooltips() {
 
     });
 
+}
+
+
+/* =========================================================
+   OPEN / TOGGLE TOOLTIP
+   ========================================================= */
+
+function toggleMarkerTooltip(marker) {
+
+    if (marker.isTooltipOpen()) {
+
+        marker.closeTooltip();
+
+        return;
+    }
+
+    closeAllTooltips();
+
+    marker.openTooltip();
 }
 
 
@@ -471,17 +503,17 @@ places.forEach(place => {
        INVISIBLE TOUCH TARGET
        ===================================================== */
 
-    /*
-    The visible dot stays tiny and elegant.
-
-    This second marker is invisible but gives the user a
-    much larger area to tap on mobile.
-    */
-
     const marker = L.circleMarker(
         [place.lat, place.lng],
         {
-            radius: 14,
+            /*
+            Larger invisible hit area.
+
+            The user still sees only the 3px dot,
+            but has a comfortable touch target.
+            */
+
+            radius: 16,
 
             color: "#000000",
 
@@ -493,7 +525,9 @@ places.forEach(place => {
 
             weight: 0,
 
-            interactive: true
+            interactive: true,
+
+            bubblingMouseEvents: false
         }
     ).addTo(map);
 
@@ -568,9 +602,21 @@ places.forEach(place => {
 
             className: "rutto-tooltip",
 
+            /*
+            Keep tooltip interactive so the user can
+            touch/read it without it immediately disappearing.
+            */
+
             interactive: true,
 
-            permanent: false
+            permanent: false,
+
+            /*
+            Let Leaflet choose left/right when necessary.
+            This is particularly useful near mobile edges.
+            */
+
+            direction: "auto"
         }
     );
 
@@ -582,8 +628,6 @@ places.forEach(place => {
     marker.on("mouseover", () => {
 
         if (!L.Browser.touch) {
-
-            closeAllTooltips();
 
             marker.openTooltip();
 
@@ -607,40 +651,42 @@ places.forEach(place => {
        CLICK / TAP
        ===================================================== */
 
-    /*
-    Important:
-
-    There is deliberately NO touchstart + preventDefault here.
-
-    Leaflet turns a normal mobile tap into the marker click
-    event. This keeps tapping reliable on iPhone and Android
-    and avoids the orange/active browser feedback.
-    */
-
     marker.on("click", event => {
+
+        /*
+        IMPORTANT:
+
+        Do NOT call preventDefault() here.
+
+        Leaflet already converts a valid mobile tap
+        into a layer click event. Blocking the original
+        browser event was one of the things making the
+        mobile behaviour unreliable.
+        */
 
         if (event.originalEvent) {
 
-            event.originalEvent.preventDefault();
-
-            event.originalEvent.stopPropagation();
-
-        }
-
-
-        if (marker.isTooltipOpen()) {
-
-            marker.closeTooltip();
-
-        } else {
-
-            closeAllTooltips();
-
-            marker.openTooltip();
+            L.DomEvent.stopPropagation(
+                event.originalEvent
+            );
 
         }
+
+        toggleMarkerTooltip(marker);
 
     });
+
+
+    /* =====================================================
+       TOUCH START
+       ===================================================== */
+
+    /*
+    We intentionally do NOT preventDefault() here.
+
+    This lets Leaflet handle touch gestures normally,
+    including map movement and tap detection.
+    */
 
 
     /* =====================================================
@@ -648,11 +694,13 @@ places.forEach(place => {
        ===================================================== */
 
     markerReferences.push({
+
         place: place,
 
         marker: marker,
 
         visibleMarker: visibleMarker
+
     });
 
 
@@ -660,7 +708,8 @@ places.forEach(place => {
        CREATE INDEX ITEM
        ===================================================== */
 
-    const indexItem = document.createElement("button");
+    const indexItem =
+        document.createElement("button");
 
     indexItem.type = "button";
 
@@ -699,10 +748,21 @@ places.forEach(place => {
 
         /* CLOSE INDEX */
 
-        closeIndexPanel();
+        indexPanel.classList.remove("open");
 
 
-        /* CLOSE OTHER TOOLTIPS */
+        /* Refresh Leaflet after panel closes */
+
+        setTimeout(() => {
+
+            map.invalidateSize({
+                pan: false
+            });
+
+        }, 250);
+
+
+        /* Close any currently open tooltip */
 
         closeAllTooltips();
 
@@ -716,15 +776,12 @@ places.forEach(place => {
                 return;
             }
 
-
             tooltipOpened = true;
-
 
             map.off(
                 "moveend",
                 openTooltipAfterMove
             );
-
 
             marker.openTooltip();
 
@@ -737,7 +794,7 @@ places.forEach(place => {
         );
 
 
-        /* MOVE TO SELECTED PLACE */
+        /* Move to selected place */
 
         map.setView(
             [place.lat, place.lng],
@@ -750,7 +807,7 @@ places.forEach(place => {
         );
 
 
-        /* SAFETY FALLBACK */
+        /* Safety fallback */
 
         setTimeout(() => {
 
@@ -758,12 +815,10 @@ places.forEach(place => {
 
                 tooltipOpened = true;
 
-
                 map.off(
                     "moveend",
                     openTooltipAfterMove
                 );
-
 
                 marker.openTooltip();
 
@@ -774,51 +829,11 @@ places.forEach(place => {
     });
 
 
-    /* =====================================================
-       ADD ITEM TO INDEX
-       ===================================================== */
+    /* Add item to INDEX */
 
     indexList.appendChild(indexItem);
 
 });
-
-
-/* =========================================================
-   INDEX OPEN / CLOSE FUNCTIONS
-   ========================================================= */
-
-function openIndexPanel() {
-
-    indexPanel.classList.add("open");
-
-    indexPanel.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-    indexButton.setAttribute(
-        "aria-expanded",
-        "true"
-    );
-
-}
-
-
-function closeIndexPanel() {
-
-    indexPanel.classList.remove("open");
-
-    indexPanel.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-    indexButton.setAttribute(
-        "aria-expanded",
-        "false"
-    );
-
-}
 
 
 /* =========================================================
@@ -831,16 +846,7 @@ indexButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
-
-    if (indexPanel.classList.contains("open")) {
-
-        closeIndexPanel();
-
-    } else {
-
-        openIndexPanel();
-
-    }
+    indexPanel.classList.add("open");
 
 });
 
@@ -855,7 +861,7 @@ closeIndex.addEventListener("click", event => {
 
     event.stopPropagation();
 
-    closeIndexPanel();
+    indexPanel.classList.remove("open");
 
 });
 
@@ -867,18 +873,18 @@ closeIndex.addEventListener("click", event => {
 const enterMapButton =
     document.getElementById("enter-map");
 
-
 enterMapButton.addEventListener("click", event => {
 
     event.preventDefault();
 
     event.stopPropagation();
 
-
     document.getElementById("map").scrollIntoView({
+
         behavior: "smooth",
 
         block: "start"
+
     });
 
 });
@@ -891,37 +897,36 @@ enterMapButton.addEventListener("click", event => {
 const homeButton =
     document.getElementById("home-button");
 
-
 homeButton.addEventListener("click", event => {
 
     event.preventDefault();
 
     event.stopPropagation();
 
-
-    closeIndexPanel();
+    indexPanel.classList.remove("open");
 
     closeAllTooltips();
 
-
     document.getElementById("home").scrollIntoView({
+
         behavior: "smooth",
 
         block: "start"
+
     });
 
 });
 
 
 /* =========================================================
-   ESCAPE → CLOSE INDEX
+   ESCAPE → CLOSE INDEX + TOOLTIPS
    ========================================================= */
 
 document.addEventListener("keydown", event => {
 
     if (event.key === "Escape") {
 
-        closeIndexPanel();
+        indexPanel.classList.remove("open");
 
         closeAllTooltips();
 
@@ -936,13 +941,22 @@ document.addEventListener("keydown", event => {
 
 map.on("click", event => {
 
+    /*
+    If the click originated on a marker, the marker's
+    own handler has already dealt with it.
+    */
+
     if (
         event.originalEvent &&
         event.originalEvent.target &&
         event.originalEvent.target.closest &&
-        event.originalEvent.target.closest(".leaflet-interactive")
+        event.originalEvent.target.closest(
+            ".leaflet-interactive"
+        )
     ) {
+
         return;
+
     }
 
 
@@ -959,7 +973,9 @@ window.addEventListener("load", () => {
 
     setTimeout(() => {
 
-        fitWorldToScreen();
+        map.invalidateSize({
+            pan: false
+        });
 
     }, 300);
 
