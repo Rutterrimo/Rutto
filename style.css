@@ -5,7 +5,6 @@
 
 html {
     scroll-behavior: smooth;
-
     margin: 0;
     padding: 0;
 }
@@ -37,7 +36,6 @@ body {
     height: 100dvh;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -45,20 +43,9 @@ body {
 }
 
 
-/*
- * Keep the main RUTTO title and button
- * above the interactive cat.
- */
-
 .intro-content {
-    position: relative;
-
-    z-index: 30;
-
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
 }
 
@@ -132,8 +119,6 @@ body {
 
     transform: translateX(-50%);
 
-    z-index: 30;
-
     white-space: nowrap;
 
     color: #171717;
@@ -143,6 +128,83 @@ body {
     letter-spacing: 0.14em;
 
     opacity: 0.42;
+}
+
+
+/* =========================================================
+   PIXEL CAT
+   ========================================================= */
+
+.pixel-cat {
+    position: absolute;
+
+    right: 42px;
+    bottom: 34px;
+
+    width: 4px;
+    height: 4px;
+
+    background: #171717;
+
+    opacity: 0.72;
+
+    /*
+     * Tiny pixel drawing.
+     * Deliberately crude.
+     */
+
+    box-shadow:
+        4px 0 #171717,
+        8px 0 #171717,
+        12px 0 #171717,
+        20px 0 #171717,
+        24px 0 #171717,
+
+        4px 4px #171717,
+        8px 4px #171717,
+        12px 4px #171717,
+        16px 4px #171717,
+        20px 4px #171717,
+        24px 4px #171717,
+
+        0 8px #171717,
+        4px 8px #171717,
+        8px 8px #171717,
+        12px 8px #171717,
+        16px 8px #171717,
+        20px 8px #171717,
+        24px 8px #171717,
+
+        0 12px #171717,
+        4px 12px #171717,
+        8px 12px #171717,
+        12px 12px #171717,
+        16px 12px #171717,
+        20px 12px #171717,
+        24px 12px #171717,
+
+        4px 16px #171717,
+        8px 16px #171717,
+        12px 16px #171717,
+        16px 16px #171717,
+        20px 16px #171717,
+
+        4px 20px #171717,
+        8px 20px #171717,
+        12px 20px #171717,
+        16px 20px #171717,
+        20px 20px #171717,
+
+        0 24px #171717,
+        4px 24px #171717,
+        8px 24px #171717,
+        16px 24px #171717,
+        20px 24px #171717,
+        24px 24px #171717,
+
+        0 28px #171717,
+        20px 28px #171717,
+        24px 28px #171717;
 }
 
 
@@ -196,7 +258,6 @@ body {
 
 .leaflet-control-zoom {
     margin-bottom: 12px !important;
-
     margin-left: 12px !important;
 }
 
@@ -694,6 +755,17 @@ body {
         font-size: 7px;
 
         letter-spacing: 0.11em;
+    }
+
+
+    .pixel-cat {
+        right: 20px;
+
+        bottom: 42px;
+
+        transform: scale(0.8);
+
+        transform-origin: bottom right;
     }
 
 }
