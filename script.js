@@ -35,8 +35,13 @@ const map = L.map("map-container", {
 
     tap: true,
 
-    touchZoom: true
+    touchZoom: true,
 
+    dragging: true,
+
+    doubleClickZoom: true,
+
+    scrollWheelZoom: true
 }).setView([20, 0], 2);
 
 
@@ -76,30 +81,19 @@ function fitWorldToScreen() {
     const worldWidth = 360;
     const worldHeight = 170;
 
-    const zoomX =
-        Math.log2(width / worldWidth);
-
-    const zoomY =
-        Math.log2(height / worldHeight);
+    const zoomX = Math.log2(width / worldWidth);
+    const zoomY = Math.log2(height / worldHeight);
 
     const idealZoom = Math.max(
         2,
-        Math.ceil(
-            Math.max(
-                zoomX,
-                zoomY
-            )
-        )
+        Math.ceil(Math.max(zoomX, zoomY))
     );
 
     map.setMinZoom(idealZoom);
 
-    map.setZoom(
-        idealZoom,
-        {
-            animate: false
-        }
-    );
+    map.setZoom(idealZoom, {
+        animate: false
+    });
 
     map.invalidateSize({
         pan: false
@@ -107,9 +101,7 @@ function fitWorldToScreen() {
 }
 
 
-/* =========================================================
-   INITIAL MAP SIZING
-   ========================================================= */
+/* Initial map sizing */
 
 setTimeout(() => {
 
@@ -119,7 +111,7 @@ setTimeout(() => {
 
     fitWorldToScreen();
 
-}, 100);
+}, 150);
 
 
 /* =========================================================
@@ -149,22 +141,19 @@ window.addEventListener("resize", () => {
    ORIENTATION CHANGE
    ========================================================= */
 
-window.addEventListener(
-    "orientationchange",
-    () => {
+window.addEventListener("orientationchange", () => {
 
-        setTimeout(() => {
+    setTimeout(() => {
 
-            map.invalidateSize({
-                pan: false
-            });
+        map.invalidateSize({
+            pan: false
+        });
 
-            fitWorldToScreen();
+        fitWorldToScreen();
 
-        }, 400);
+    }, 400);
 
-    }
-);
+});
 
 
 /* =========================================================
@@ -187,12 +176,10 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets:
-            "Squat toilets, unisex, very dirty.",
+        toilets: "Squat toilets, unisex, very dirty.",
 
         notes: ""
     },
-
 
     {
         id: 2,
@@ -208,12 +195,10 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets:
-            "Chemical toilets, extremely dirty, unisex.",
+        toilets: "Chemical toilets, extremely dirty, unisex.",
 
         notes: ""
     },
-
 
     {
         id: 3,
@@ -229,12 +214,10 @@ const places = [
         locals: "Yes",
         gambling: "Unknown",
 
-        toilets:
-            "Normal. Men and women separated.",
+        toilets: "Normal. Men and women separated.",
 
         notes: ""
     },
-
 
     {
         id: 4,
@@ -250,12 +233,10 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets:
-            "Normal. Men and women separated.",
+        toilets: "Normal. Men and women separated.",
 
         notes: ""
     },
-
 
     {
         id: 5,
@@ -271,12 +252,10 @@ const places = [
         locals: "No",
         gambling: "Unknown",
 
-        toilets:
-            "Normal. Men and women separated.",
+        toilets: "Normal. Men and women separated.",
 
         notes: ""
     },
-
 
     {
         id: 6,
@@ -297,7 +276,6 @@ const places = [
         notes: ""
     },
 
-
     {
         id: 7,
         name: "Caffe Bar Gold",
@@ -312,12 +290,10 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets:
-            "Normal. Men and women separated.",
+        toilets: "Normal. Men and women separated.",
 
         notes: ""
     },
-
 
     {
         id: 8,
@@ -333,12 +309,10 @@ const places = [
         locals: "No",
         gambling: "No",
 
-        toilets:
-            "Unisex. Looks like a private laundry room.",
+        toilets: "Unisex. Looks like a private laundry room.",
 
         notes: ""
     },
-
 
     {
         id: 9,
@@ -359,7 +333,6 @@ const places = [
         notes: ""
     },
 
-
     {
         id: 10,
         name: "Lucky Bar",
@@ -374,12 +347,10 @@ const places = [
         locals: "Yes",
         gambling: "Yes",
 
-        toilets:
-            "Unisex, extremely dirty.",
+        toilets: "Unisex, extremely dirty.",
 
         notes: ""
     },
-
 
     {
         id: 11,
@@ -400,7 +371,6 @@ const places = [
         notes: ""
     },
 
-
     {
         id: 12,
         name: "Bar 10 Damijana Kodelija",
@@ -415,8 +385,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets:
-            "Normal. Men and women separated.",
+        toilets: "Normal. Men and women separated.",
 
         notes: ""
     }
@@ -454,18 +423,17 @@ const markerReferences = [];
 
 function closeAllTooltips() {
 
-    markerReferences.forEach(
-        reference => {
+    markerReferences.forEach(reference => {
 
-            if (
-                reference.marker &&
-                reference.marker.isTooltipOpen()
-            ) {
-                reference.marker.closeTooltip();
-            }
-
+        if (
+            reference.marker &&
+            reference.marker.isTooltipOpen()
+        ) {
+            reference.marker.closeTooltip();
         }
-    );
+
+    });
+
 }
 
 
@@ -480,48 +448,66 @@ places.forEach(place => {
        VISIBLE DOT
        ===================================================== */
 
-    const visibleMarker =
-        L.circleMarker(
-            [place.lat, place.lng],
-            {
-                radius: 3,
+    const visibleMarker = L.circleMarker(
+        [place.lat, place.lng],
+        {
+            radius: 3,
 
-                color: "#3a3a38",
+            color: "#3a3a38",
 
-                fillColor: "#3a3a38",
+            fillColor: "#3a3a38",
 
-                fillOpacity: 1,
+            fillOpacity: 1,
 
-                weight: 0,
+            weight: 0,
 
-                interactive: false
-            }
-        ).addTo(map);
+            interactive: false
+        }
+    ).addTo(map);
 
 
     /* =====================================================
        INVISIBLE TOUCH TARGET
+       
+       This is intentionally much larger than the dot.
+       It makes the marker easy to tap on a phone.
        ===================================================== */
 
-    const marker =
-        L.circleMarker(
-            [place.lat, place.lng],
-            {
-                radius: 14,
+    const marker = L.circleMarker(
+        [place.lat, place.lng],
+        {
+            radius: 18,
 
-                color: "#000000",
+            color: "#000000",
 
-                opacity: 0,
+            opacity: 0,
 
-                fillColor: "#000000",
+            fillColor: "#000000",
 
-                fillOpacity: 0,
+            fillOpacity: 0,
 
-                weight: 0,
+            weight: 0,
 
-                interactive: true
-            }
-        ).addTo(map);
+            interactive: true,
+
+            bubblingMouseEvents: false
+        }
+    ).addTo(map);
+
+
+    /*
+    Make absolutely sure the SVG hit area accepts touch.
+    */
+
+    if (marker._path) {
+
+        marker._path.style.pointerEvents = "all";
+
+        marker._path.style.outline = "none";
+
+        marker._path.style.webkitTapHighlightColor =
+            "transparent";
+    }
 
 
     /* =====================================================
@@ -588,7 +574,7 @@ places.forEach(place => {
         {
             direction: "top",
 
-            offset: [0, -10],
+            offset: [0, -12],
 
             opacity: 1,
 
@@ -596,7 +582,9 @@ places.forEach(place => {
 
             interactive: true,
 
-            permanent: false
+            permanent: false,
+
+            sticky: false
         }
     );
 
@@ -612,7 +600,6 @@ places.forEach(place => {
             closeAllTooltips();
 
             marker.openTooltip();
-
         }
 
     });
@@ -623,7 +610,6 @@ places.forEach(place => {
         if (!L.Browser.touch) {
 
             marker.closeTooltip();
-
         }
 
     });
@@ -631,14 +617,12 @@ places.forEach(place => {
 
     /* =====================================================
        CLICK / TAP
-       =====================================================
-
+       
        IMPORTANT:
-
-       We deliberately DO NOT use touchstart + preventDefault.
-
-       On mobile Leaflet converts the tap into a click.
-       Blocking touchstart was preventing that behaviour.
+       There is deliberately NO touchstart + preventDefault.
+       
+       Leaflet needs the native touch sequence to generate
+       its click event on mobile.
        ===================================================== */
 
     marker.on("click", event => {
@@ -646,7 +630,6 @@ places.forEach(place => {
         if (event.originalEvent) {
 
             event.originalEvent.stopPropagation();
-
         }
 
 
@@ -659,7 +642,6 @@ places.forEach(place => {
             closeAllTooltips();
 
             marker.openTooltip();
-
         }
 
     });
@@ -676,7 +658,6 @@ places.forEach(place => {
         marker: marker,
 
         visibleMarker: visibleMarker
-
     });
 
 
@@ -693,6 +674,7 @@ places.forEach(place => {
 
 
     indexItem.innerHTML = `
+
         <span class="index-number">
             ${String(place.id).padStart(2, "0")}
         </span>
@@ -708,6 +690,7 @@ places.forEach(place => {
         <span class="index-visited">
             VISITED · ${place.visitedDate} · ${place.visitedTime}
         </span>
+
     `;
 
 
@@ -715,103 +698,100 @@ places.forEach(place => {
        INDEX ITEM → MAP
        ===================================================== */
 
-    indexItem.addEventListener(
-        "click",
-        event => {
+    indexItem.addEventListener("click", event => {
 
-            event.preventDefault();
+        event.preventDefault();
 
-            event.stopPropagation();
+        event.stopPropagation();
 
 
-            /* CLOSE INDEX */
+        /* Close index */
 
-            indexPanel.classList.remove("open");
+        indexPanel.classList.remove("open");
 
-
-            /* REFRESH LEAFLET */
-
-            setTimeout(() => {
-
-                map.invalidateSize({
-                    pan: false
-                });
-
-            }, 50);
+        indexPanel.setAttribute(
+            "aria-hidden",
+            "true"
+        );
 
 
-            /* CLOSE OTHER TOOLTIPS */
+        /* Refresh Leaflet */
 
-            closeAllTooltips();
+        setTimeout(() => {
 
+            map.invalidateSize({
+                pan: false
+            });
 
-            let tooltipOpened = false;
-
-
-            /* OPEN TOOLTIP AFTER MAP MOVEMENT */
-
-            const openTooltipAfterMove =
-                () => {
-
-                    if (tooltipOpened) {
-                        return;
-                    }
-
-                    tooltipOpened = true;
-
-                    map.off(
-                        "moveend",
-                        openTooltipAfterMove
-                    );
-
-                    marker.openTooltip();
-
-                };
+        }, 50);
 
 
-            map.once(
+        /* Close existing tooltips */
+
+        closeAllTooltips();
+
+
+        let tooltipOpened = false;
+
+
+        const openTooltipAfterMove = () => {
+
+            if (tooltipOpened) {
+                return;
+            }
+
+            tooltipOpened = true;
+
+            map.off(
                 "moveend",
                 openTooltipAfterMove
             );
 
+            marker.openTooltip();
 
-            /* MOVE TO PLACE */
-
-            map.setView(
-                [place.lat, place.lng],
-                8,
-                {
-                    animate: true,
-
-                    duration: 0.6
-                }
-            );
+        };
 
 
-            /* SAFETY FALLBACK */
-
-            setTimeout(() => {
-
-                if (!tooltipOpened) {
-
-                    tooltipOpened = true;
-
-                    map.off(
-                        "moveend",
-                        openTooltipAfterMove
-                    );
-
-                    marker.openTooltip();
-
-                }
-
-            }, 900);
-
-        }
-    );
+        map.once(
+            "moveend",
+            openTooltipAfterMove
+        );
 
 
-    /* ADD TO INDEX */
+        /* Move to selected place */
+
+        map.setView(
+            [place.lat, place.lng],
+            8,
+            {
+                animate: true,
+                duration: 0.6
+            }
+        );
+
+
+        /* Safety fallback */
+
+        setTimeout(() => {
+
+            if (!tooltipOpened) {
+
+                tooltipOpened = true;
+
+                map.off(
+                    "moveend",
+                    openTooltipAfterMove
+                );
+
+                marker.openTooltip();
+            }
+
+        }, 900);
+
+    });
+
+
+    /* Add item to INDEX */
 
     indexList.appendChild(indexItem);
 
@@ -822,36 +802,40 @@ places.forEach(place => {
    OPEN INDEX
    ========================================================= */
 
-indexButton.addEventListener(
-    "click",
-    event => {
+indexButton.addEventListener("click", event => {
 
-        event.preventDefault();
+    event.preventDefault();
 
-        event.stopPropagation();
+    event.stopPropagation();
 
-        indexPanel.classList.add("open");
+    indexPanel.classList.add("open");
 
-    }
-);
+    indexPanel.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+});
 
 
 /* =========================================================
    CLOSE INDEX
    ========================================================= */
 
-closeIndex.addEventListener(
-    "click",
-    event => {
+closeIndex.addEventListener("click", event => {
 
-        event.preventDefault();
+    event.preventDefault();
 
-        event.stopPropagation();
+    event.stopPropagation();
 
-        indexPanel.classList.remove("open");
+    indexPanel.classList.remove("open");
 
-    }
-);
+    indexPanel.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+});
 
 
 /* =========================================================
@@ -861,23 +845,18 @@ closeIndex.addEventListener(
 const enterMapButton =
     document.getElementById("enter-map");
 
-enterMapButton.addEventListener(
-    "click",
-    event => {
+enterMapButton.addEventListener("click", event => {
 
-        event.preventDefault();
+    event.preventDefault();
 
-        event.stopPropagation();
+    event.stopPropagation();
 
-        document
-            .getElementById("map")
-            .scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
+    document.getElementById("map").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 
-    }
-);
+});
 
 
 /* =========================================================
@@ -887,45 +866,46 @@ enterMapButton.addEventListener(
 const homeButton =
     document.getElementById("home-button");
 
-homeButton.addEventListener(
-    "click",
-    event => {
+homeButton.addEventListener("click", event => {
 
-        event.preventDefault();
+    event.preventDefault();
 
-        event.stopPropagation();
+    event.stopPropagation();
 
-        indexPanel.classList.remove("open");
+    indexPanel.classList.remove("open");
 
-        closeAllTooltips();
+    indexPanel.setAttribute(
+        "aria-hidden",
+        "true"
+    );
 
-        document
-            .getElementById("home")
-            .scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
+    closeAllTooltips();
 
-    }
-);
+    document.getElementById("home").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+});
 
 
 /* =========================================================
    ESCAPE → CLOSE INDEX
    ========================================================= */
 
-document.addEventListener(
-    "keydown",
-    event => {
+document.addEventListener("keydown", event => {
 
-        if (event.key === "Escape") {
+    if (event.key === "Escape") {
 
-            indexPanel.classList.remove("open");
+        indexPanel.classList.remove("open");
 
-        }
-
+        indexPanel.setAttribute(
+            "aria-hidden",
+            "true"
+        );
     }
-);
+
+});
 
 
 /* =========================================================
@@ -945,6 +925,7 @@ map.on("click", event => {
         return;
     }
 
+
     closeAllTooltips();
 
 });
@@ -954,17 +935,16 @@ map.on("click", event => {
    FINAL MAP REFRESH
    ========================================================= */
 
-window.addEventListener(
-    "load",
-    () => {
+window.addEventListener("load", () => {
 
-        setTimeout(() => {
+    setTimeout(() => {
 
-            map.invalidateSize({
-                pan: false
-            });
+        map.invalidateSize({
+            pan: false
+        });
 
-        }, 300);
+        fitWorldToScreen();
 
-    }
-);
+    }, 300);
+
+});
