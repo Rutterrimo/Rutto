@@ -614,23 +614,6 @@ places.forEach(place => {
 
 
     /* =====================================================
-       TOUCHSTART
-       ===================================================== */
-
-    marker.on("touchstart", event => {
-
-        if (event.originalEvent) {
-
-            event.originalEvent.preventDefault();
-
-            event.originalEvent.stopPropagation();
-
-        }
-
-    });
-
-
-    /* =====================================================
        SAVE REFERENCE
        ===================================================== */
 
