@@ -6,26 +6,36 @@ html {
     scroll-behavior: smooth;
     margin: 0;
     padding: 0;
+    width: 100%;
 }
 
 body {
     margin: 0;
     padding: 0;
+    width: 100%;
+    min-height: 100%;
     background: #e8e6df;
     color: #171717;
     font-family: Arial, Helvetica, sans-serif;
     overflow-x: hidden;
 }
 
+body.map-active {
+    overflow: hidden;
+}
 
-/* =========================================================
-   INTRO
-   ========================================================= */
+
+/*
+=========================================================
+INTRO
+=========================================================
+*/
 
 .intro {
     width: 100%;
     height: 100vh;
     height: 100dvh;
+    min-height: 100dvh;
 
     display: flex;
     align-items: center;
@@ -82,9 +92,11 @@ body {
 }
 
 
-/* =========================================================
-   MAPPA
-   ========================================================= */
+/*
+=========================================================
+MAP
+=========================================================
+*/
 
 #map {
     position: relative;
@@ -92,6 +104,7 @@ body {
     width: 100%;
     height: 100vh;
     height: 100dvh;
+    min-height: 100dvh;
 
     margin: 0;
     padding: 0;
@@ -114,9 +127,11 @@ body {
 }
 
 
-/* =========================================================
-   LEAFLET
-   ========================================================= */
+/*
+=========================================================
+LEAFLET
+=========================================================
+*/
 
 .leaflet-container {
     width: 100%;
@@ -126,6 +141,48 @@ body {
 
     font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/*
+=========================================================
+REMOVE MOBILE FOCUS / ORANGE OUTLINE
+=========================================================
+*/
+
+.leaflet-interactive,
+.leaflet-interactive:focus,
+.leaflet-interactive:active {
+    outline: none !important;
+}
+
+.leaflet-container:focus {
+    outline: none !important;
+}
+
+.leaflet-container svg {
+    outline: none !important;
+}
+
+.leaflet-container path {
+    outline: none !important;
+}
+
+
+/*
+Remove tap highlight on WebKit browsers.
+*/
+
+.leaflet-container,
+.leaflet-container * {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/*
+=========================================================
+ZOOM CONTROLS
+=========================================================
+*/
 
 .leaflet-control-zoom {
     margin-bottom: 12px !important;
@@ -145,12 +202,16 @@ body {
     font-size: 14px !important;
 
     -webkit-tap-highlight-color: transparent;
+
+    outline: none !important;
 }
 
 
-/* =========================================================
-   RUTTO TOOLTIP
-   ========================================================= */
+/*
+=========================================================
+RUTTO TOOLTIP
+=========================================================
+*/
 
 .rutto-tooltip {
     background: #e8e6df !important;
@@ -178,9 +239,11 @@ body {
 }
 
 
-/* =========================================================
-   CONTENUTO DELLA NUVOLA
-   ========================================================= */
+/*
+=========================================================
+POPUP CONTENT
+=========================================================
+*/
 
 .place-popup {
     width: 250px;
@@ -196,6 +259,8 @@ body {
     font-weight: 500;
 
     letter-spacing: -0.02em;
+
+    overflow-wrap: anywhere;
 }
 
 .categories {
@@ -249,12 +314,16 @@ body {
 
     font-size: 12px;
     line-height: 1.45;
+
+    overflow-wrap: anywhere;
 }
 
 
-/* =========================================================
-   HOME + INDEX BUTTONS
-   ========================================================= */
+/*
+=========================================================
+HOME + INDEX BUTTONS
+=========================================================
+*/
 
 #home-button,
 #index-button {
@@ -300,10 +369,19 @@ body {
     color: #e8e6df;
 }
 
+#home-button:focus,
+#index-button:focus,
+#close-index:focus,
+.index-item:focus {
+    outline: none;
+}
 
-/* =========================================================
-   INDEX PANEL
-   ========================================================= */
+
+/*
+=========================================================
+INDEX PANEL
+=========================================================
+*/
 
 #index-panel {
     position: absolute;
@@ -313,7 +391,7 @@ body {
     top: 0;
     right: 0;
 
-    width: 330px;
+    width: min(330px, 86vw);
     height: 100%;
 
     background: #e8e6df;
@@ -322,7 +400,9 @@ body {
 
     transform: translate3d(100%, 0, 0);
 
-    transition: transform 0.25s ease;
+    transition:
+        transform 0.25s ease,
+        visibility 0s linear 0.25s;
 
     overflow-x: hidden;
     overflow-y: auto;
@@ -336,13 +416,20 @@ body {
 
 #index-panel.open {
     transform: translate3d(0, 0, 0);
+
     visibility: visible;
+
+    transition:
+        transform 0.25s ease,
+        visibility 0s linear 0s;
 }
 
 
-/* =========================================================
-   INDEX HEADER
-   ========================================================= */
+/*
+=========================================================
+INDEX HEADER
+=========================================================
+*/
 
 .index-header {
     position: sticky;
@@ -388,9 +475,11 @@ body {
 }
 
 
-/* =========================================================
-   INDEX ITEMS
-   ========================================================= */
+/*
+=========================================================
+INDEX ITEMS
+=========================================================
+*/
 
 #index-list {
     display: flex;
@@ -453,9 +542,11 @@ body {
 }
 
 
-/* =========================================================
-   MOBILE
-   ========================================================= */
+/*
+=========================================================
+MOBILE
+=========================================================
+*/
 
 @media (max-width: 600px) {
 
@@ -472,7 +563,7 @@ body {
 
     #home-button,
     #index-button {
-        top: 12px;
+        top: calc(12px + env(safe-area-inset-top));
 
         padding: 9px 10px;
 
@@ -490,9 +581,9 @@ body {
     }
 
     #index-panel {
-        width: 100%;
+        width: min(330px, 86vw);
 
-        border-left: none;
+        border-left: 1px solid #171717;
     }
 
     .index-header {
@@ -510,7 +601,7 @@ body {
 
     .place-popup {
         width: 220px;
-        max-width: calc(100vw - 32px);
+        max-width: calc(100vw - 24px);
 
         padding: 14px;
     }
@@ -524,7 +615,9 @@ body {
     }
 
     .leaflet-control-zoom {
-        margin-bottom: 12px !important;
+        margin-bottom:
+            calc(12px + env(safe-area-inset-bottom)) !important;
+
         margin-left: 12px !important;
     }
 
@@ -536,9 +629,11 @@ body {
 }
 
 
-/* =========================================================
-   VERY SMALL PHONES
-   ========================================================= */
+/*
+=========================================================
+VERY SMALL PHONES
+=========================================================
+*/
 
 @media (max-width: 380px) {
 
@@ -553,12 +648,18 @@ body {
     .place-popup {
         width: min(220px, calc(100vw - 24px));
     }
+
+    .categories div {
+        gap: 7px;
+    }
 }
 
 
-/* =========================================================
-   REDUCE MOTION
-   ========================================================= */
+/*
+=========================================================
+REDUCE MOTION
+=========================================================
+*/
 
 @media (prefers-reduced-motion: reduce) {
 
