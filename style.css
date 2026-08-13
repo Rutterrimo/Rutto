@@ -4,15 +4,16 @@
 
 * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html {
-    scroll-behavior: smooth;
-
     margin: 0;
     padding: 0;
-
     width: 100%;
+    min-height: 100%;
+
+    scroll-behavior: smooth;
 
     background: #e8e6df;
 }
@@ -20,7 +21,6 @@ html {
 body {
     margin: 0;
     padding: 0;
-
     width: 100%;
     min-height: 100%;
 
@@ -32,17 +32,27 @@ body {
     overflow-x: hidden;
 }
 
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+button:focus-visible {
+    outline: none;
+}
+
 
 /* =========================================================
    INTRO
    ========================================================= */
 
 .intro {
-    width: 100%;
+    position: relative;
 
+    width: 100%;
     height: 100vh;
     height: 100dvh;
-
     min-height: 100dvh;
 
     display: flex;
@@ -50,23 +60,18 @@ body {
     justify-content: center;
 
     text-align: center;
-
-    background: #e8e6df;
 }
 
 .intro-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    padding: 20px;
 }
 
 .intro h1 {
     margin: 0;
 
     font-size: clamp(56px, 8vw, 110px);
-
     font-weight: 500;
 
     letter-spacing: -0.04em;
@@ -76,33 +81,29 @@ body {
     margin: 18px 0 55px;
 
     font-size: 15px;
-
     font-weight: 400;
 
     letter-spacing: 0.02em;
 }
 
 .enter-button {
-    appearance: none;
+    margin: 0;
+    padding: 0 0 4px;
 
-    background: none;
+    background: transparent;
 
-    border: none;
+    border: 0;
     border-bottom: 1px solid #171717;
 
     color: #171717;
 
-    padding: 0 0 4px;
-
     font-family: Arial, Helvetica, sans-serif;
-
     font-size: 12px;
 
     letter-spacing: 0.12em;
 
     cursor: pointer;
 
-    -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
 
     transition: opacity 0.2s ease;
@@ -110,10 +111,6 @@ body {
 
 .enter-button:hover {
     opacity: 0.45;
-}
-
-.enter-button:focus {
-    outline: none;
 }
 
 
@@ -125,10 +122,8 @@ body {
     position: relative;
 
     width: 100%;
-
     height: 100vh;
     height: 100dvh;
-
     min-height: 100dvh;
 
     margin: 0;
@@ -155,7 +150,7 @@ body {
 
 
 /* =========================================================
-   LEAFLET
+   LEAFLET BASE
    ========================================================= */
 
 .leaflet-container {
@@ -166,25 +161,27 @@ body {
 
     font-family: Arial, Helvetica, sans-serif;
 
+    outline: none !important;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.leaflet-container:focus,
+.leaflet-container:focus-visible {
+    outline: none !important;
+}
+
+.leaflet-container *,
+.leaflet-container *:focus,
+.leaflet-container *:focus-visible {
+    outline: none !important;
     -webkit-tap-highlight-color: transparent;
 }
 
 
-/*
-Prevent browser focus rings on the map itself.
-*/
-
-.leaflet-container:focus {
-    outline: none !important;
-}
-
-.leaflet-container svg {
-    outline: none !important;
-}
-
-.leaflet-container path {
-    outline: none !important;
-}
+/* =========================================================
+   REMOVE LEAFLET FOCUS / ORANGE MOBILE EFFECTS
+   ========================================================= */
 
 .leaflet-interactive,
 .leaflet-interactive:focus,
@@ -192,17 +189,72 @@ Prevent browser focus rings on the map itself.
     outline: none !important;
 }
 
+.leaflet-marker-icon,
+.leaflet-marker-icon:focus,
+.leaflet-marker-icon:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
 
-/*
-Important on mobile:
-Leaflet's SVG paths should not receive the browser's
-default touch highlight.
-*/
+.rutto-marker,
+.rutto-marker:focus,
+.rutto-marker:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
 
-.leaflet-container *,
-.leaflet-container *:focus,
-.leaflet-container *:active {
+
+/* =========================================================
+   CUSTOM MAP MARKER
+   ========================================================= */
+
+.rutto-marker {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+
+    border: 0;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+
+    -webkit-user-select: none;
+    user-select: none;
+
     -webkit-tap-highlight-color: transparent;
+}
+
+.rutto-marker-dot {
+    display: block;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #3a3a38;
+}
+
+
+/* Slightly larger dot on very small screens */
+
+@media (max-width: 600px) {
+
+    .rutto-marker {
+        width: 38px;
+        height: 38px;
+    }
+
+    .rutto-marker-dot {
+        width: 7px;
+        height: 7px;
+    }
 }
 
 
@@ -211,46 +263,47 @@ default touch highlight.
    ========================================================= */
 
 .leaflet-control-zoom {
-    margin-left: 12px !important;
     margin-bottom: 12px !important;
+    margin-left: 12px !important;
 }
 
 .leaflet-control-zoom a {
     width: 28px !important;
     height: 28px !important;
-
     line-height: 28px !important;
+
+    padding: 0 !important;
 
     background: #e8e6df !important;
 
     color: #171717 !important;
 
     border: 1px solid #171717 !important;
-
     border-radius: 0 !important;
 
     font-size: 14px !important;
 
     outline: none !important;
+    box-shadow: none !important;
 
     -webkit-tap-highlight-color: transparent;
 }
 
-.leaflet-control-zoom a:hover {
-    background: #171717 !important;
-    color: #e8e6df !important;
+.leaflet-control-zoom a:focus,
+.leaflet-control-zoom a:active {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 
 /* =========================================================
-   RUTTO TOOLTIP
+   TOOLTIP
    ========================================================= */
 
 .rutto-tooltip {
     background: #e8e6df !important;
 
     border: 1px solid #171717 !important;
-
     border-radius: 0 !important;
 
     box-shadow: none !important;
@@ -273,31 +326,13 @@ default touch highlight.
 }
 
 
-/*
-Leaflet can create different arrow directions.
-Keep them visually consistent.
-*/
-
-.rutto-tooltip.leaflet-tooltip-right::before {
-    border-right-color: #171717 !important;
-}
-
-.rutto-tooltip.leaflet-tooltip-left::before {
-    border-left-color: #171717 !important;
-}
-
-.rutto-tooltip.leaflet-tooltip-bottom::before {
-    border-bottom-color: #171717 !important;
-}
-
-
 /* =========================================================
-   POPUP / PLACE CONTENT
+   POPUP CONTENT
    ========================================================= */
 
 .place-popup {
     width: 250px;
-    max-width: calc(100vw - 40px);
+    max-width: calc(100vw - 32px);
 
     padding: 16px;
 }
@@ -306,12 +341,11 @@ Keep them visually consistent.
     margin: 0 0 18px;
 
     font-size: 17px;
-
     font-weight: 500;
 
-    letter-spacing: -0.02em;
-
     line-height: 1.2;
+
+    letter-spacing: -0.02em;
 
     overflow-wrap: anywhere;
 }
@@ -328,39 +362,32 @@ Keep them visually consistent.
 }
 
 .categories div {
-    display: flex;
+    display: grid;
 
-    justify-content: space-between;
+    grid-template-columns: minmax(0, 1fr) auto;
+
     align-items: baseline;
 
-    gap: 15px;
+    gap: 12px;
 
     font-size: 10px;
-
     line-height: 1.3;
 }
 
 .categories span,
 .popup-section > span {
     letter-spacing: 0.08em;
-
     opacity: 0.65;
 }
 
-.categories span {
-    flex: 1 1 auto;
-
-    min-width: 0;
-}
-
 .categories strong {
-    flex: 0 0 auto;
-
     font-weight: 500;
 
     text-transform: uppercase;
 
     text-align: right;
+
+    white-space: nowrap;
 }
 
 .popup-section {
@@ -379,7 +406,6 @@ Keep them visually consistent.
     margin: 0;
 
     font-size: 12px;
-
     line-height: 1.45;
 
     overflow-wrap: anywhere;
@@ -396,16 +422,15 @@ Keep them visually consistent.
 
     z-index: 1200;
 
-    top: 20px;
+    top: calc(20px + env(safe-area-inset-top));
 
-    appearance: none;
+    margin: 0;
 
     background: #e8e6df;
 
     color: #171717;
 
     border: 1px solid #171717;
-
     border-radius: 0;
 
     padding: 9px 12px;
@@ -417,8 +442,6 @@ Keep them visually consistent.
     letter-spacing: 0.1em;
 
     cursor: pointer;
-
-    -webkit-tap-highlight-color: transparent;
 
     touch-action: manipulation;
 
@@ -438,15 +461,7 @@ Keep them visually consistent.
 #home-button:hover,
 #index-button:hover {
     background: #171717;
-
     color: #e8e6df;
-}
-
-#home-button:focus,
-#index-button:focus,
-#close-index:focus,
-.index-item:focus {
-    outline: none;
 }
 
 
@@ -462,13 +477,10 @@ Keep them visually consistent.
     top: 0;
     right: 0;
 
-    /*
-    Desktop: intentionally not full screen.
-    */
-
-    width: min(360px, 38vw);
-
+    width: min(360px, 82vw);
     height: 100%;
+
+    padding-top: env(safe-area-inset-top);
 
     background: #e8e6df;
 
@@ -476,21 +488,18 @@ Keep them visually consistent.
 
     transform: translate3d(100%, 0, 0);
 
-    transition:
-        transform 0.25s ease,
-        visibility 0s linear 0.25s;
+    visibility: hidden;
 
     overflow-x: hidden;
-
     overflow-y: auto;
 
     -webkit-overflow-scrolling: touch;
 
     overscroll-behavior: contain;
 
-    visibility: hidden;
-
-    box-shadow: -8px 0 25px rgba(0, 0, 0, 0.04);
+    transition:
+        transform 0.25s ease,
+        visibility 0s linear 0.25s;
 }
 
 #index-panel.open {
@@ -515,13 +524,13 @@ Keep them visually consistent.
 
     z-index: 2;
 
+    min-height: 61px;
+
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
-    padding: 20px;
+    padding: 18px 20px;
 
     background: #e8e6df;
 
@@ -533,13 +542,12 @@ Keep them visually consistent.
 }
 
 #close-index {
-    appearance: none;
+    margin: 0;
+    padding: 0;
 
     background: none;
 
     border: none;
-
-    padding: 0;
 
     color: #171717;
 
@@ -551,8 +559,6 @@ Keep them visually consistent.
 
     cursor: pointer;
 
-    -webkit-tap-highlight-color: transparent;
-
     touch-action: manipulation;
 }
 
@@ -562,38 +568,37 @@ Keep them visually consistent.
 
 
 /* =========================================================
-   INDEX ITEMS
+   INDEX LIST
    ========================================================= */
 
 #index-list {
     display: flex;
-
     flex-direction: column;
+
+    width: 100%;
 }
+
+
+/* =========================================================
+   INDEX ITEM
+   ========================================================= */
 
 .index-item {
     width: 100%;
 
     display: grid;
 
-    /*
-    Number | information
-    */
-
     grid-template-columns: 28px minmax(0, 1fr);
 
-    column-gap: 10px;
+    column-gap: 12px;
 
-    padding: 15px 20px;
+    align-items: start;
 
-    margin: 0;
+    padding: 15px 20px 16px;
 
-    appearance: none;
+    background: transparent;
 
-    background: none;
-
-    border: none;
-
+    border: 0;
     border-bottom: 1px solid rgba(23, 23, 23, 0.15);
 
     color: #171717;
@@ -604,19 +609,14 @@ Keep them visually consistent.
 
     cursor: pointer;
 
-    -webkit-tap-highlight-color: transparent;
-
     touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
 .index-item:hover {
     background: rgba(23, 23, 23, 0.05);
 }
-
-
-/*
-Number
-*/
 
 .index-number {
     grid-column: 1;
@@ -631,79 +631,55 @@ Number
     opacity: 0.5;
 }
 
-
-/*
-Everything else sits in the second column.
-*/
-
-.index-name {
+.index-main {
     grid-column: 2;
     grid-row: 1;
 
     min-width: 0;
+}
+
+.index-name {
+    display: block;
+
+    margin: 0;
 
     font-size: 13px;
 
-    line-height: 1.3;
+    line-height: 1.25;
 
-    white-space: nowrap;
+    white-space: normal;
 
-    overflow: hidden;
-
-    text-overflow: ellipsis;
+    overflow-wrap: break-word;
 }
 
-.index-coordinates {
-    grid-column: 2;
-    grid-row: 2;
+.index-meta {
+    display: flex;
+    flex-wrap: wrap;
 
-    margin-top: 4px;
+    align-items: baseline;
 
-    min-width: 0;
+    gap: 5px 10px;
 
-    font-size: 10px;
+    margin-top: 6px;
 
-    line-height: 1.3;
-
-    opacity: 0.55;
-
-    white-space: nowrap;
+    color: #171717;
 }
 
+.index-coordinates,
 .index-visited {
-    grid-column: 2;
-    grid-row: 3;
-
-    margin-top: 4px;
-
-    min-width: 0;
+    display: inline-block;
 
     font-size: 9px;
 
-    line-height: 1.35;
-
-    letter-spacing: 0.02em;
-
-    opacity: 0.65;
+    line-height: 1.3;
 
     white-space: nowrap;
 
-    overflow: hidden;
-
-    text-overflow: ellipsis;
+    opacity: 0.55;
 }
 
-
-/* =========================================================
-   TABLET / SMALL DESKTOP
-   ========================================================= */
-
-@media (max-width: 900px) and (min-width: 601px) {
-
-    #index-panel {
-        width: min(360px, 55vw);
-    }
-
+.index-visited {
+    letter-spacing: 0.025em;
 }
 
 
@@ -713,22 +689,31 @@ Everything else sits in the second column.
 
 @media (max-width: 600px) {
 
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
     .intro h1 {
         font-size: clamp(52px, 18vw, 80px);
     }
 
     .intro p {
         margin-top: 14px;
-
         margin-bottom: 45px;
 
         font-size: 13px;
     }
 
+    .enter-button {
+        font-size: 11px;
+    }
 
-    /*
-    Buttons remain comfortably inside the safe area.
-    */
+
+    /* Buttons */
 
     #home-button,
     #index-button {
@@ -736,7 +721,7 @@ Everything else sits in the second column.
 
         min-height: 34px;
 
-        padding: 8px 10px;
+        padding: 9px 10px;
 
         font-size: 9px;
     }
@@ -750,67 +735,51 @@ Everything else sits in the second column.
     }
 
 
-    /*
-    INDEX:
-    deliberately only part of the screen.
-    */
+    /* Index */
 
     #index-panel {
-        width: min(360px, 88vw);
+        width: min(360px, 82vw);
 
-        max-width: 360px;
-
-        border-left: 1px solid #171717;
+        padding-top: env(safe-area-inset-top);
     }
 
     .index-header {
+        min-height: 58px;
+
         padding:
-            calc(16px + env(safe-area-inset-top))
-            18px
-            16px;
+            16px
+            18px;
     }
 
     .index-item {
         grid-template-columns: 25px minmax(0, 1fr);
 
-        column-gap: 9px;
+        column-gap: 10px;
 
-        padding: 15px 17px;
-
-        min-height: 0;
-    }
-
-    .index-number {
-        font-size: 9px;
+        padding:
+            15px 18px
+            16px;
     }
 
     .index-name {
         font-size: 12px;
-
-        white-space: nowrap;
     }
 
-    .index-coordinates {
-        font-size: 9px;
-
-        white-space: nowrap;
+    .index-meta {
+        gap: 4px 8px;
     }
 
+    .index-coordinates,
     .index-visited {
         font-size: 8.5px;
-
-        white-space: nowrap;
     }
 
 
-    /*
-    TOOLTIP
-    */
+    /* Tooltip */
 
     .place-popup {
         width: 230px;
-
-        max-width: calc(100vw - 30px);
+        max-width: calc(100vw - 24px);
 
         padding: 14px;
     }
@@ -820,29 +789,24 @@ Everything else sits in the second column.
     }
 
     .categories div {
-        gap: 10px;
+        gap: 9px;
     }
 
 
-    /*
-    ZOOM
-    */
+    /* Zoom */
 
     .leaflet-control-zoom {
-        margin-left: 12px !important;
-
         margin-bottom:
             calc(12px + env(safe-area-inset-bottom)) !important;
+
+        margin-left: 12px !important;
     }
 
     .leaflet-control-zoom a {
         width: 32px !important;
-
         height: 32px !important;
-
         line-height: 32px !important;
     }
-
 }
 
 
@@ -861,7 +825,7 @@ Everything else sits in the second column.
     }
 
     #index-panel {
-        width: 90vw;
+        width: 84vw;
     }
 
     .index-item {
@@ -869,19 +833,15 @@ Everything else sits in the second column.
 
         column-gap: 8px;
 
-        padding-left: 14px;
-
-        padding-right: 14px;
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     .index-name {
-        font-size: 11px;
+        font-size: 11.5px;
     }
 
-    .index-coordinates {
-        font-size: 8.5px;
-    }
-
+    .index-coordinates,
     .index-visited {
         font-size: 8px;
     }
@@ -893,7 +853,6 @@ Everything else sits in the second column.
     .categories div {
         gap: 7px;
     }
-
 }
 
 
@@ -907,12 +866,8 @@ Everything else sits in the second column.
         scroll-behavior: auto;
     }
 
-    #index-panel {
-        transition: none;
-    }
-
+    #index-panel,
     .enter-button {
         transition: none;
     }
-
 }
