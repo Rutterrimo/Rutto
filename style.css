@@ -4,48 +4,30 @@
 
 html {
     scroll-behavior: smooth;
-
     margin: 0;
     padding: 0;
-
-    width: 100%;
 }
 
 body {
     margin: 0;
     padding: 0;
-
-    width: 100%;
-    min-height: 100%;
-
     background: #e8e6df;
     color: #171717;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+    font-family: Arial, Helvetica, sans-serif;
     overflow-x: hidden;
 }
 
 
-/*
-=========================================================
-INTRO
-=========================================================
-*/
+/* =========================================================
+   INTRO
+   ========================================================= */
 
 .intro {
     width: 100%;
-
     height: 100vh;
     height: 100dvh;
 
-    min-height: 100dvh;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -54,91 +36,62 @@ INTRO
 
 .intro-content {
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
 }
 
 .intro h1 {
     margin: 0;
 
-    font-size:
-        clamp(56px, 8vw, 110px);
-
+    font-size: clamp(56px, 8vw, 110px);
     font-weight: 500;
-
     letter-spacing: -0.04em;
 }
 
 .intro p {
-    margin:
-        18px 0 55px;
+    margin: 18px 0 55px;
 
     font-size: 15px;
-
     font-weight: 400;
-
     letter-spacing: 0.02em;
 }
 
 .enter-button {
     background: none;
-
     border: none;
-
-    border-bottom:
-        1px solid #171717;
+    border-bottom: 1px solid #171717;
 
     color: #171717;
 
-    padding:
-        0 0 4px;
+    padding: 0 0 4px;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
-
     letter-spacing: 0.12em;
 
     cursor: pointer;
 
-    -webkit-tap-highlight-color:
-        transparent;
-
+    -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
 
-    transition:
-        opacity 0.2s ease;
+    transition: opacity 0.2s ease;
 }
 
 .enter-button:hover {
     opacity: 0.45;
 }
 
-.enter-button:focus {
-    outline: none;
-}
 
-
-/*
-=========================================================
-MAP
-=========================================================
-*/
+/* =========================================================
+   MAPPA
+   ========================================================= */
 
 #map {
     position: relative;
 
     width: 100%;
-
     height: 100vh;
     height: 100dvh;
-
-    min-height: 100dvh;
 
     margin: 0;
     padding: 0;
@@ -161,11 +114,9 @@ MAP
 }
 
 
-/*
-=========================================================
-LEAFLET
-=========================================================
-*/
+/* =========================================================
+   LEAFLET
+   ========================================================= */
 
 .leaflet-container {
     width: 100%;
@@ -173,216 +124,53 @@ LEAFLET
 
     background: #e8e6df;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    -webkit-tap-highlight-color:
-        transparent;
+    font-family: Arial, Helvetica, sans-serif;
 }
-
-
-/*
-=========================================================
-MAP MARKERS
-=========================================================
-*/
-
-/*
-The actual Leaflet marker is 44x44 px.
-The visible dot inside it is only 6x6 px.
-
-This gives the finger a generous touch target
-without making the map visually cluttered.
-*/
-
-.rutto-marker-icon {
-    width: 44px !important;
-    height: 44px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: transparent !important;
-
-    border: none !important;
-
-    box-shadow: none !important;
-
-    outline: none !important;
-
-    -webkit-tap-highlight-color:
-        transparent !important;
-
-    touch-action: manipulation;
-}
-
-.rutto-marker-hit {
-    position: relative;
-
-    width: 44px;
-    height: 44px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    background: transparent;
-
-    border: none;
-
-    outline: none;
-
-    box-shadow: none;
-
-    -webkit-tap-highlight-color:
-        transparent;
-
-    touch-action: manipulation;
-}
-
-.rutto-marker-dot {
-    display: block;
-
-    width: 6px;
-    height: 6px;
-
-    border-radius: 50%;
-
-    background: #3a3a38;
-}
-
-
-/*
-Never show a browser focus rectangle around
-the marker itself.
-*/
-
-.rutto-marker-icon:focus,
-.rutto-marker-hit:focus,
-.rutto-marker-icon:active,
-.rutto-marker-hit:active {
-    outline: none !important;
-
-    box-shadow: none !important;
-}
-
-
-/*
-=========================================================
-REMOVE LEAFLET MOBILE FOCUS / TAP HIGHLIGHT
-=========================================================
-*/
-
-.leaflet-interactive,
-.leaflet-interactive:focus,
-.leaflet-interactive:active {
-    outline: none !important;
-}
-
-.leaflet-container:focus {
-    outline: none !important;
-}
-
-.leaflet-container svg {
-    outline: none !important;
-}
-
-.leaflet-container path {
-    outline: none !important;
-}
-
-.leaflet-container,
-.leaflet-container * {
-    -webkit-tap-highlight-color:
-        transparent;
-}
-
-
-/*
-=========================================================
-ZOOM CONTROLS
-=========================================================
-*/
 
 .leaflet-control-zoom {
-    margin-bottom:
-        12px !important;
-
-    margin-left:
-        12px !important;
+    margin-bottom: 12px !important;
+    margin-left: 12px !important;
 }
 
 .leaflet-control-zoom a {
     width: 28px !important;
     height: 28px !important;
-
     line-height: 28px !important;
 
-    background:
-        #e8e6df !important;
+    background: #e8e6df !important;
+    color: #171717 !important;
 
-    color:
-        #171717 !important;
+    border: 1px solid #171717 !important;
 
-    border:
-        1px solid #171717 !important;
+    font-size: 14px !important;
 
-    font-size:
-        14px !important;
-
-    -webkit-tap-highlight-color:
-        transparent;
-
-    outline: none !important;
-}
-
-.leaflet-control-zoom a:focus,
-.leaflet-control-zoom a:active {
-    outline: none !important;
-    box-shadow: none !important;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
-/*
-=========================================================
-RUTTO TOOLTIP
-=========================================================
-*/
+/* =========================================================
+   RUTTO TOOLTIP
+   ========================================================= */
 
 .rutto-tooltip {
-    background:
-        #e8e6df !important;
+    background: #e8e6df !important;
 
-    border:
-        1px solid #171717 !important;
+    border: 1px solid #171717 !important;
+    border-radius: 0 !important;
 
-    border-radius:
-        0 !important;
+    box-shadow: none !important;
 
-    box-shadow:
-        none !important;
+    color: #171717 !important;
 
-    color:
-        #171717 !important;
+    padding: 0 !important;
 
-    padding:
-        0 !important;
+    font-family: Arial, Helvetica, sans-serif;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    pointer-events:
-        auto;
+    pointer-events: auto;
 }
 
 .rutto-tooltip::before {
-    border-top-color:
-        #171717 !important;
+    border-top-color: #171717 !important;
 }
 
 .rutto-tooltip .leaflet-tooltip-content {
@@ -390,96 +178,68 @@ RUTTO TOOLTIP
 }
 
 
-/*
-=========================================================
-POPUP CONTENT
-=========================================================
-*/
+/* =========================================================
+   CONTENUTO DELLA NUVOLA
+   ========================================================= */
 
 .place-popup {
     width: 250px;
-
-    max-width:
-        calc(100vw - 40px);
+    max-width: calc(100vw - 40px);
 
     padding: 16px;
 }
 
 .place-popup h3 {
-    margin:
-        0 0 18px 0;
+    margin: 0 0 18px 0;
 
     font-size: 17px;
-
     font-weight: 500;
 
-    letter-spacing:
-        -0.02em;
-
-    overflow-wrap:
-        anywhere;
+    letter-spacing: -0.02em;
 }
 
 .categories {
     display: flex;
-
     flex-direction: column;
 
     gap: 7px;
 
-    padding-bottom:
-        14px;
+    padding-bottom: 14px;
 
-    border-bottom:
-        1px solid
-        rgba(23, 23, 23, 0.25);
+    border-bottom: 1px solid rgba(23, 23, 23, 0.25);
 }
 
 .categories div {
     display: flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        flex-start;
+    justify-content: space-between;
 
     gap: 15px;
 
     font-size: 10px;
-
     line-height: 1.3;
 }
 
 .categories span,
 .popup-section > span {
-    letter-spacing:
-        0.08em;
-
+    letter-spacing: 0.08em;
     opacity: 0.65;
 }
 
 .categories strong {
     font-weight: 500;
-
-    text-transform:
-        uppercase;
+    text-transform: uppercase;
 
     text-align: right;
-
-    flex-shrink: 0;
 }
 
 .popup-section {
-    padding-top:
-        13px;
+    padding-top: 13px;
 }
 
 .popup-section > span {
     display: block;
 
-    margin-bottom:
-        5px;
+    margin-bottom: 5px;
 
     font-size: 10px;
 }
@@ -488,19 +248,13 @@ POPUP CONTENT
     margin: 0;
 
     font-size: 12px;
-
     line-height: 1.45;
-
-    overflow-wrap:
-        anywhere;
 }
 
 
-/*
-=========================================================
-HOME + INDEX BUTTONS
-=========================================================
-*/
+/* =========================================================
+   HOME + INDEX BUTTONS
+   ========================================================= */
 
 #home-button,
 #index-button {
@@ -510,37 +264,22 @@ HOME + INDEX BUTTONS
 
     top: 20px;
 
-    background:
-        #e8e6df;
+    background: #e8e6df;
+    color: #171717;
 
-    color:
-        #171717;
-
-    border:
-        1px solid #171717;
-
+    border: 1px solid #171717;
     border-radius: 0;
 
-    padding:
-        9px 12px;
+    padding: 9px 12px;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 10px;
-
-    letter-spacing:
-        0.1em;
+    letter-spacing: 0.1em;
 
     cursor: pointer;
 
-    -webkit-tap-highlight-color:
-        transparent;
-
-    touch-action:
-        manipulation;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 
     transition:
         background 0.15s ease,
@@ -557,35 +296,14 @@ HOME + INDEX BUTTONS
 
 #home-button:hover,
 #index-button:hover {
-    background:
-        #171717;
-
-    color:
-        #e8e6df;
-}
-
-#home-button:focus,
-#index-button:focus,
-#close-index:focus,
-.index-item:focus {
-    outline: none;
-}
-
-#home-button:active,
-#index-button:active,
-#close-index:active,
-.index-item:active {
-    outline: none;
-
-    box-shadow: none;
+    background: #171717;
+    color: #e8e6df;
 }
 
 
-/*
-=========================================================
-INDEX PANEL
-=========================================================
-*/
+/* =========================================================
+   INDEX PANEL
+   ========================================================= */
 
 #index-panel {
     position: absolute;
@@ -595,56 +313,36 @@ INDEX PANEL
     top: 0;
     right: 0;
 
-    width:
-        min(360px, 88vw);
-
+    width: 330px;
     height: 100%;
 
-    background:
-        #e8e6df;
+    background: #e8e6df;
 
-    border-left:
-        1px solid #171717;
+    border-left: 1px solid #171717;
 
-    transform:
-        translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
 
-    transition:
-        transform 0.25s ease,
-        visibility 0s linear 0.25s;
+    transition: transform 0.25s ease;
 
     overflow-x: hidden;
-
     overflow-y: auto;
 
-    -webkit-overflow-scrolling:
-        touch;
+    -webkit-overflow-scrolling: touch;
 
-    overscroll-behavior:
-        contain;
+    overscroll-behavior: contain;
 
-    visibility:
-        hidden;
+    visibility: hidden;
 }
 
 #index-panel.open {
-    transform:
-        translate3d(0, 0, 0);
-
-    visibility:
-        visible;
-
-    transition:
-        transform 0.25s ease,
-        visibility 0s linear 0s;
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
 }
 
 
-/*
-=========================================================
-INDEX HEADER
-=========================================================
-*/
+/* =========================================================
+   INDEX HEADER
+   ========================================================= */
 
 .index-header {
     position: sticky;
@@ -654,54 +352,35 @@ INDEX HEADER
     z-index: 2;
 
     display: flex;
-
     align-items: center;
-
-    justify-content:
-        space-between;
+    justify-content: space-between;
 
     padding: 20px;
 
-    background:
-        #e8e6df;
+    background: #e8e6df;
 
-    border-bottom:
-        1px solid
-        rgba(23, 23, 23, 0.25);
+    border-bottom: 1px solid rgba(23, 23, 23, 0.25);
 
     font-size: 11px;
-
-    letter-spacing:
-        0.1em;
+    letter-spacing: 0.1em;
 }
 
 #close-index {
     background: none;
-
     border: none;
 
     padding: 0;
 
-    color:
-        #171717;
+    color: #171717;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 10px;
-
-    letter-spacing:
-        0.08em;
+    letter-spacing: 0.08em;
 
     cursor: pointer;
 
-    -webkit-tap-highlight-color:
-        transparent;
-
-    touch-action:
-        manipulation;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 #close-index:hover {
@@ -709,15 +388,12 @@ INDEX HEADER
 }
 
 
-/*
-=========================================================
-INDEX ITEMS
-=========================================================
-*/
+/* =========================================================
+   INDEX ITEMS
+   ========================================================= */
 
 #index-list {
     display: flex;
-
     flex-direction: column;
 }
 
@@ -726,149 +402,79 @@ INDEX ITEMS
 
     display: grid;
 
-    grid-template-columns:
-        30px minmax(0, 1fr);
-
-    grid-template-rows:
-        auto auto auto;
+    grid-template-columns: 30px 1fr;
+    grid-template-rows: auto auto;
 
     column-gap: 10px;
 
-    padding:
-        16px 20px;
+    padding: 16px 20px;
 
     background: none;
 
     border: none;
+    border-bottom: 1px solid rgba(23, 23, 23, 0.15);
 
-    border-bottom:
-        1px solid
-        rgba(23, 23, 23, 0.15);
-
-    color:
-        #171717;
+    color: #171717;
 
     text-align: left;
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 
     cursor: pointer;
 
-    -webkit-tap-highlight-color:
-        transparent;
-
-    touch-action:
-        manipulation;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .index-item:hover {
-    background:
-        rgba(23, 23, 23, 0.05);
+    background: rgba(23, 23, 23, 0.05);
 }
 
 .index-number {
-    grid-column: 1;
-
-    grid-row:
-        1 / 4;
+    grid-row: 1 / 3;
 
     font-size: 10px;
 
     opacity: 0.5;
-
-    white-space: nowrap;
 }
 
 .index-name {
-    grid-column: 2;
-    grid-row: 1;
-
-    min-width: 0;
-
     font-size: 13px;
-
     line-height: 1.3;
-
-    overflow-wrap:
-        normal;
-
-    word-break:
-        normal;
 }
 
 .index-coordinates {
-    grid-column: 2;
-    grid-row: 2;
-
     margin-top: 4px;
 
     font-size: 10px;
-
     line-height: 1.3;
 
     opacity: 0.55;
-
-    white-space: nowrap;
-}
-
-.index-visited {
-    grid-column: 2;
-    grid-row: 3;
-
-    margin-top: 5px;
-
-    font-size: 9px;
-
-    line-height: 1.3;
-
-    letter-spacing:
-        0.04em;
-
-    opacity: 0.5;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
 }
 
 
-/*
-=========================================================
-MOBILE
-=========================================================
-*/
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media (max-width: 600px) {
 
     .intro h1 {
-        font-size:
-            clamp(52px, 18vw, 80px);
+        font-size: clamp(52px, 18vw, 80px);
     }
 
     .intro p {
         margin-top: 14px;
-
         margin-bottom: 45px;
 
         font-size: 13px;
     }
 
-
     #home-button,
     #index-button {
-        top:
-            calc(
-                12px +
-                env(safe-area-inset-top)
-            );
+        top: 12px;
 
-        padding:
-            9px 10px;
+        padding: 9px 10px;
 
         font-size: 9px;
 
@@ -883,43 +489,28 @@ MOBILE
         right: 12px;
     }
 
-
-    /*
-    The index remains a side panel.
-    It never becomes full-screen.
-    */
-
     #index-panel {
-        width:
-            min(340px, 86vw);
+        width: 100%;
 
-        border-left:
-            1px solid #171717;
+        border-left: none;
     }
 
     .index-header {
         padding:
-            calc(
-                16px +
-                env(safe-area-inset-top)
-            )
+            calc(16px + env(safe-area-inset-top))
             18px
             16px;
     }
 
     .index-item {
-        padding:
-            17px 18px;
+        padding: 17px 18px;
 
         min-height: 62px;
     }
 
-
     .place-popup {
         width: 220px;
-
-        max-width:
-            calc(100vw - 24px);
+        max-width: calc(100vw - 32px);
 
         padding: 14px;
     }
@@ -932,33 +523,22 @@ MOBILE
         gap: 10px;
     }
 
-
     .leaflet-control-zoom {
-        margin-bottom:
-            calc(
-                12px +
-                env(safe-area-inset-bottom)
-            ) !important;
-
-        margin-left:
-            12px !important;
+        margin-bottom: 12px !important;
+        margin-left: 12px !important;
     }
 
     .leaflet-control-zoom a {
         width: 32px !important;
-
         height: 32px !important;
-
         line-height: 32px !important;
     }
 }
 
 
-/*
-=========================================================
-VERY SMALL PHONES
-=========================================================
-*/
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
 
 @media (max-width: 380px) {
 
@@ -971,33 +551,14 @@ VERY SMALL PHONES
     }
 
     .place-popup {
-        width:
-            min(
-                220px,
-                calc(100vw - 24px)
-            );
-    }
-
-    .categories div {
-        gap: 7px;
-    }
-
-    #index-panel {
-        width: 88vw;
-    }
-
-    .index-item {
-        padding-left: 16px;
-        padding-right: 16px;
+        width: min(220px, calc(100vw - 24px));
     }
 }
 
 
-/*
-=========================================================
-REDUCE MOTION
-=========================================================
-*/
+/* =========================================================
+   REDUCE MOTION
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
