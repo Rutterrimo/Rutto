@@ -1,6 +1,5 @@
 /* =========================================================
-   RUTTO — INTERACTIVE CAT
-   cat.js
+   RUTTO — INTERACTIVE PIXEL CAT
    ========================================================= */
 
 (() => {
@@ -12,118 +11,74 @@
        ELEMENTS
        ===================================================== */
 
-    const cat =
-        document.getElementById("rutto-cat");
+    const cat = document.getElementById("rutto-cat");
 
-    const canvas =
-        document.getElementById("rutto-cat-canvas");
+    const canvas = document.getElementById("rutto-cat-canvas");
 
-    const cigarette =
-        document.getElementById("rutto-cigarette");
+    const cigarette = document.getElementById("rutto-cigarette");
 
-    const smoke =
-        document.getElementById("rutto-smoke");
+    const smoke = document.getElementById("rutto-smoke");
 
-    const message =
-        document.getElementById("rutto-message");
+    const message = document.getElementById("rutto-message");
 
 
-    if (
-        !cat ||
-        !canvas ||
-        !cigarette ||
-        !smoke ||
-        !message
-    ) {
+    if (!cat || !canvas || !cigarette) {
         return;
     }
 
 
-    const ctx =
-        canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
 
-
-    /* =====================================================
-       CONFIGURATION
-       ===================================================== */
-
-    const CAT_SIZE = 32;
-
-    const CAT_SCREEN_MARGIN = 55;
-
-    const ESCAPE_DISTANCE = 120;
-
-    const CIGARETTE_CATCH_DISTANCE = 105;
-
-    const SLEEP_AFTER_GREETING = 6000;
-
-    const SLEEP_AFTER_ESCAPE = 2800;
-
-    const SLEEP_AFTER_CIGARETTE = 1300;
+    ctx.imageSmoothingEnabled = false;
 
 
     /* =====================================================
        STATE
        ===================================================== */
 
-    let state = "greeting";
+    let catState = "sleeping";
 
-    let smoking = false;
+    let cigaretteDragging = false;
 
-    let draggingCigarette = false;
+    let cigaretteHeld = false;
 
-    let sleepTimer = null;
+    let cigarettePointerId = null;
+
+    let fleeTimer = null;
+
+    let returnTimer = null;
 
     let messageTimer = null;
-
-    let animationFrame = null;
-
-    let catX = 0;
-
-    let catY = 0;
-
-    let cigaretteHome = {
-        left: 0,
-        top: 0
-    };
-
-
-    /* =====================================================
-       COLORS
-       ===================================================== */
-
-    const COLORS = {
-
-        dark: "#242424",
-
-        fur: "#a66d4d",
-
-        furLight: "#b97955",
-
-        pink: "#d4777d",
-
-        white: "#f5f1e8"
-
-    };
 
 
     /* =====================================================
        PIXEL DRAWING
        ===================================================== */
 
-    function pixel(
-        x,
-        y,
-        color
-    ) {
+    const SCALE = 4;
+
+
+    function pixel(x, y, color) {
 
         ctx.fillStyle = color;
 
         ctx.fillRect(
-            x,
-            y,
-            1,
-            1
+            x * SCALE,
+            y * SCALE,
+            SCALE,
+            SCALE
+        );
+
+    }
+
+
+    function clearCanvas() {
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
         );
 
     }
@@ -133,126 +88,166 @@
        DRAW CAT
        ===================================================== */
 
-    function drawCat(
-        pose = "idle"
-    ) {
+    function drawCat(options = {}) {
 
-        ctx.clearRect(
-            0,
-            0,
-            CAT_SIZE,
-            CAT_SIZE
-        );
+        const sleeping =
+            options.sleeping === true;
+
+        const smoking =
+            options.smoking === true;
+
+        clearCanvas();
+
+
+        /*
+         * Pixel cat palette
+         */
+
+        const fur = "#171717";
+
+        const dark = "#0b0b0b";
+
+        const light = "#e8e6df";
+
+        const nose = "#8d4c45";
 
 
         /*
          * BODY
          */
 
-        for (
-            let x = 9;
-            x < 24;
-            x++
-        ) {
+        pixel(8, 17, fur);
+        pixel(9, 16, fur);
+        pixel(10, 15, fur);
+        pixel(11, 15, fur);
 
-            for (
-                let y = 15;
-                y < 25;
-                y++
-            ) {
+        pixel(12, 14, fur);
+        pixel(13, 14, fur);
+        pixel(14, 14, fur);
+        pixel(15, 14, fur);
 
-                pixel(
-                    x,
-                    y,
-                    COLORS.furLight
-                );
+        pixel(16, 14, fur);
+        pixel(17, 15, fur);
+        pixel(18, 15, fur);
 
-            }
+        pixel(19, 16, fur);
+        pixel(20, 17, fur);
 
-        }
+        pixel(21, 18, fur);
+        pixel(21, 19, fur);
+
+        pixel(20, 20, fur);
+        pixel(19, 21, fur);
+
+        pixel(18, 22, fur);
+        pixel(17, 23, fur);
+
+        pixel(16, 23, fur);
+        pixel(15, 23, fur);
+
+        pixel(14, 22, fur);
+        pixel(13, 22, fur);
+
+        pixel(12, 23, fur);
+        pixel(11, 23, fur);
+
+        pixel(10, 22, fur);
+        pixel(9, 22, fur);
+
+        pixel(8, 21, fur);
+        pixel(8, 20, fur);
 
 
         /*
          * HEAD
          */
 
-        for (
-            let x = 8;
-            x < 24;
-            x++
-        ) {
+        pixel(9, 7, fur);
+        pixel(10, 6, fur);
 
-            for (
-                let y = 7;
-                y < 18;
-                y++
-            ) {
+        pixel(11, 5, fur);
+        pixel(12, 4, fur);
 
-                pixel(
-                    x,
-                    y,
-                    COLORS.furLight
-                );
+        pixel(13, 5, fur);
+        pixel(14, 6, fur);
 
-            }
+        pixel(15, 6, fur);
+        pixel(16, 5, fur);
 
-        }
+        pixel(17, 4, fur);
+        pixel(18, 5, fur);
+
+        pixel(19, 6, fur);
+        pixel(20, 7, fur);
+
+        pixel(21, 8, fur);
+        pixel(21, 9, fur);
+
+        pixel(22, 10, fur);
+        pixel(22, 11, fur);
+
+        pixel(21, 12, fur);
+        pixel(20, 13, fur);
+
+        pixel(19, 14, fur);
+        pixel(18, 14, fur);
+
+        pixel(17, 15, fur);
+        pixel(16, 15, fur);
+
+        pixel(15, 14, fur);
+        pixel(14, 14, fur);
+
+        pixel(13, 13, fur);
+        pixel(12, 13, fur);
+
+        pixel(11, 12, fur);
+        pixel(10, 11, fur);
 
 
         /*
          * EARS
          */
 
-        pixel(8, 7, COLORS.dark);
-        pixel(9, 6, COLORS.dark);
-        pixel(10, 7, COLORS.dark);
+        pixel(10, 6, dark);
+        pixel(11, 5, dark);
+        pixel(12, 4, dark);
 
-        pixel(22, 7, COLORS.dark);
-        pixel(23, 6, COLORS.dark);
-        pixel(24, 7, COLORS.dark);
-
-        pixel(9, 7, COLORS.pink);
-        pixel(23, 7, COLORS.pink);
+        pixel(17, 4, dark);
+        pixel(18, 5, dark);
+        pixel(19, 6, dark);
 
 
         /*
-         * EYES
+         * FACE
          */
 
-        if (
-            pose === "sleeping"
-        ) {
+        if (sleeping) {
 
-            pixel(11, 12, COLORS.dark);
-            pixel(12, 12, COLORS.dark);
+            /*
+             * Closed eyes
+             */
 
-            pixel(19, 12, COLORS.dark);
-            pixel(20, 12, COLORS.dark);
+            pixel(12, 9, light);
+            pixel(13, 9, light);
 
-        }
+            pixel(17, 9, light);
+            pixel(18, 9, light);
 
-        else if (
-            pose === "angry"
-        ) {
+        } else {
 
-            pixel(11, 11, COLORS.dark);
-            pixel(12, 12, COLORS.dark);
+            /*
+             * Open eyes
+             */
 
-            pixel(19, 12, COLORS.dark);
-            pixel(20, 11, COLORS.dark);
+            pixel(12, 9, light);
+            pixel(13, 9, light);
 
-        }
+            pixel(17, 9, light);
+            pixel(18, 9, light);
 
-        else {
-
-            pixel(11, 11, COLORS.dark);
-            pixel(12, 11, COLORS.dark);
-
-            pixel(19, 11, COLORS.dark);
-            pixel(20, 11, COLORS.dark);
-
-            pixel(12, 12, COLORS.white);
-            pixel(20, 12, COLORS.white);
+            pixel(13, 9, dark);
+            pixel(18, 9, dark);
 
         }
 
@@ -261,112 +256,74 @@
          * NOSE
          */
 
-        pixel(
-            15,
-            14,
-            COLORS.pink
-        );
-
-        pixel(
-            16,
-            14,
-            COLORS.pink
-        );
+        pixel(15, 11, nose);
 
 
         /*
-         * MOUTH
+         * LEGS
          */
 
-        pixel(
-            15,
-            15,
-            COLORS.dark
-        );
+        pixel(10, 22, fur);
+        pixel(10, 23, fur);
 
-        pixel(
-            16,
-            15,
-            COLORS.dark
-        );
+        pixel(14, 22, fur);
+        pixel(14, 23, fur);
 
-
-        /*
-         * FEET
-         */
-
-        pixel(
-            10,
-            24,
-            COLORS.dark
-        );
-
-        pixel(
-            11,
-            24,
-            COLORS.dark
-        );
-
-        pixel(
-            20,
-            24,
-            COLORS.dark
-        );
-
-        pixel(
-            21,
-            24,
-            COLORS.dark
-        );
+        pixel(18, 22, fur);
+        pixel(18, 23, fur);
 
 
         /*
          * TAIL
          */
 
-        pixel(
-            23,
-            20,
-            COLORS.dark
-        );
+        pixel(7, 19, fur);
+        pixel(6, 18, fur);
+        pixel(5, 18, fur);
+        pixel(4, 17, fur);
 
-        pixel(
-            24,
-            19,
-            COLORS.dark
-        );
+        pixel(4, 16, fur);
+        pixel(5, 15, fur);
 
-        pixel(
-            25,
-            18,
-            COLORS.dark
-        );
 
-        pixel(
-            25,
-            17,
-            COLORS.dark
-        );
+        /*
+         * LITTLE SLEEP Z
+         */
+
+        if (sleeping) {
+
+            pixel(22, 6, fur);
+            pixel(23, 6, fur);
+            pixel(22, 7, fur);
+            pixel(21, 8, fur);
+            pixel(22, 8, fur);
+            pixel(23, 8, fur);
+
+        }
 
 
         /*
          * CIGARETTE IN MOUTH
          */
 
-        if (
-            pose === "smoking"
-        ) {
+        if (smoking) {
 
-            pixel(16, 18, COLORS.dark);
-            pixel(17, 18, COLORS.dark);
-            pixel(18, 18, COLORS.dark);
-            pixel(19, 18, COLORS.dark);
-            pixel(20, 18, COLORS.dark);
+            ctx.fillStyle = "#f1eee5";
 
-            pixel(
-                21,
-                18,
-                "#d85b3d"
+            ctx.fillRect(
+                21 * SCALE,
+                11 * SCALE,
+                6 * SCALE,
+                2 * SCALE
+            );
+
+            ctx.fillStyle = "#b43a26";
+
+            ctx.fillRect(
+                27 * SCALE,
+                11 * SCALE,
+                2 * SCALE,
+                2 * SCALE
             );
 
         }
@@ -375,67 +332,36 @@
 
 
     /* =====================================================
-       POSITION CAT
+       INITIAL CAT
        ===================================================== */
 
-    function positionCat(
-        x,
-        y
-    ) {
+    drawCat({
+        sleeping: true,
+        smoking: false
+    });
 
-        catX = x;
-        catY = y;
-
-        cat.style.left =
-            `${x}px`;
-
-        cat.style.top =
-            `${y}px`;
-
-    }
-
-
-    /* =====================================================
-       CENTER CAT ON START
-       ===================================================== */
-
-    function centerCat() {
-
-        positionCat(
-
-            window.innerWidth / 2,
-
-            window.innerHeight * 0.57
-
-        );
-
-    }
+    cat.classList.add("cat-sleeping");
 
 
     /* =====================================================
        MESSAGE
        ===================================================== */
 
-    function say(
-        text,
-        duration = 1000
-    ) {
+    function showMessage(text, duration = 1000) {
 
-        clearTimeout(
-            messageTimer
-        );
+        if (!message) {
+            return;
+        }
 
-        message.textContent =
-            text;
+        clearTimeout(messageTimer);
 
-        message.style.opacity =
-            "1";
+        message.textContent = text;
 
-        messageTimer =
-        setTimeout(() => {
+        message.classList.add("visible");
 
-            message.style.opacity =
-                "0";
+        messageTimer = setTimeout(() => {
+
+            message.classList.remove("visible");
 
         }, duration);
 
@@ -443,299 +369,262 @@
 
 
     /* =====================================================
-       CLEAR SLEEP TIMER
+       CAT POSITION
        ===================================================== */
 
-    function clearSleepTimer() {
+    function getCatRect() {
 
-        clearTimeout(
-            sleepTimer
-        );
+        return cat.getBoundingClientRect();
 
     }
 
 
     /* =====================================================
-       SLEEP
+       CIGARETTE POSITION
        ===================================================== */
 
-    function sleep() {
+    function getCigaretteRect() {
 
-        if (smoking) {
+        return cigarette.getBoundingClientRect();
+
+    }
+
+
+    /* =====================================================
+       DISTANCE BETWEEN CAT AND CIGARETTE
+       ===================================================== */
+
+    function cigaretteIsNearCat() {
+
+        const catRect = getCatRect();
+
+        const cigRect = getCigaretteRect();
+
+
+        const catX =
+            catRect.left +
+            catRect.width / 2;
+
+        const catY =
+            catRect.top +
+            catRect.height / 2;
+
+
+        const cigX =
+            cigRect.left +
+            cigRect.width / 2;
+
+        const cigY =
+            cigRect.top +
+            cigRect.height / 2;
+
+
+        const dx = catX - cigX;
+
+        const dy = catY - cigY;
+
+        const distance =
+            Math.sqrt(
+                dx * dx +
+                dy * dy
+            );
+
+
+        return distance < 100;
+
+    }
+
+
+    /* =====================================================
+       SMOKING
+       ===================================================== */
+
+    function startSmoking() {
+
+        if (cigaretteHeld) {
             return;
         }
 
-        clearSleepTimer();
 
-        state =
-            "sleeping";
+        if (catState === "fleeing") {
+            return;
+        }
 
-        drawCat(
-            "sleeping"
+
+        cigaretteHeld = true;
+
+        catState = "smoking";
+
+
+        cigarette.classList.add("burning");
+
+        smoke.classList.add("smoking");
+
+        cat.classList.remove("cat-sleeping");
+
+        drawCat({
+            sleeping: false,
+            smoking: true
+        });
+
+
+        showMessage(
+            "..."
         );
 
     }
 
 
     /* =====================================================
-       WAKE
+       STOP SMOKING
        ===================================================== */
 
-    function wake() {
+    function stopSmoking() {
 
-        clearSleepTimer();
+        if (!cigaretteHeld) {
+            return;
+        }
 
-        state =
-            "idle";
 
-        drawCat(
-            "idle"
-        );
+        cigaretteHeld = false;
+
+        cigarette.classList.remove("burning");
+
+        smoke.classList.remove("smoking");
+
+
+        if (catState !== "fleeing") {
+
+            catState = "sleeping";
+
+            cat.classList.remove("cat-waking");
+
+            cat.classList.add("cat-sleeping");
+
+            drawCat({
+                sleeping: true,
+                smoking: false
+            });
+
+        } else {
+
+            drawCat({
+                sleeping: false,
+                smoking: false
+            });
+
+        }
 
     }
 
 
     /* =====================================================
-       RANDOM ESCAPE TARGET
+       RETURN CIGARETTE TO NORMAL POSITION
        ===================================================== */
 
-    function getEscapeTarget() {
+    function resetCigarette() {
 
-        const minX =
-            CAT_SCREEN_MARGIN;
+        cigarette.style.left = "";
 
-        const maxX =
-            window.innerWidth -
-            CAT_SCREEN_MARGIN;
+        cigarette.style.top = "";
 
-        const minY =
-            130;
+        cigarette.style.transform = "rotate(-12deg)";
 
-        const maxY =
-            window.innerHeight -
-            100;
+    }
 
 
-        let x =
-            minX +
-            Math.random() *
-            (maxX - minX);
+    /* =====================================================
+       CAT FLEES
+       ===================================================== */
+
+    function flee() {
+
+        if (catState === "fleeing") {
+            return;
+        }
 
 
-        let y =
-            minY +
-            Math.random() *
-            (maxY - minY);
+        stopSmoking();
+
+
+        catState = "fleeing";
+
+
+        cat.classList.remove("cat-sleeping");
+
+        cat.classList.add("cat-fleeing");
+
+
+        drawCat({
+            sleeping: false,
+            smoking: false
+        });
 
 
         /*
-         * Make sure the cat actually moves
-         * a reasonable distance.
+         * Move the cat away from its normal position.
          */
 
-        let attempts = 0;
-
-        while (
-            Math.hypot(
-                x - catX,
-                y - catY
-            ) < ESCAPE_DISTANCE &&
-            attempts < 20
-        ) {
-
-            x =
-                minX +
-                Math.random() *
-                (maxX - minX);
-
-            y =
-                minY +
-                Math.random() *
-                (maxY - minY);
-
-            attempts++;
-
-        }
+        const direction =
+            Math.random() > 0.5
+                ? 1
+                : -1;
 
 
-        return {
-            x,
-            y
-        };
-
-    }
+        cat.style.transition =
+            "transform 0.45s cubic-bezier(.2,.8,.2,1)";
 
 
-    /* =====================================================
-       CAT RUNS AWAY
-       ===================================================== */
-
-    function runAway() {
-
-        if (smoking) {
-            return;
-        }
+        cat.style.transform =
+            `translate(
+                calc(-50% + ${direction * 180}px),
+                -50%
+            )`;
 
 
-        clearSleepTimer();
-
-        state =
-            "running";
-
-
-        drawCat(
-            "angry"
+        showMessage(
+            "HEY!",
+            700
         );
 
 
-        say(
-            "hey!",
-            650
-        );
+        clearTimeout(fleeTimer);
 
+        fleeTimer = setTimeout(() => {
 
-        const target =
-            getEscapeTarget();
-
-
-        const startX =
-            catX;
-
-        const startY =
-            catY;
-
-
-        const distance =
-            Math.hypot(
-
-                target.x -
-                startX,
-
-                target.y -
-                startY
-
-            );
-
-
-        const duration =
-            Math.max(
-                350,
-                Math.min(
-                    950,
-                    distance * 2
-                )
-            );
-
-
-        const startTime =
-            performance.now();
-
-
-        function animate(
-            now
-        ) {
-
-            const elapsed =
-                now -
-                startTime;
-
-
-            const progress =
-                Math.min(
-                    1,
-                    elapsed /
-                    duration
-                );
-
-
-            /*
-             * Ease out.
-             */
-
-            const eased =
-                1 -
-                Math.pow(
-                    1 - progress,
-                    3
-                );
-
-
-            positionCat(
-
-                startX +
-                (
-                    target.x -
-                    startX
-                ) *
-                eased,
-
-                startY +
-                (
-                    target.y -
-                    startY
-                ) *
-                eased
-
-            );
-
-
-            /*
-             * Tiny running wobble.
-             */
-
-            const wobble =
-                Math.sin(
-                    progress * Math.PI * 10
-                ) * 4;
-
+            cat.style.transition =
+                "transform 0.7s cubic-bezier(.2,.8,.2,1)";
 
             cat.style.transform =
-                `translate(-50%, -50%)
-                 rotate(${wobble}deg)`;
+                "translate(-50%, -50%)";
 
 
-            if (
-                progress < 1
-            ) {
+            clearTimeout(returnTimer);
 
-                animationFrame =
-                    requestAnimationFrame(
-                        animate
-                    );
+            returnTimer = setTimeout(() => {
 
-            }
+                cat.classList.remove("cat-fleeing");
 
-            else {
+                cat.classList.add("cat-sleeping");
 
-                cat.style.transform =
-                    "translate(-50%, -50%)";
+                catState = "sleeping";
 
 
-                state =
-                    "idle";
+                drawCat({
+                    sleeping: true,
+                    smoking: false
+                });
 
 
-                sleepTimer =
-                setTimeout(
-                    sleep,
-                    SLEEP_AFTER_ESCAPE
-                );
+            }, 750);
 
-            }
-
-        }
-
-
-        animationFrame =
-        requestAnimationFrame(
-            animate
-        );
+        }, 1200);
 
     }
 
 
     /* =====================================================
-       CAT TOUCH
+       CAT CLICK / TOUCH
        ===================================================== */
 
     cat.addEventListener(
@@ -748,231 +637,17 @@
 
 
             /*
-             * If smoking, the cat doesn't run.
-             * You have to take the cigarette.
+             * A smoking cat also runs away.
              */
 
-            if (smoking) {
-
-                say(
-                    "leave me alone.",
-                    900
-                );
-
-                return;
-
-            }
-
-
-            runAway();
+            flee();
 
         }
     );
 
 
     /* =====================================================
-       CIGARETTE HOME POSITION
-       ===================================================== */
-
-    function rememberCigarettePosition() {
-
-        const rect =
-            cigarette.getBoundingClientRect();
-
-
-        cigaretteHome.left =
-            rect.left;
-
-        cigaretteHome.top =
-            rect.top;
-
-    }
-
-
-    /* =====================================================
-       CIGARETTE CENTER
-       ===================================================== */
-
-    function getCigaretteCenter() {
-
-        const rect =
-            cigarette.getBoundingClientRect();
-
-
-        return {
-
-            x:
-                rect.left +
-                rect.width / 2,
-
-            y:
-                rect.top +
-                rect.height / 2
-
-        };
-
-    }
-
-
-    /* =====================================================
-       DISTANCE TO CAT
-       ===================================================== */
-
-    function cigaretteDistanceToCat() {
-
-        const cigaretteCenter =
-            getCigaretteCenter();
-
-
-        return Math.hypot(
-
-            cigaretteCenter.x -
-            catX,
-
-            cigaretteCenter.y -
-            catY
-
-        );
-
-    }
-
-
-    /* =====================================================
-       PUT CIGARETTE BACK
-       ===================================================== */
-
-    function returnCigaretteHome() {
-
-        cigarette.style.left =
-            `${cigaretteHome.left}px`;
-
-        cigarette.style.top =
-            `${cigaretteHome.top}px`;
-
-        cigarette.style.right =
-            "auto";
-
-        cigarette.style.bottom =
-            "auto";
-
-        cigarette.style.transform =
-            "none";
-
-    }
-
-
-    /* =====================================================
-       START SMOKING
-       ===================================================== */
-
-    function startSmoking() {
-
-        if (smoking) {
-            return;
-        }
-
-
-        clearSleepTimer();
-
-
-        smoking =
-            true;
-
-
-        state =
-            "smoking";
-
-
-        drawCat(
-            "smoking"
-        );
-
-
-        say(
-            "thanks.",
-            900
-        );
-
-
-        /*
-         * Place cigarette in the cat's mouth.
-         */
-
-        cigarette.style.left =
-            `${catX + 14}px`;
-
-        cigarette.style.top =
-            `${catY + 12}px`;
-
-        cigarette.style.right =
-            "auto";
-
-        cigarette.style.bottom =
-            "auto";
-
-        cigarette.style.transform =
-            "rotate(180deg)";
-
-
-        positionSmoke();
-
-
-        smoke.style.opacity =
-            "1";
-
-    }
-
-
-    /* =====================================================
-       STOP SMOKING
-       ===================================================== */
-
-    function stopSmoking() {
-
-        if (!smoking) {
-            return;
-        }
-
-
-        smoking =
-            false;
-
-
-        state =
-            "idle";
-
-
-        smoke.style.opacity =
-            "0";
-
-
-        drawCat(
-            "idle"
-        );
-
-
-        say(
-            "...",
-            650
-        );
-
-
-        /*
-         * The cigarette stays where
-         * the user has taken it.
-         */
-
-        sleepTimer =
-        setTimeout(
-            sleep,
-            SLEEP_AFTER_CIGARETTE
-        );
-
-    }
-
-
-    /* =====================================================
-       CIGARETTE POINTER DOWN
+       CIGARETTE DRAG START
        ===================================================== */
 
     cigarette.addEventListener(
@@ -984,33 +659,24 @@
             event.stopPropagation();
 
 
-            draggingCigarette =
-                true;
+            cigaretteDragging = true;
+
+            cigarettePointerId = event.pointerId;
+
+
+            cigarette.classList.add("dragging");
 
 
             cigarette.setPointerCapture(
                 event.pointerId
             );
 
-
-            /*
-             * Taking the cigarette from
-             * the smoking cat immediately
-             * stops the smoking state.
-             */
-
-            if (smoking) {
-
-                stopSmoking();
-
-            }
-
         }
     );
 
 
     /* =====================================================
-       CIGARETTE POINTER MOVE
+       CIGARETTE DRAG MOVE
        ===================================================== */
 
     cigarette.addEventListener(
@@ -1018,7 +684,8 @@
         event => {
 
             if (
-                !draggingCigarette
+                !cigaretteDragging ||
+                event.pointerId !== cigarettePointerId
             ) {
                 return;
             }
@@ -1027,100 +694,48 @@
             event.preventDefault();
 
 
+            /*
+             * Position relative to the intro.
+             */
+
+            const intro =
+                document.getElementById("home");
+
+
+            const introRect =
+                intro.getBoundingClientRect();
+
+
+            const x =
+                event.clientX -
+                introRect.left -
+                22;
+
+
+            const y =
+                event.clientY -
+                introRect.top -
+                5;
+
+
             cigarette.style.left =
-                `${event.clientX - 35}px`;
+                `${x}px`;
 
             cigarette.style.top =
-                `${event.clientY - 10}px`;
-
-            cigarette.style.right =
-                "auto";
-
-            cigarette.style.bottom =
-                "auto";
+                `${y}px`;
 
             cigarette.style.transform =
-                "none";
+                "rotate(-12deg)";
 
 
             /*
-             * If the cigarette gets close enough
-             * to the cat, highlight the possibility
-             * of giving it.
+             * The moment the cigarette gets close,
+             * the cat takes it.
              */
 
             if (
-                !smoking &&
-                cigaretteDistanceToCat()
-                <
-                CIGARETTE_CATCH_DISTANCE
-            ) {
-
-                cat.style.transform =
-                    "translate(-50%, -50%) scale(1.04)";
-
-            }
-
-            else {
-
-                cat.style.transform =
-                    "translate(-50%, -50%)";
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       CIGARETTE POINTER UP
-       ===================================================== */
-
-    cigarette.addEventListener(
-        "pointerup",
-        event => {
-
-            if (
-                !draggingCigarette
-            ) {
-                return;
-            }
-
-
-            draggingCigarette =
-                false;
-
-
-            try {
-
-                cigarette.releasePointerCapture(
-                    event.pointerId
-                );
-
-            }
-            catch (
-                error
-            ) {
-                /*
-                 * Nothing to do.
-                 */
-            }
-
-
-            cat.style.transform =
-                "translate(-50%, -50%)";
-
-
-            /*
-             * If released close to the cat,
-             * he takes the cigarette.
-             */
-
-            if (
-                !smoking &&
-                cigaretteDistanceToCat()
-                <
-                CIGARETTE_CATCH_DISTANCE
+                !cigaretteHeld &&
+                cigaretteIsNearCat()
             ) {
 
                 startSmoking();
@@ -1132,194 +747,116 @@
 
 
     /* =====================================================
-       CIGARETTE POINTER CANCEL
+       CIGARETTE DRAG END
        ===================================================== */
+
+    function endCigaretteDrag(event) {
+
+        if (
+            !cigaretteDragging ||
+            (
+                cigarettePointerId !== null &&
+                event.pointerId !== cigarettePointerId
+            )
+        ) {
+            return;
+        }
+
+
+        cigaretteDragging = false;
+
+        cigarettePointerId = null;
+
+
+        cigarette.classList.remove("dragging");
+
+
+        /*
+         * If the cigarette is close enough when released,
+         * the cat keeps smoking.
+         */
+
+        if (
+            cigaretteIsNearCat() &&
+            catState !== "fleeing"
+        ) {
+
+            startSmoking();
+
+            /*
+             * Put cigarette visually near mouth.
+             */
+
+            cigarette.style.left = "calc(72% + 35px)";
+
+            cigarette.style.top = "calc(64% + 7px)";
+
+            cigarette.style.transform =
+                "rotate(-12deg)";
+
+
+        } else {
+
+            /*
+             * If it was already being smoked and the user
+             * dragged it away, smoking stops.
+             */
+
+            if (cigaretteHeld) {
+                stopSmoking();
+            }
+
+        }
+
+    }
+
+
+    cigarette.addEventListener(
+        "pointerup",
+        endCigaretteDrag
+    );
+
 
     cigarette.addEventListener(
         "pointercancel",
+        endCigaretteDrag
+    );
+
+
+    /* =====================================================
+       PREVENT NATIVE DRAG
+       ===================================================== */
+
+    cigarette.addEventListener(
+        "dragstart",
         event => {
 
-            draggingCigarette =
-                false;
-
-            cat.style.transform =
-                "translate(-50%, -50%)";
+            event.preventDefault();
 
         }
     );
 
 
     /* =====================================================
-       SMOKE POSITION
-       ===================================================== */
-
-    function positionSmoke() {
-
-        smoke.style.left =
-            `${catX + 9}px`;
-
-        smoke.style.top =
-            `${catY - 52}px`;
-
-    }
-
-
-    /* =====================================================
-       SMOKE ANIMATION LOOP
-       ===================================================== */
-
-    function smokeLoop() {
-
-        if (smoking) {
-
-            positionSmoke();
-
-        }
-
-
-        requestAnimationFrame(
-            smokeLoop
-        );
-
-    }
-
-
-    /* =====================================================
-       GREETING
-       ===================================================== */
-
-    function greeting() {
-
-        state =
-            "greeting";
-
-
-        drawCat(
-            "idle"
-        );
-
-
-        /*
-         * Small wave.
-         */
-
-        let frame = 0;
-
-
-        const wave =
-        setInterval(
-            () => {
-
-                frame++;
-
-
-                cat.style.transform =
-                    `translate(-50%, -50%)
-                     rotate(${frame % 2 ? -4 : 4}deg)`;
-
-
-                if (
-                    frame >= 8
-                ) {
-
-                    clearInterval(
-                        wave
-                    );
-
-
-                    cat.style.transform =
-                        "translate(-50%, -50%)";
-
-
-                    state =
-                        "idle";
-
-
-                    say(
-                        "hi.",
-                        1100
-                    );
-
-
-                    sleepTimer =
-                    setTimeout(
-                        sleep,
-                        SLEEP_AFTER_GREETING
-                    );
-
-                }
-
-            },
-            120
-        );
-
-    }
-
-
-    /* =====================================================
-       KEEP CAT INSIDE VIEWPORT
-       ===================================================== */
-
-    function keepCatInsideViewport() {
-
-        const minX =
-            CAT_SCREEN_MARGIN;
-
-        const maxX =
-            window.innerWidth -
-            CAT_SCREEN_MARGIN;
-
-        const minY =
-            120;
-
-        const maxY =
-            window.innerHeight -
-            90;
-
-
-        catX =
-            Math.max(
-                minX,
-                Math.min(
-                    maxX,
-                    catX
-                )
-            );
-
-
-        catY =
-            Math.max(
-                minY,
-                Math.min(
-                    maxY,
-                    catY
-                )
-            );
-
-
-        positionCat(
-            catX,
-            catY
-        );
-
-    }
-
-
-    /* =====================================================
-       RESIZE
+       KEEP CAT / CIGARETTE INSIDE HOME
        ===================================================== */
 
     window.addEventListener(
         "resize",
         () => {
 
-            keepCatInsideViewport();
+            /*
+             * Don't modify anything while the user is
+             * actively dragging the cigarette.
+             */
 
-            if (
-                !smoking
-            ) {
+            if (!cigaretteDragging) {
 
-                rememberCigarettePosition();
+                if (!cigaretteHeld) {
+
+                    resetCigarette();
+
+                }
 
             }
 
@@ -1328,27 +865,47 @@
 
 
     /* =====================================================
-       INITIALIZATION
+       FIRST ARRIVAL
        ===================================================== */
 
-    centerCat();
+    setTimeout(() => {
 
-    rememberCigarettePosition();
+        if (catState !== "sleeping") {
+            return;
+        }
 
-    drawCat(
-        "idle"
-    );
 
-    smokeLoop();
+        cat.classList.remove("cat-sleeping");
 
-    /*
-     * Small delay so the page has rendered first.
-     */
+        cat.classList.add("cat-waking");
 
-    setTimeout(
-        greeting,
-        700
-    );
+
+        drawCat({
+            sleeping: false,
+            smoking: false
+        });
+
+
+        setTimeout(() => {
+
+            if (catState !== "sleeping") {
+                return;
+            }
+
+
+            cat.classList.remove("cat-waking");
+
+            cat.classList.add("cat-sleeping");
+
+
+            drawCat({
+                sleeping: true,
+                smoking: false
+            });
+
+        }, 900);
+
+    }, 700);
 
 
 })();
