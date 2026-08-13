@@ -33,16 +33,17 @@ const map = L.map("map-container", {
 
     zoomControl: false,
 
-    /*
-    Leaflet handles taps/clicks on touch devices.
-    */
-
     tap: true,
 
     touchZoom: true,
 
-    doubleClickZoom: true
+    dragging: true,
 
+    doubleClickZoom: true,
+
+    scrollWheelZoom: true,
+
+    boxZoom: false
 }).setView([20, 0], 2);
 
 
@@ -121,7 +122,7 @@ setTimeout(() => {
    RESIZE
    ========================================================= */
 
-let resizeTimer;
+let resizeTimer = null;
 
 window.addEventListener("resize", () => {
 
@@ -136,7 +137,6 @@ window.addEventListener("resize", () => {
         fitWorldToScreen();
 
     }, 200);
-
 });
 
 
@@ -155,7 +155,6 @@ window.addEventListener("orientationchange", () => {
         fitWorldToScreen();
 
     }, 400);
-
 });
 
 
@@ -184,7 +183,6 @@ const places = [
         notes: ""
     },
 
-
     {
         id: 2,
         name: "Langosi, mici, cafea",
@@ -203,7 +201,6 @@ const places = [
 
         notes: ""
     },
-
 
     {
         id: 3,
@@ -224,7 +221,6 @@ const places = [
         notes: ""
     },
 
-
     {
         id: 4,
         name: "Pri Hladniku",
@@ -243,7 +239,6 @@ const places = [
 
         notes: ""
     },
-
 
     {
         id: 5,
@@ -264,7 +259,6 @@ const places = [
         notes: ""
     },
 
-
     {
         id: 6,
         name: "Caffe Bar Milano",
@@ -283,7 +277,6 @@ const places = [
 
         notes: ""
     },
-
 
     {
         id: 7,
@@ -304,7 +297,6 @@ const places = [
         notes: ""
     },
 
-
     {
         id: 8,
         name: "Magical Cavern",
@@ -323,7 +315,6 @@ const places = [
 
         notes: ""
     },
-
 
     {
         id: 9,
@@ -344,7 +335,6 @@ const places = [
         notes: ""
     },
 
-
     {
         id: 10,
         name: "Lucky Bar",
@@ -364,7 +354,6 @@ const places = [
         notes: ""
     },
 
-
     {
         id: 11,
         name: "Sala Admiral",
@@ -383,7 +372,6 @@ const places = [
 
         notes: ""
     },
-
 
     {
         id: 12,
@@ -411,17 +399,13 @@ const places = [
    INDEX ELEMENTS
    ========================================================= */
 
-const indexList =
-    document.getElementById("index-list");
+const indexList = document.getElementById("index-list");
 
-const indexButton =
-    document.getElementById("index-button");
+const indexButton = document.getElementById("index-button");
 
-const indexPanel =
-    document.getElementById("index-panel");
+const indexPanel = document.getElementById("index-panel");
 
-const closeIndex =
-    document.getElementById("close-index");
+const closeIndex = document.getElementById("close-index");
 
 
 /* =========================================================
@@ -432,7 +416,7 @@ const markerReferences = [];
 
 
 /* =========================================================
-   CLOSE ALL TOOLTIPS
+   CLOSE ALL OPEN TOOLTIPS
    ========================================================= */
 
 function closeAllTooltips() {
@@ -452,21 +436,21 @@ function closeAllTooltips() {
 
 
 /* =========================================================
-   OPEN / TOGGLE TOOLTIP
+   OPEN / CLOSE INDEX
    ========================================================= */
 
-function toggleMarkerTooltip(marker) {
+function openIndex() {
 
-    if (marker.isTooltipOpen()) {
+    indexPanel.classList.add("open");
 
-        marker.closeTooltip();
+    indexPanel.setAttribute("aria-hidden", "false");
+}
 
-        return;
-    }
+function closeIndexPanel() {
 
-    closeAllTooltips();
+    indexPanel.classList.remove("open");
 
-    marker.openTooltip();
+    indexPanel.setAttribute("aria-hidden", "true");
 }
 
 
@@ -478,56 +462,42 @@ places.forEach(place => {
 
 
     /* =====================================================
-       VISIBLE DOT
+       CUSTOM MARKER
        ===================================================== */
 
-    const visibleMarker = L.circleMarker(
+    const markerIcon = L.divIcon({
+
+        className: "",
+
+        html: `
+            <div
+                class="rutto-marker"
+                aria-hidden="true"
+            >
+                <span class="rutto-marker-dot"></span>
+            </div>
+        `,
+
+        iconSize: [32, 32],
+
+        iconAnchor: [16, 16],
+
+        tooltipAnchor: [0, -16]
+    });
+
+
+    const marker = L.marker(
         [place.lat, place.lng],
         {
-            radius: 3,
+            icon: markerIcon,
 
-            color: "#3a3a38",
-
-            fillColor: "#3a3a38",
-
-            fillOpacity: 1,
-
-            weight: 0,
-
-            interactive: false
-        }
-    ).addTo(map);
-
-
-    /* =====================================================
-       INVISIBLE TOUCH TARGET
-       ===================================================== */
-
-    const marker = L.circleMarker(
-        [place.lat, place.lng],
-        {
-            /*
-            Larger invisible hit area.
-
-            The user still sees only the 3px dot,
-            but has a comfortable touch target.
-            */
-
-            radius: 16,
-
-            color: "#000000",
-
-            opacity: 0,
-
-            fillColor: "#000000",
-
-            fillOpacity: 0,
-
-            weight: 0,
+            keyboard: false,
 
             interactive: true,
 
-            bubblingMouseEvents: false
+            bubblingMouseEvents: false,
+
+            zIndexOffset: 100
         }
     ).addTo(map);
 
@@ -565,7 +535,6 @@ places.forEach(place => {
 
             </div>
 
-
             <div class="popup-section">
 
                 <span>TOILETS</span>
@@ -573,7 +542,6 @@ places.forEach(place => {
                 <p>${place.toilets}</p>
 
             </div>
-
 
             <div class="popup-section">
 
@@ -596,27 +564,15 @@ places.forEach(place => {
         {
             direction: "top",
 
-            offset: [0, -10],
+            offset: [0, -12],
 
             opacity: 1,
 
             className: "rutto-tooltip",
 
-            /*
-            Keep tooltip interactive so the user can
-            touch/read it without it immediately disappearing.
-            */
-
             interactive: true,
 
-            permanent: false,
-
-            /*
-            Let Leaflet choose left/right when necessary.
-            This is particularly useful near mobile edges.
-            */
-
-            direction: "auto"
+            permanent: false
         }
     );
 
@@ -628,6 +584,8 @@ places.forEach(place => {
     marker.on("mouseover", () => {
 
         if (!L.Browser.touch) {
+
+            closeAllTooltips();
 
             marker.openTooltip();
 
@@ -648,45 +606,30 @@ places.forEach(place => {
 
 
     /* =====================================================
-       CLICK / TAP
+       CLICK / MOBILE TAP
        ===================================================== */
 
     marker.on("click", event => {
 
-        /*
-        IMPORTANT:
-
-        Do NOT call preventDefault() here.
-
-        Leaflet already converts a valid mobile tap
-        into a layer click event. Blocking the original
-        browser event was one of the things making the
-        mobile behaviour unreliable.
-        */
-
         if (event.originalEvent) {
 
-            L.DomEvent.stopPropagation(
-                event.originalEvent
-            );
+            L.DomEvent.stopPropagation(event.originalEvent);
 
         }
 
-        toggleMarkerTooltip(marker);
+        if (marker.isTooltipOpen()) {
+
+            marker.closeTooltip();
+
+        } else {
+
+            closeAllTooltips();
+
+            marker.openTooltip();
+
+        }
 
     });
-
-
-    /* =====================================================
-       TOUCH START
-       ===================================================== */
-
-    /*
-    We intentionally do NOT preventDefault() here.
-
-    This lets Leaflet handle touch gestures normally,
-    including map movement and tap detection.
-    */
 
 
     /* =====================================================
@@ -697,9 +640,7 @@ places.forEach(place => {
 
         place: place,
 
-        marker: marker,
-
-        visibleMarker: visibleMarker
+        marker: marker
 
     });
 
@@ -708,29 +649,36 @@ places.forEach(place => {
        CREATE INDEX ITEM
        ===================================================== */
 
-    const indexItem =
-        document.createElement("button");
+    const indexItem = document.createElement("button");
 
     indexItem.type = "button";
 
     indexItem.className = "index-item";
 
-
     indexItem.innerHTML = `
+
         <span class="index-number">
             ${String(place.id).padStart(2, "0")}
         </span>
 
-        <span class="index-name">
-            ${place.name}
-        </span>
+        <span class="index-main">
 
-        <span class="index-coordinates">
-            ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
-        </span>
+            <span class="index-name">
+                ${place.name}
+            </span>
 
-        <span class="index-visited">
-            VISITED · ${place.visitedDate} · ${place.visitedTime}
+            <span class="index-meta">
+
+                <span class="index-coordinates">
+                    ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
+                </span>
+
+                <span class="index-visited">
+                    VISITED · ${place.visitedDate} · ${place.visitedTime}
+                </span>
+
+            </span>
+
         </span>
     `;
 
@@ -746,12 +694,10 @@ places.forEach(place => {
         event.stopPropagation();
 
 
-        /* CLOSE INDEX */
+        closeIndexPanel();
 
-        indexPanel.classList.remove("open");
+        closeAllTooltips();
 
-
-        /* Refresh Leaflet after panel closes */
 
         setTimeout(() => {
 
@@ -759,12 +705,7 @@ places.forEach(place => {
                 pan: false
             });
 
-        }, 250);
-
-
-        /* Close any currently open tooltip */
-
-        closeAllTooltips();
+        }, 80);
 
 
         let tooltipOpened = false;
@@ -778,11 +719,6 @@ places.forEach(place => {
 
             tooltipOpened = true;
 
-            map.off(
-                "moveend",
-                openTooltipAfterMove
-            );
-
             marker.openTooltip();
 
         };
@@ -794,8 +730,6 @@ places.forEach(place => {
         );
 
 
-        /* Move to selected place */
-
         map.setView(
             [place.lat, place.lng],
             8,
@@ -806,8 +740,6 @@ places.forEach(place => {
             }
         );
 
-
-        /* Safety fallback */
 
         setTimeout(() => {
 
@@ -829,7 +761,9 @@ places.forEach(place => {
     });
 
 
-    /* Add item to INDEX */
+    /* =====================================================
+       ADD ITEM TO INDEX
+       ===================================================== */
 
     indexList.appendChild(indexItem);
 
@@ -846,7 +780,7 @@ indexButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
-    indexPanel.classList.add("open");
+    openIndex();
 
 });
 
@@ -861,17 +795,16 @@ closeIndex.addEventListener("click", event => {
 
     event.stopPropagation();
 
-    indexPanel.classList.remove("open");
+    closeIndexPanel();
 
 });
 
 
 /* =========================================================
-   ENTER THE MAP
+   ENTER MAP
    ========================================================= */
 
-const enterMapButton =
-    document.getElementById("enter-map");
+const enterMapButton = document.getElementById("enter-map");
 
 enterMapButton.addEventListener("click", event => {
 
@@ -894,8 +827,7 @@ enterMapButton.addEventListener("click", event => {
    RETURN HOME
    ========================================================= */
 
-const homeButton =
-    document.getElementById("home-button");
+const homeButton = document.getElementById("home-button");
 
 homeButton.addEventListener("click", event => {
 
@@ -903,7 +835,7 @@ homeButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
-    indexPanel.classList.remove("open");
+    closeIndexPanel();
 
     closeAllTooltips();
 
@@ -919,14 +851,14 @@ homeButton.addEventListener("click", event => {
 
 
 /* =========================================================
-   ESCAPE → CLOSE INDEX + TOOLTIPS
+   ESCAPE → CLOSE INDEX
    ========================================================= */
 
 document.addEventListener("keydown", event => {
 
     if (event.key === "Escape") {
 
-        indexPanel.classList.remove("open");
+        closeIndexPanel();
 
         closeAllTooltips();
 
@@ -941,24 +873,17 @@ document.addEventListener("keydown", event => {
 
 map.on("click", event => {
 
-    /*
-    If the click originated on a marker, the marker's
-    own handler has already dealt with it.
-    */
-
     if (
         event.originalEvent &&
         event.originalEvent.target &&
         event.originalEvent.target.closest &&
-        event.originalEvent.target.closest(
-            ".leaflet-interactive"
+        (
+            event.originalEvent.target.closest(".rutto-marker") ||
+            event.originalEvent.target.closest(".leaflet-tooltip")
         )
     ) {
-
         return;
-
     }
-
 
     closeAllTooltips();
 
@@ -976,6 +901,8 @@ window.addEventListener("load", () => {
         map.invalidateSize({
             pan: false
         });
+
+        fitWorldToScreen();
 
     }, 300);
 
