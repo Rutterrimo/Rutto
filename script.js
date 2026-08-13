@@ -29,22 +29,18 @@ const map = L.map("map-container", {
         [85, 180]
     ],
 
-    maxBoundsViscosity: 1.0,
+    maxBoundsViscosity: 1,
 
     zoomControl: false,
 
-    tap: true,
-
     touchZoom: true,
 
-    dragging: true,
+    tap: true
 
-    doubleClickZoom: true,
-
-    scrollWheelZoom: true,
-
-    boxZoom: false
-}).setView([20, 0], 2);
+}).setView(
+    [20, 0],
+    2
+);
 
 
 /* =========================================================
@@ -72,34 +68,51 @@ L.tileLayer(
 
 
 /* =========================================================
-   KEEP WORLD FILLED WITH SCREEN
+   MAP SIZING
    ========================================================= */
 
 function fitWorldToScreen() {
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    const worldWidth = 360;
-    const worldHeight = 170;
-
-    const zoomX = Math.log2(width / worldWidth);
-    const zoomY = Math.log2(height / worldHeight);
-
-    const idealZoom = Math.max(
-        2,
-        Math.ceil(Math.max(zoomX, zoomY))
-    );
-
-    map.setMinZoom(idealZoom);
-
-    map.setZoom(idealZoom, {
-        animate: false
-    });
-
     map.invalidateSize({
         pan: false
     });
+
+
+    /*
+     * Leaflet itself is much better at calculating
+     * the actual world scale than our previous
+     * width / 360 and height / 170 approximation.
+     *
+     * We only make sure the map starts at a useful
+     * world view and remains inside its limits.
+     */
+
+    const size = map.getSize();
+
+    if (
+        !size ||
+        size.x <= 0 ||
+        size.y <= 0
+    ) {
+        return;
+    }
+
+
+    const currentZoom = map.getZoom();
+
+
+    if (
+        !Number.isFinite(currentZoom) ||
+        currentZoom < 2
+    ) {
+        map.setZoom(
+            2,
+            {
+                animate: false
+            }
+        );
+    }
+
 }
 
 
@@ -107,15 +120,18 @@ function fitWorldToScreen() {
    INITIAL MAP SIZING
    ========================================================= */
 
-setTimeout(() => {
+window.addEventListener(
+    "load",
+    () => {
 
-    map.invalidateSize({
-        pan: false
-    });
+        setTimeout(() => {
 
-    fitWorldToScreen();
+            fitWorldToScreen();
 
-}, 150);
+        }, 150);
+
+    }
+);
 
 
 /* =========================================================
@@ -124,38 +140,40 @@ setTimeout(() => {
 
 let resizeTimer = null;
 
-window.addEventListener("resize", () => {
 
-    clearTimeout(resizeTimer);
+window.addEventListener(
+    "resize",
+    () => {
 
-    resizeTimer = setTimeout(() => {
+        clearTimeout(resizeTimer);
 
-        map.invalidateSize({
-            pan: false
-        });
 
-        fitWorldToScreen();
+        resizeTimer = setTimeout(() => {
 
-    }, 200);
-});
+            fitWorldToScreen();
+
+        }, 150);
+
+    }
+);
 
 
 /* =========================================================
    ORIENTATION CHANGE
    ========================================================= */
 
-window.addEventListener("orientationchange", () => {
+window.addEventListener(
+    "orientationchange",
+    () => {
 
-    setTimeout(() => {
+        setTimeout(() => {
 
-        map.invalidateSize({
-            pan: false
-        });
+            fitWorldToScreen();
 
-        fitWorldToScreen();
+        }, 400);
 
-    }, 400);
-});
+    }
+);
 
 
 /* =========================================================
@@ -178,10 +196,12 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Squat toilets, unisex, very dirty.",
+        toilets:
+            "Squat toilets, unisex, very dirty.",
 
         notes: ""
     },
+
 
     {
         id: 2,
@@ -197,10 +217,12 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Chemical toilets, extremely dirty, unisex.",
+        toilets:
+            "Chemical toilets, extremely dirty, unisex.",
 
         notes: ""
     },
+
 
     {
         id: 3,
@@ -216,10 +238,12 @@ const places = [
         locals: "Yes",
         gambling: "Unknown",
 
-        toilets: "Normal. Men and women separated.",
+        toilets:
+            "Normal. Men and women separated.",
 
         notes: ""
     },
+
 
     {
         id: 4,
@@ -235,10 +259,12 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Normal. Men and women separated.",
+        toilets:
+            "Normal. Men and women separated.",
 
         notes: ""
     },
+
 
     {
         id: 5,
@@ -254,10 +280,12 @@ const places = [
         locals: "No",
         gambling: "Unknown",
 
-        toilets: "Normal. Men and women separated.",
+        toilets:
+            "Normal. Men and women separated.",
 
         notes: ""
     },
+
 
     {
         id: 6,
@@ -278,6 +306,7 @@ const places = [
         notes: ""
     },
 
+
     {
         id: 7,
         name: "Caffe Bar Gold",
@@ -292,10 +321,12 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Normal. Men and women separated.",
+        toilets:
+            "Normal. Men and women separated.",
 
         notes: ""
     },
+
 
     {
         id: 8,
@@ -311,10 +342,12 @@ const places = [
         locals: "No",
         gambling: "No",
 
-        toilets: "Unisex. Looks like a private laundry room.",
+        toilets:
+            "Unisex. Looks like a private laundry room.",
 
         notes: ""
     },
+
 
     {
         id: 9,
@@ -335,6 +368,7 @@ const places = [
         notes: ""
     },
 
+
     {
         id: 10,
         name: "Lucky Bar",
@@ -349,10 +383,12 @@ const places = [
         locals: "Yes",
         gambling: "Yes",
 
-        toilets: "Unisex, extremely dirty.",
+        toilets:
+            "Unisex, extremely dirty.",
 
         notes: ""
     },
+
 
     {
         id: 11,
@@ -373,6 +409,7 @@ const places = [
         notes: ""
     },
 
+
     {
         id: 12,
         name: "Bar 10 Damijana Kodelija",
@@ -387,7 +424,8 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Normal. Men and women separated.",
+        toilets:
+            "Normal. Men and women separated.",
 
         notes: ""
     }
@@ -399,13 +437,28 @@ const places = [
    INDEX ELEMENTS
    ========================================================= */
 
-const indexList = document.getElementById("index-list");
+const indexList =
+    document.getElementById(
+        "index-list"
+    );
 
-const indexButton = document.getElementById("index-button");
 
-const indexPanel = document.getElementById("index-panel");
+const indexButton =
+    document.getElementById(
+        "index-button"
+    );
 
-const closeIndex = document.getElementById("close-index");
+
+const indexPanel =
+    document.getElementById(
+        "index-panel"
+    );
+
+
+const closeIndex =
+    document.getElementById(
+        "close-index"
+    );
 
 
 /* =========================================================
@@ -416,278 +469,714 @@ const markerReferences = [];
 
 
 /* =========================================================
-   CLOSE ALL OPEN TOOLTIPS
+   CLOSE ALL TOOLTIPS
    ========================================================= */
 
 function closeAllTooltips() {
 
-    markerReferences.forEach(reference => {
+    markerReferences.forEach(
+        reference => {
 
-        if (
-            reference.marker &&
-            reference.marker.isTooltipOpen()
-        ) {
-            reference.marker.closeTooltip();
-        }
+            if (
+                reference.marker &&
+                reference.marker.isTooltipOpen()
+            ) {
+                reference.marker.closeTooltip();
+            }
 
-    });
-
-}
-
-
-/* =========================================================
-   OPEN / CLOSE INDEX
-   ========================================================= */
-
-function openIndex() {
-
-    indexPanel.classList.add("open");
-
-    indexPanel.setAttribute("aria-hidden", "false");
-}
-
-function closeIndexPanel() {
-
-    indexPanel.classList.remove("open");
-
-    indexPanel.setAttribute("aria-hidden", "true");
-}
-
-
-/* =========================================================
-   CREATE MARKERS AND INDEX
-   ========================================================= */
-
-places.forEach(place => {
-
-
-    /* =====================================================
-       CUSTOM MARKER
-       ===================================================== */
-
-    const markerIcon = L.divIcon({
-
-        className: "",
-
-        html: `
-            <div
-                class="rutto-marker"
-                aria-hidden="true"
-            >
-                <span class="rutto-marker-dot"></span>
-            </div>
-        `,
-
-        iconSize: [32, 32],
-
-        iconAnchor: [16, 16],
-
-        tooltipAnchor: [0, -16]
-    });
-
-
-    const marker = L.marker(
-        [place.lat, place.lng],
-        {
-            icon: markerIcon,
-
-            keyboard: false,
-
-            interactive: true,
-
-            bubblingMouseEvents: false,
-
-            zIndexOffset: 100
-        }
-    ).addTo(map);
-
-
-    /* =====================================================
-       TOOLTIP CONTENT
-       ===================================================== */
-
-    const popupContent = `
-        <div class="place-popup">
-
-            <h3>${place.name}</h3>
-
-            <div class="categories">
-
-                <div>
-                    <span>SMOKING INDOORS</span>
-                    <strong>${place.smoking}</strong>
-                </div>
-
-                <div>
-                    <span>SPONTANEOUS MUSIC</span>
-                    <strong>${place.music}</strong>
-                </div>
-
-                <div>
-                    <span>LOCALS</span>
-                    <strong>${place.locals}</strong>
-                </div>
-
-                <div>
-                    <span>GAMBLING</span>
-                    <strong>${place.gambling}</strong>
-                </div>
-
-            </div>
-
-            <div class="popup-section">
-
-                <span>TOILETS</span>
-
-                <p>${place.toilets}</p>
-
-            </div>
-
-            <div class="popup-section">
-
-                <span>NOTES</span>
-
-                <p>${place.notes || ""}</p>
-
-            </div>
-
-        </div>
-    `;
-
-
-    /* =====================================================
-       BIND TOOLTIP
-       ===================================================== */
-
-    marker.bindTooltip(
-        popupContent,
-        {
-            direction: "top",
-
-            offset: [0, -12],
-
-            opacity: 1,
-
-            className: "rutto-tooltip",
-
-            interactive: true,
-
-            permanent: false
         }
     );
 
-
-    /* =====================================================
-       DESKTOP HOVER
-       ===================================================== */
-
-    marker.on("mouseover", () => {
-
-        if (!L.Browser.touch) {
-
-            closeAllTooltips();
-
-            marker.openTooltip();
-
-        }
-
-    });
+}
 
 
-    marker.on("mouseout", () => {
+/* =========================================================
+   REMOVE SVG FOCUS
+   ========================================================= */
 
-        if (!L.Browser.touch) {
+function removeMarkerFocus(marker) {
 
-            marker.closeTooltip();
+    const element =
+        marker.getElement();
 
-        }
-
-    });
-
-
-    /* =====================================================
-       CLICK / MOBILE TAP
-       ===================================================== */
-
-    marker.on("click", event => {
-
-        if (event.originalEvent) {
-
-            L.DomEvent.stopPropagation(event.originalEvent);
-
-        }
-
-        if (marker.isTooltipOpen()) {
-
-            marker.closeTooltip();
-
-        } else {
-
-            closeAllTooltips();
-
-            marker.openTooltip();
-
-        }
-
-    });
+    if (!element) {
+        return;
+    }
 
 
-    /* =====================================================
-       SAVE REFERENCE
-       ===================================================== */
+    /*
+     * This is important on mobile.
+     *
+     * Leaflet's interactive SVG path can become
+     * focusable. Some browsers then draw a focus
+     * rectangle/ring around it.
+     *
+     * The marker remains clickable without tabindex.
+     */
 
-    markerReferences.push({
+    element.removeAttribute(
+        "tabindex"
+    );
 
-        place: place,
+    element.removeAttribute(
+        "focusable"
+    );
 
-        marker: marker
+    element.style.outline =
+        "none";
 
-    });
+}
 
 
-    /* =====================================================
-       CREATE INDEX ITEM
-       ===================================================== */
+/* =========================================================
+   OPEN / CLOSE MARKER TOOLTIP
+   ========================================================= */
 
-    const indexItem = document.createElement("button");
+function toggleTooltip(marker) {
 
-    indexItem.type = "button";
+    if (
+        marker.isTooltipOpen()
+    ) {
 
-    indexItem.className = "index-item";
+        marker.closeTooltip();
 
-    indexItem.innerHTML = `
+        return;
 
-        <span class="index-number">
-            ${String(place.id).padStart(2, "0")}
-        </span>
+    }
 
-        <span class="index-main">
+
+    closeAllTooltips();
+
+    marker.openTooltip();
+
+}
+
+
+/* =========================================================
+   CREATE MARKERS + INDEX
+   ========================================================= */
+
+places.forEach(
+    place => {
+
+
+        /* =================================================
+           VISIBLE BLACK DOT
+           ================================================= */
+
+        const visibleMarker =
+            L.circleMarker(
+                [
+                    place.lat,
+                    place.lng
+                ],
+                {
+
+                    radius: 3,
+
+                    color: "#3a3a38",
+
+                    fillColor: "#3a3a38",
+
+                    fillOpacity: 1,
+
+                    weight: 0,
+
+                    interactive: false
+
+                }
+            ).addTo(map);
+
+
+        /* =================================================
+           INVISIBLE TOUCH TARGET
+           ================================================= */
+
+        const marker =
+            L.circleMarker(
+                [
+                    place.lat,
+                    place.lng
+                ],
+                {
+
+                    /*
+                     * Large enough for a finger.
+                     */
+
+                    radius: 18,
+
+                    color: "#171717",
+
+                    opacity: 0,
+
+                    fillColor: "#171717",
+
+                    fillOpacity: 0,
+
+                    weight: 0,
+
+                    stroke: false,
+
+                    interactive: true,
+
+                    bubblingMouseEvents: false
+
+                }
+            ).addTo(map);
+
+
+        /*
+         * Immediately remove possible focusability.
+         */
+
+        removeMarkerFocus(marker);
+
+
+        /* =================================================
+           TOOLTIP CONTENT
+           ================================================= */
+
+        const popupContent = `
+
+            <div class="place-popup">
+
+                <h3>
+                    ${place.name}
+                </h3>
+
+
+                <div class="categories">
+
+                    <div>
+                        <span>
+                            SMOKING INDOORS
+                        </span>
+
+                        <strong>
+                            ${place.smoking}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            SPONTANEOUS MUSIC
+                        </span>
+
+                        <strong>
+                            ${place.music}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            LOCALS
+                        </span>
+
+                        <strong>
+                            ${place.locals}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            GAMBLING
+                        </span>
+
+                        <strong>
+                            ${place.gambling}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="popup-section">
+
+                    <span>
+                        TOILETS
+                    </span>
+
+                    <p>
+                        ${place.toilets}
+                    </p>
+
+                </div>
+
+
+                <div class="popup-section">
+
+                    <span>
+                        NOTES
+                    </span>
+
+                    <p>
+                        ${place.notes || ""}
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        /* =================================================
+           TOOLTIP
+           ================================================= */
+
+        marker.bindTooltip(
+            popupContent,
+            {
+
+                direction: "top",
+
+                offset: [
+                    0,
+                    -10
+                ],
+
+                opacity: 1,
+
+                className:
+                    "rutto-tooltip",
+
+                interactive: true,
+
+                permanent: false,
+
+                /*
+                 * Do not steal focus.
+                 */
+
+                autoPan: false
+
+            }
+        );
+
+
+        /* =================================================
+           DESKTOP HOVER
+           ================================================= */
+
+        marker.on(
+            "mouseover",
+            () => {
+
+                /*
+                 * Only desktop gets true hover.
+                 *
+                 * On phones there is no hover,
+                 * so mobile uses click/tap below.
+                 */
+
+                if (
+                    !L.Browser.touch
+                ) {
+
+                    marker.openTooltip();
+
+                }
+
+            }
+        );
+
+
+        marker.on(
+            "mouseout",
+            () => {
+
+                if (
+                    !L.Browser.touch
+                ) {
+
+                    marker.closeTooltip();
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           CLICK / TAP
+           ================================================= */
+
+        marker.on(
+            "click",
+            event => {
+
+                /*
+                 * Stop the map itself from receiving
+                 * this click.
+                 */
+
+                if (
+                    event.originalEvent
+                ) {
+
+                    L.DomEvent.stopPropagation(
+                        event.originalEvent
+                    );
+
+                }
+
+
+                toggleTooltip(
+                    marker
+                );
+
+
+                /*
+                 * Make absolutely sure the SVG path
+                 * does not remain focused after tap.
+                 */
+
+                setTimeout(
+                    () => {
+
+                        removeMarkerFocus(
+                            marker
+                        );
+
+                    },
+                    0
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           TOOLTIP OPEN
+           ================================================= */
+
+        marker.on(
+            "tooltipopen",
+            () => {
+
+                removeMarkerFocus(
+                    marker
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           SAVE REFERENCE
+           ================================================= */
+
+        markerReferences.push({
+
+            place: place,
+
+            marker: marker,
+
+            visibleMarker:
+                visibleMarker
+
+        });
+
+
+        /* =================================================
+           CREATE INDEX ITEM
+           ================================================= */
+
+        const indexItem =
+            document.createElement(
+                "button"
+            );
+
+
+        indexItem.type =
+            "button";
+
+
+        indexItem.className =
+            "index-item";
+
+
+        indexItem.innerHTML = `
+
+            <span class="index-number">
+                ${String(place.id).padStart(2, "0")}
+            </span>
+
 
             <span class="index-name">
                 ${place.name}
             </span>
 
-            <span class="index-meta">
 
-                <span class="index-coordinates">
-                    ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
-                </span>
-
-                <span class="index-visited">
-                    VISITED · ${place.visitedDate} · ${place.visitedTime}
-                </span>
-
+            <span class="index-coordinates">
+                ${place.lat.toFixed(4)},
+                ${place.lng.toFixed(4)}
             </span>
 
-        </span>
-    `;
+
+            <span class="index-visited">
+                VISITED ·
+                ${place.visitedDate}
+                ·
+                ${place.visitedTime}
+            </span>
+
+        `;
 
 
-    /* =====================================================
-       INDEX ITEM → MAP
-       ===================================================== */
+        /* =================================================
+           INDEX ITEM → MAP
+           ================================================= */
 
-    indexItem.addEventListener("click", event => {
+        indexItem.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+
+                /*
+                 * Close index.
+                 */
+
+                closeIndexPanel();
+
+
+                /*
+                 * Close existing tooltips.
+                 */
+
+                closeAllTooltips();
+
+
+                let tooltipOpened =
+                    false;
+
+
+                const openTooltipAfterMove =
+                    () => {
+
+                        if (
+                            tooltipOpened
+                        ) {
+                            return;
+                        }
+
+
+                        tooltipOpened =
+                            true;
+
+
+                        map.off(
+                            "moveend",
+                            openTooltipAfterMove
+                        );
+
+
+                        marker.openTooltip();
+
+                        removeMarkerFocus(
+                            marker
+                        );
+
+                    };
+
+
+                map.once(
+                    "moveend",
+                    openTooltipAfterMove
+                );
+
+
+                /*
+                 * Move map to place.
+                 */
+
+                map.setView(
+                    [
+                        place.lat,
+                        place.lng
+                    ],
+                    8,
+                    {
+
+                        animate: true,
+
+                        duration: 0.6
+
+                    }
+                );
+
+
+                /*
+                 * Safety fallback.
+                 */
+
+                setTimeout(
+                    () => {
+
+                        if (
+                            !tooltipOpened
+                        ) {
+
+                            tooltipOpened =
+                                true;
+
+
+                            map.off(
+                                "moveend",
+                                openTooltipAfterMove
+                            );
+
+
+                            marker.openTooltip();
+
+                            removeMarkerFocus(
+                                marker
+                            );
+
+                        }
+
+                    },
+                    900
+                );
+
+            }
+        );
+
+
+        /* =================================================
+           ADD ITEM
+           ================================================= */
+
+        indexList.appendChild(
+            indexItem
+        );
+
+    }
+);
+
+
+/* =========================================================
+   INDEX OPEN / CLOSE
+   ========================================================= */
+
+function openIndexPanel() {
+
+    indexPanel.classList.add(
+        "open"
+    );
+
+    indexPanel.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+}
+
+
+function closeIndexPanel() {
+
+    indexPanel.classList.remove(
+        "open"
+    );
+
+    indexPanel.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+}
+
+
+/* =========================================================
+   OPEN INDEX
+   ========================================================= */
+
+indexButton.addEventListener(
+    "click",
+    event => {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+        openIndexPanel();
+
+    }
+);
+
+
+/* =========================================================
+   CLOSE INDEX
+   ========================================================= */
+
+closeIndex.addEventListener(
+    "click",
+    event => {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+        closeIndexPanel();
+
+    }
+);
+
+
+/* =========================================================
+   ENTER MAP
+   ========================================================= */
+
+const enterMapButton =
+    document.getElementById(
+        "enter-map"
+    );
+
+
+enterMapButton.addEventListener(
+    "click",
+    event => {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+
+        document
+            .getElementById("map")
+            .scrollIntoView({
+
+                behavior: "smooth",
+
+                block: "start"
+
+            });
+
+    }
+);
+
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+const homeButton =
+    document.getElementById(
+        "home-button"
+    );
+
+
+homeButton.addEventListener(
+    "click",
+    event => {
 
         event.preventDefault();
 
@@ -699,211 +1188,88 @@ places.forEach(place => {
         closeAllTooltips();
 
 
-        setTimeout(() => {
+        document
+            .getElementById("home")
+            .scrollIntoView({
 
-            map.invalidateSize({
-                pan: false
+                behavior: "smooth",
+
+                block: "start"
+
             });
 
-        }, 80);
-
-
-        let tooltipOpened = false;
-
-
-        const openTooltipAfterMove = () => {
-
-            if (tooltipOpened) {
-                return;
-            }
-
-            tooltipOpened = true;
-
-            marker.openTooltip();
-
-        };
-
-
-        map.once(
-            "moveend",
-            openTooltipAfterMove
-        );
-
-
-        map.setView(
-            [place.lat, place.lng],
-            8,
-            {
-                animate: true,
-
-                duration: 0.6
-            }
-        );
-
-
-        setTimeout(() => {
-
-            if (!tooltipOpened) {
-
-                tooltipOpened = true;
-
-                map.off(
-                    "moveend",
-                    openTooltipAfterMove
-                );
-
-                marker.openTooltip();
-
-            }
-
-        }, 900);
-
-    });
-
-
-    /* =====================================================
-       ADD ITEM TO INDEX
-       ===================================================== */
-
-    indexList.appendChild(indexItem);
-
-});
+    }
+);
 
 
 /* =========================================================
-   OPEN INDEX
+   ESCAPE
    ========================================================= */
 
-indexButton.addEventListener("click", event => {
+document.addEventListener(
+    "keydown",
+    event => {
 
-    event.preventDefault();
+        if (
+            event.key === "Escape"
+        ) {
 
-    event.stopPropagation();
+            closeIndexPanel();
 
-    openIndex();
+            closeAllTooltips();
 
-});
+        }
+
+    }
+);
 
 
 /* =========================================================
-   CLOSE INDEX
+   EMPTY MAP CLICK
    ========================================================= */
 
-closeIndex.addEventListener("click", event => {
+map.on(
+    "click",
+    event => {
 
-    event.preventDefault();
+        if (
+            event.originalEvent &&
+            event.originalEvent.target &&
+            event.originalEvent.target.closest &&
+            event.originalEvent.target.closest(
+                ".leaflet-interactive"
+            )
+        ) {
 
-    event.stopPropagation();
+            return;
 
-    closeIndexPanel();
+        }
 
-});
-
-
-/* =========================================================
-   ENTER MAP
-   ========================================================= */
-
-const enterMapButton = document.getElementById("enter-map");
-
-enterMapButton.addEventListener("click", event => {
-
-    event.preventDefault();
-
-    event.stopPropagation();
-
-    document.getElementById("map").scrollIntoView({
-
-        behavior: "smooth",
-
-        block: "start"
-
-    });
-
-});
-
-
-/* =========================================================
-   RETURN HOME
-   ========================================================= */
-
-const homeButton = document.getElementById("home-button");
-
-homeButton.addEventListener("click", event => {
-
-    event.preventDefault();
-
-    event.stopPropagation();
-
-    closeIndexPanel();
-
-    closeAllTooltips();
-
-    document.getElementById("home").scrollIntoView({
-
-        behavior: "smooth",
-
-        block: "start"
-
-    });
-
-});
-
-
-/* =========================================================
-   ESCAPE → CLOSE INDEX
-   ========================================================= */
-
-document.addEventListener("keydown", event => {
-
-    if (event.key === "Escape") {
-
-        closeIndexPanel();
 
         closeAllTooltips();
 
     }
-
-});
-
-
-/* =========================================================
-   CLICK EMPTY MAP → CLOSE TOOLTIP
-   ========================================================= */
-
-map.on("click", event => {
-
-    if (
-        event.originalEvent &&
-        event.originalEvent.target &&
-        event.originalEvent.target.closest &&
-        (
-            event.originalEvent.target.closest(".rutto-marker") ||
-            event.originalEvent.target.closest(".leaflet-tooltip")
-        )
-    ) {
-        return;
-    }
-
-    closeAllTooltips();
-
-});
+);
 
 
 /* =========================================================
    FINAL MAP REFRESH
    ========================================================= */
 
-window.addEventListener("load", () => {
+window.addEventListener(
+    "load",
+    () => {
 
-    setTimeout(() => {
+        setTimeout(
+            () => {
 
-        map.invalidateSize({
-            pan: false
-        });
+                map.invalidateSize({
+                    pan: false
+                });
 
-        fitWorldToScreen();
+            },
+            300
+        );
 
-    }, 300);
-
-});
+    }
+);
