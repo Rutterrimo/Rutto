@@ -95,12 +95,16 @@ function fitWorldToScreen() {
 
 
 /* Initial map sizing */
+
 setTimeout(() => {
     fitWorldToScreen();
 }, 100);
 
 
-/* Resize */
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
 let resizeTimer;
 
 window.addEventListener("resize", () => {
@@ -120,7 +124,10 @@ window.addEventListener("resize", () => {
 });
 
 
-/* Orientation change */
+/* =========================================================
+   ORIENTATION CHANGE
+   ========================================================= */
+
 window.addEventListener("orientationchange", () => {
 
     setTimeout(() => {
@@ -145,156 +152,239 @@ const places = [
     {
         id: 1,
         name: "Kafana Šindra",
-        lat: 44.81394,
-        lng: 20.45596,
+        lat: 44.813938,
+        lng: 20.456848,
+
+        visitedDate: "SEP 2025",
+        visitedTime: "LATE EVENING / NIGHT",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Squat toilets, unisex, very dirty.",
+
         notes: ""
     },
+
 
     {
         id: 2,
         name: "Langosi, mici, cafea",
-        lat: 45.8642,
-        lng: 22.9684,
+        lat: 45.850244,
+        lng: 22.980534,
+
+        visitedDate: "FEB 2026",
+        visitedTime: "MIDDAY",
+
         smoking: "No indoor area",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Chemical toilets, extremely dirty, unisex.",
+
         notes: ""
     },
+
 
     {
         id: 3,
         name: "Dabar",
-        lat: 43.09365,
-        lng: 18.15879,
+        lat: 43.093869,
+        lng: 18.158703,
+
+        visitedDate: "AUG 2023",
+        visitedTime: "SUNSET",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Unknown",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     },
+
 
     {
         id: 4,
         name: "Pri Hladniku",
-        lat: 45.926166,
-        lng: 14.043124,
+        lat: 45.926297,
+        lng: 14.043176,
+
+        visitedDate: "JUL 2025",
+        visitedTime: "LATE AFTERNOON",
+
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     },
+
 
     {
         id: 5,
         name: "Restaurant Bastion La Strada",
-        lat: 46.219019,
-        lng: 24.791593,
+        lat: 46.219208,
+        lng: 24.791609,
+
+        visitedDate: "FEB 2026",
+        visitedTime: "LATE EVENING / NIGHT",
+
         smoking: "Unknown",
         music: "Yes",
         locals: "No",
         gambling: "Unknown",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     },
+
 
     {
         id: 6,
         name: "Caffe Bar Milano",
-        lat: 45.4278,
-        lng: 14.9111,
+        lat: 45.432485,
+        lng: 14.905419,
+
+        visitedDate: "AUG 2026",
+        visitedTime: "MORNING / MIDDAY",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Unknown",
+
         notes: ""
     },
+
 
     {
         id: 7,
         name: "Caffe Bar Gold",
-        lat: 45.32495,
-        lng: 15.695158,
+        lat: 45.325111,
+        lng: 15.695395,
+
+        visitedDate: "AUG 2026",
+        visitedTime: "AFTERNOON",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     },
+
 
     {
         id: 8,
         name: "Magical Cavern",
-        lat: 50.0814,
-        lng: 14.4002,
+        lat: 50.081553,
+        lng: 14.400084,
+
+        visitedDate: "AUG 2019",
+        visitedTime: "AFTERNOON",
+
         smoking: "No",
         music: "No",
         locals: "No",
         gambling: "No",
+
         toilets: "Unisex. Looks like a private laundry room.",
+
         notes: ""
     },
+
 
     {
         id: 9,
         name: "Birtija",
-        lat: 43.86155,
-        lng: 18.43528,
+        lat: 43.860294,
+        lng: 18.431862,
+
+        visitedDate: "SEP 2024",
+        visitedTime: "LATE EVENING",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Unknown",
+
         toilets: "Unknown",
+
         notes: ""
     },
+
 
     {
         id: 10,
         name: "Lucky Bar",
-        lat: 45.5159,
-        lng: 9.8680,
+        lat: 45.514442,
+        lng: 9.869044,
+
+        visitedDate: "DEC 2025",
+        visitedTime: "BEFORE DINNER",
+
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "Yes",
+
         toilets: "Unisex, extremely dirty.",
+
         notes: ""
     },
+
 
     {
         id: 11,
         name: "Sala Admiral",
-        lat: 45.40830,
-        lng: 9.93608,
+        lat: 45.409563,
+        lng: 9.934405,
+
+        visitedDate: "JUN 2026",
+        visitedTime: "MORNING",
+
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Yes",
+
         toilets: "Unknown",
+
         notes: ""
     },
+
 
     {
         id: 12,
         name: "Bar 10 Damijana Kodelija",
-        lat: 45.8836,
-        lng: 14.0230,
+        lat: 45.881229,
+        lng: 14.002382,
+
+        visitedDate: "AUG 2026",
+        visitedTime: "BEFORE LUNCH",
+
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "No",
+
         toilets: "Normal. Men and women separated.",
+
         notes: ""
     }
 
@@ -306,8 +396,11 @@ const places = [
    ========================================================= */
 
 const indexList = document.getElementById("index-list");
+
 const indexButton = document.getElementById("index-button");
+
 const indexPanel = document.getElementById("index-panel");
+
 const closeIndex = document.getElementById("close-index");
 
 
@@ -369,10 +462,6 @@ places.forEach(place => {
 
     /* =====================================================
        INVISIBLE TOUCH TARGET
-       
-       The visible dot remains 3px.
-       This second marker creates a larger invisible
-       clickable/touchable area around it.
        ===================================================== */
 
     const marker = L.circleMarker(
@@ -428,6 +517,7 @@ places.forEach(place => {
 
             </div>
 
+
             <div class="popup-section">
 
                 <span>TOILETS</span>
@@ -435,6 +525,7 @@ places.forEach(place => {
                 <p>${place.toilets}</p>
 
             </div>
+
 
             <div class="popup-section">
 
@@ -472,12 +563,6 @@ places.forEach(place => {
 
     /* =====================================================
        DESKTOP HOVER
-       
-       On desktop:
-       mouse over = open
-       mouse out  = close
-       
-       On touch devices this is disabled.
        ===================================================== */
 
     marker.on("mouseover", () => {
@@ -500,8 +585,6 @@ places.forEach(place => {
 
     /* =====================================================
        CLICK / TAP
-       
-       This is used both by desktop click and mobile tap.
        ===================================================== */
 
     marker.on("click", event => {
@@ -532,14 +615,13 @@ places.forEach(place => {
 
     /* =====================================================
        TOUCHSTART
-       
-       Prevent the map itself from treating the tap as
-       a separate map interaction.
        ===================================================== */
 
     marker.on("touchstart", event => {
 
         if (event.originalEvent) {
+
+            event.originalEvent.preventDefault();
 
             event.originalEvent.stopPropagation();
 
@@ -554,7 +636,9 @@ places.forEach(place => {
 
     markerReferences.push({
         place: place,
+
         marker: marker,
+
         visibleMarker: visibleMarker
     });
 
@@ -569,6 +653,7 @@ places.forEach(place => {
 
     indexItem.className = "index-item";
 
+
     indexItem.innerHTML = `
         <span class="index-number">
             ${String(place.id).padStart(2, "0")}
@@ -581,18 +666,15 @@ places.forEach(place => {
         <span class="index-coordinates">
             ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
         </span>
+
+        <span class="index-visited">
+            VISITED · ${place.visitedDate} · ${place.visitedTime}
+        </span>
     `;
 
 
     /* =====================================================
        INDEX ITEM → MAP
-       
-       EXACT BEHAVIOUR:
-       
-       1. User taps a place.
-       2. INDEX closes immediately.
-       3. Map moves to that place.
-       4. When map movement finishes, tooltip opens.
        ===================================================== */
 
     indexItem.addEventListener("click", event => {
@@ -607,7 +689,7 @@ places.forEach(place => {
         indexPanel.classList.remove("open");
 
 
-        /* Make sure Leaflet knows the panel is gone */
+        /* Tell Leaflet panel is gone */
 
         setTimeout(() => {
 
@@ -618,15 +700,10 @@ places.forEach(place => {
         }, 50);
 
 
-        /* Close another open tooltip */
+        /* Close other tooltip */
 
         closeAllTooltips();
 
-
-        /*
-         * Open the tooltip when the map has actually
-         * finished moving.
-         */
 
         let tooltipOpened = false;
 
@@ -649,28 +726,20 @@ places.forEach(place => {
         map.once("moveend", openTooltipAfterMove);
 
 
-        /*
-         * Move to the selected place.
-         *
-         * Zoom 8 guarantees that the selected location
-         * is clearly visible.
-         */
+        /* Move to selected place */
 
         map.setView(
             [place.lat, place.lng],
             8,
             {
                 animate: true,
+
                 duration: 0.6
             }
         );
 
 
-        /*
-         * Safety fallback:
-         * if Leaflet doesn't emit moveend for some reason,
-         * open the tooltip anyway.
-         */
+        /* Safety fallback */
 
         setTimeout(() => {
 
@@ -740,6 +809,7 @@ enterMapButton.addEventListener("click", event => {
 
     document.getElementById("map").scrollIntoView({
         behavior: "smooth",
+
         block: "start"
     });
 
@@ -764,6 +834,7 @@ homeButton.addEventListener("click", event => {
 
     document.getElementById("home").scrollIntoView({
         behavior: "smooth",
+
         block: "start"
     });
 
@@ -790,10 +861,6 @@ document.addEventListener("keydown", event => {
    ========================================================= */
 
 map.on("click", event => {
-
-    /*
-     * If the click was on a marker, don't close it.
-     */
 
     if (
         event.originalEvent &&
