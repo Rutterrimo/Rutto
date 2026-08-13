@@ -3,6 +3,10 @@
    ========================================================= */
 
 
+/* =========================================================
+   CAT
+   ========================================================= */
+
 #rutto-cat {
 
     position: absolute;
@@ -22,13 +26,9 @@
     touch-action: none;
 
     user-select: none;
-
     -webkit-user-select: none;
 
     -webkit-tap-highlight-color: transparent;
-
-    transition:
-        transform 0.35s ease;
 
 }
 
@@ -41,13 +41,16 @@
     height: 128px;
 
     image-rendering: pixelated;
-
     image-rendering: crisp-edges;
 
     pointer-events: none;
 
 }
 
+
+/* =========================================================
+   SLEEPING
+   ========================================================= */
 
 #rutto-cat.cat-sleeping {
 
@@ -57,13 +60,9 @@
 }
 
 
-#rutto-cat.cat-waking {
-
-    animation:
-        cat-wake 0.9s ease-in-out;
-
-}
-
+/* =========================================================
+   FLEEING
+   ========================================================= */
 
 #rutto-cat.cat-fleeing {
 
@@ -75,7 +74,6 @@
 /* =========================================================
    CIGARETTE
    ========================================================= */
-
 
 #rutto-cigarette {
 
@@ -94,16 +92,11 @@
     touch-action: none;
 
     user-select: none;
-
     -webkit-user-select: none;
 
     -webkit-tap-highlight-color: transparent;
 
-    transform:
-        rotate(-12deg);
-
-    transition:
-        opacity 0.15s ease;
+    transform: rotate(-12deg);
 
 }
 
@@ -111,8 +104,6 @@
 #rutto-cigarette.dragging {
 
     cursor: grabbing;
-
-    transition: none;
 
 }
 
@@ -175,7 +166,6 @@
 /* =========================================================
    SMOKE
    ========================================================= */
-
 
 #rutto-smoke {
 
@@ -273,7 +263,6 @@
    MESSAGE
    ========================================================= */
 
-
 #rutto-message {
 
     position: absolute;
@@ -283,8 +272,7 @@
 
     z-index: 70;
 
-    transform:
-        translateX(-50%);
+    transform: translateX(-50%);
 
     font-family:
         Arial,
@@ -318,43 +306,23 @@
    ANIMATIONS
    ========================================================= */
 
-
 @keyframes cat-breathe {
 
     0%,
     100% {
+
         transform:
             translate(-50%, -50%)
             translateY(0);
+
     }
 
     50% {
+
         transform:
             translate(-50%, -50%)
             translateY(2px);
-    }
 
-}
-
-
-@keyframes cat-wake {
-
-    0% {
-        transform:
-            translate(-50%, -50%)
-            translateY(2px);
-    }
-
-    50% {
-        transform:
-            translate(-50%, -50%)
-            translateY(-5px);
-    }
-
-    100% {
-        transform:
-            translate(-50%, -50%)
-            translateY(0);
     }
 
 }
@@ -383,10 +351,7 @@
         opacity: 0;
 
         transform:
-            translate(
-                10px,
-                -45px
-            )
+            translate(10px, -45px)
             scale(1.5);
 
     }
@@ -398,13 +363,11 @@
    MOBILE
    ========================================================= */
 
-
 @media (max-width: 600px) {
 
     #rutto-cat {
 
         left: 50%;
-
         top: 73%;
 
         width: 112px;
@@ -424,7 +387,6 @@
     #rutto-cigarette {
 
         left: 76%;
-
         top: 67%;
 
         width: 34px;
@@ -441,10 +403,19 @@
 }
 
 
+/* =========================================================
+   REDUCE MOTION
+   ========================================================= */
+
 @media (prefers-reduced-motion: reduce) {
 
-    #rutto-cat.cat-sleeping,
-    #rutto-cat.cat-waking,
+    #rutto-cat.cat-sleeping {
+
+        animation: none;
+
+    }
+
+
     #rutto-smoke.smoking span {
 
         animation: none;
