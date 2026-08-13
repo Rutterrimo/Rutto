@@ -1,942 +1,894 @@
 /* =========================================================
-   RUTTO — INTERACTIVE CAT
-   Self-contained module
+   RUTTO — MAP SCRIPT
    ========================================================= */
 
-(() => {
 
-    "use strict";
+/* =========================================================
+   SCROLL RESTORATION
+   ========================================================= */
+
+if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+}
+
+
+/* =========================================================
+   MAP INITIALIZATION
+   ========================================================= */
+
+const map = L.map("map-container", {
+    worldCopyJump: false,
+
+    minZoom: 2,
+
+    maxZoom: 18,
+
+    maxBounds: [
+        [-85, -180],
+        [85, 180]
+    ],
+
+    maxBoundsViscosity: 1.0,
+
+    zoomControl: false,
+
+    tap: true,
+
+    touchZoom: true
+}).setView([20, 0], 2);
+
+
+/* =========================================================
+   ZOOM CONTROLS
+   ========================================================= */
+
+L.control.zoom({
+    position: "bottomleft"
+}).addTo(map);
+
+
+/* =========================================================
+   MAP TILES
+   ========================================================= */
+
+L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    {
+        noWrap: true,
+
+        attribution:
+            "&copy; OpenStreetMap contributors &copy; CARTO"
+    }
+).addTo(map);
+
+
+/* =========================================================
+   KEEP WORLD FILLED WITH SCREEN
+   ========================================================= */
+
+function fitWorldToScreen() {
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const worldWidth = 360;
+    const worldHeight = 170;
+
+    const zoomX = Math.log2(width / worldWidth);
+    const zoomY = Math.log2(height / worldHeight);
+
+    const idealZoom = Math.max(
+        2,
+        Math.ceil(Math.max(zoomX, zoomY))
+    );
+
+    map.setMinZoom(idealZoom);
+
+    map.setZoom(idealZoom, {
+        animate: false
+    });
+
+    map.invalidateSize({
+        pan: false
+    });
+}
+
+
+/* Initial map sizing */
+
+setTimeout(() => {
+    fitWorldToScreen();
+}, 100);
+
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
+let resizeTimer;
+
+window.addEventListener("resize", () => {
+
+    clearTimeout(resizeTimer);
+
+    resizeTimer = setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+        fitWorldToScreen();
+
+    }, 200);
+
+});
+
+
+/* =========================================================
+   ORIENTATION CHANGE
+   ========================================================= */
+
+window.addEventListener("orientationchange", () => {
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+        fitWorldToScreen();
+
+    }, 400);
+
+});
+
+
+/* =========================================================
+   PLACES
+   ========================================================= */
+
+const places = [
+
+    {
+        id: 1,
+        name: "Kafana Šindra",
+        lat: 44.813938,
+        lng: 20.456848,
+
+        visitedDate: "SEP 2025",
+        visitedTime: "LATE EVENING / NIGHT",
+
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+
+        toilets: "Squat toilets, unisex, very dirty.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 2,
+        name: "Langosi, mici, cafea",
+        lat: 45.850244,
+        lng: 22.980534,
+
+        visitedDate: "FEB 2026",
+        visitedTime: "MIDDAY",
+
+        smoking: "No indoor area",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+
+        toilets: "Chemical toilets, extremely dirty, unisex.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 3,
+        name: "Dabar",
+        lat: 43.093869,
+        lng: 18.158703,
+
+        visitedDate: "AUG 2023",
+        visitedTime: "SUNSET",
+
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "Unknown",
+
+        toilets: "Normal. Men and women separated.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 4,
+        name: "Pri Hladniku",
+        lat: 45.926297,
+        lng: 14.043176,
+
+        visitedDate: "JUL 2025",
+        visitedTime: "LATE AFTERNOON",
+
+        smoking: "No",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+
+        toilets: "Normal. Men and women separated.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 5,
+        name: "Restaurant Bastion La Strada",
+        lat: 46.219208,
+        lng: 24.791609,
+
+        visitedDate: "FEB 2026",
+        visitedTime: "LATE EVENING / NIGHT",
+
+        smoking: "Unknown",
+        music: "Yes",
+        locals: "No",
+        gambling: "Unknown",
+
+        toilets: "Normal. Men and women separated.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 6,
+        name: "Caffe Bar Milano",
+        lat: 45.432485,
+        lng: 14.905419,
+
+        visitedDate: "AUG 2026",
+        visitedTime: "MORNING / MIDDAY",
+
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+
+        toilets: "Unknown",
+
+        notes: ""
+    },
+
+
+    {
+        id: 7,
+        name: "Caffe Bar Gold",
+        lat: 45.325111,
+        lng: 15.695395,
+
+        visitedDate: "AUG 2026",
+        visitedTime: "AFTERNOON",
+
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+
+        toilets: "Normal. Men and women separated.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 8,
+        name: "Magical Cavern",
+        lat: 50.081553,
+        lng: 14.400084,
+
+        visitedDate: "AUG 2019",
+        visitedTime: "AFTERNOON",
+
+        smoking: "No",
+        music: "No",
+        locals: "No",
+        gambling: "No",
+
+        toilets: "Unisex. Looks like a private laundry room.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 9,
+        name: "Birtija",
+        lat: 43.860294,
+        lng: 18.431862,
+
+        visitedDate: "SEP 2024",
+        visitedTime: "LATE EVENING",
+
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "Unknown",
+
+        toilets: "Unknown",
+
+        notes: ""
+    },
+
+
+    {
+        id: 10,
+        name: "Lucky Bar",
+        lat: 45.514442,
+        lng: 9.869044,
+
+        visitedDate: "DEC 2025",
+        visitedTime: "BEFORE DINNER",
+
+        smoking: "No",
+        music: "No",
+        locals: "Yes",
+        gambling: "Yes",
+
+        toilets: "Unisex, extremely dirty.",
+
+        notes: ""
+    },
+
+
+    {
+        id: 11,
+        name: "Sala Admiral",
+        lat: 45.409563,
+        lng: 9.934405,
+
+        visitedDate: "JUN 2026",
+        visitedTime: "MORNING",
+
+        smoking: "Yes",
+        music: "No",
+        locals: "Yes",
+        gambling: "Yes",
+
+        toilets: "Unknown",
+
+        notes: ""
+    },
+
+
+    {
+        id: 12,
+        name: "Bar 10 Damijana Kodelija",
+        lat: 45.881229,
+        lng: 14.002382,
+
+        visitedDate: "AUG 2026",
+        visitedTime: "BEFORE LUNCH",
+
+        smoking: "No",
+        music: "No",
+        locals: "Yes",
+        gambling: "No",
+
+        toilets: "Normal. Men and women separated.",
+
+        notes: ""
+    }
+
+];
+
+
+/* =========================================================
+   INDEX ELEMENTS
+   ========================================================= */
+
+const indexList = document.getElementById("index-list");
+
+const indexButton = document.getElementById("index-button");
+
+const indexPanel = document.getElementById("index-panel");
+
+const closeIndex = document.getElementById("close-index");
+
+
+/* =========================================================
+   MARKER REFERENCES
+   ========================================================= */
+
+const markerReferences = [];
+
+
+/* =========================================================
+   CLOSE ALL OPEN TOOLTIPS
+   ========================================================= */
+
+function closeAllTooltips() {
+
+    markerReferences.forEach(reference => {
+
+        if (
+            reference.marker &&
+            reference.marker.isTooltipOpen()
+        ) {
+            reference.marker.closeTooltip();
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   CREATE MARKERS AND INDEX
+   ========================================================= */
+
+places.forEach(place => {
 
 
     /* =====================================================
-       WAIT FOR HOME
+       VISIBLE DOT
        ===================================================== */
 
-    function initCat() {
+    const visibleMarker = L.circleMarker(
+        [place.lat, place.lng],
+        {
+            radius: 3,
 
-        const home = document.getElementById("home");
+            color: "#3a3a38",
 
-        if (!home) {
-            return;
+            fillColor: "#3a3a38",
+
+            fillOpacity: 1,
+
+            weight: 0,
+
+            interactive: false
         }
+    ).addTo(map);
 
 
-        /* =================================================
-           CREATE CAT HTML
-           ================================================= */
+    /* =====================================================
+       INVISIBLE TOUCH TARGET
+       ===================================================== */
 
-        const cat = document.createElement("div");
+    const marker = L.circleMarker(
+        [place.lat, place.lng],
+        {
+            radius: 14,
 
-        cat.id = "rutto-cat";
+            color: "#000000",
 
-        cat.innerHTML = `
-            <canvas
-                id="rutto-cat-canvas"
-                width="112"
-                height="112"
-            ></canvas>
+            opacity: 0,
 
-            <div id="rutto-smoke">
-                <span></span>
-                <span></span>
-                <span></span>
+            fillColor: "#000000",
+
+            fillOpacity: 0,
+
+            weight: 0,
+
+            interactive: true
+        }
+    ).addTo(map);
+
+
+    /* =====================================================
+       TOOLTIP CONTENT
+       ===================================================== */
+
+    const popupContent = `
+        <div class="place-popup">
+
+            <h3>${place.name}</h3>
+
+            <div class="categories">
+
+                <div>
+                    <span>SMOKING INDOORS</span>
+                    <strong>${place.smoking}</strong>
+                </div>
+
+                <div>
+                    <span>SPONTANEOUS MUSIC</span>
+                    <strong>${place.music}</strong>
+                </div>
+
+                <div>
+                    <span>LOCALS</span>
+                    <strong>${place.locals}</strong>
+                </div>
+
+                <div>
+                    <span>GAMBLING</span>
+                    <strong>${place.gambling}</strong>
+                </div>
+
             </div>
-        `;
 
 
-        /* =================================================
-           CREATE CIGARETTE
-           ================================================= */
+            <div class="popup-section">
 
-        const cigarette =
-            document.createElement("div");
+                <span>TOILETS</span>
 
-        cigarette.id = "rutto-cigarette";
+                <p>${place.toilets}</p>
 
-        cigarette.innerHTML = `
-            <div class="cig-paper"></div>
-            <div class="cig-filter"></div>
-            <div class="cig-ember"></div>
-        `;
+            </div>
 
 
-        /* =================================================
-           CREATE MESSAGE
-           ================================================= */
+            <div class="popup-section">
 
-        const message =
-            document.createElement("div");
+                <span>NOTES</span>
 
-        message.id = "rutto-message";
+                <p>${place.notes || ""}</p>
 
+            </div>
 
-        /* =================================================
-           ADD TO HOME
-           ================================================= */
-
-        home.appendChild(cat);
-
-        home.appendChild(cigarette);
-
-        home.appendChild(message);
+        </div>
+    `;
 
 
-        /* =================================================
-           ELEMENTS
-           ================================================= */
+    /* =====================================================
+       BIND TOOLTIP
+       ===================================================== */
 
-        const canvas =
-            document.getElementById(
-                "rutto-cat-canvas"
-            );
+    marker.bindTooltip(
+        popupContent,
+        {
+            direction: "top",
 
-        const smoke =
-            document.getElementById(
-                "rutto-smoke"
-            );
+            offset: [0, -10],
 
+            opacity: 1,
 
-        const ctx =
-            canvas.getContext("2d");
+            className: "rutto-tooltip",
 
-        ctx.imageSmoothingEnabled = false;
+            interactive: true,
 
-
-        /* =================================================
-           STATE
-           ================================================= */
-
-        let catState = "sleeping";
-
-        let cigaretteDragging = false;
-
-        let cigaretteHeld = false;
-
-        let cigarettePointerId = null;
-
-        let messageTimer = null;
+            permanent: false
+        }
+    );
 
 
-        /* =================================================
-           PIXEL SCALE
-           ================================================= */
+    /* =====================================================
+       DESKTOP HOVER
+       ===================================================== */
 
-        const SCALE = 4;
+    marker.on("mouseover", () => {
+
+        if (!L.Browser.touch) {
+            marker.openTooltip();
+        }
+
+    });
 
 
-        /* =================================================
-           PIXEL DRAW
-           ================================================= */
+    marker.on("mouseout", () => {
 
-        function pixel(x, y, color) {
+        if (!L.Browser.touch) {
+            marker.closeTooltip();
+        }
 
-            ctx.fillStyle = color;
+    });
 
-            ctx.fillRect(
-                x * SCALE,
-                y * SCALE,
-                SCALE,
-                SCALE
-            );
+
+    /* =====================================================
+       CLICK / TAP
+       ===================================================== */
+
+    marker.on("click", event => {
+
+        if (event.originalEvent) {
+
+            event.originalEvent.preventDefault();
+
+            event.originalEvent.stopPropagation();
 
         }
 
 
-        /* =================================================
-           CLEAR
-           ================================================= */
+        if (marker.isTooltipOpen()) {
 
-        function clearCanvas() {
+            marker.closeTooltip();
 
-            ctx.clearRect(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
+        } else {
+
+            closeAllTooltips();
+
+            marker.openTooltip();
 
         }
 
+    });
 
-        /* =================================================
-           DRAW CAT
-           ================================================= */
 
-        function drawCat({
-            sleeping = false,
-            smoking = false
-        } = {}) {
+    /* =====================================================
+       TOUCHSTART
+       ===================================================== */
 
-            clearCanvas();
+    marker.on("touchstart", event => {
 
+        if (event.originalEvent) {
 
-            const fur = "#171717";
+            event.originalEvent.preventDefault();
 
-            const dark = "#0b0b0b";
-
-            const light = "#e8e6df";
-
-            const nose = "#8d4c45";
-
-
-            /* =============================================
-               BODY
-               ============================================= */
-
-            pixel(8, 17, fur);
-            pixel(9, 16, fur);
-            pixel(10, 15, fur);
-            pixel(11, 15, fur);
-
-            pixel(12, 14, fur);
-            pixel(13, 14, fur);
-            pixel(14, 14, fur);
-            pixel(15, 14, fur);
-
-            pixel(16, 14, fur);
-            pixel(17, 15, fur);
-            pixel(18, 15, fur);
-
-            pixel(19, 16, fur);
-            pixel(20, 17, fur);
-
-            pixel(21, 18, fur);
-            pixel(21, 19, fur);
-
-            pixel(20, 20, fur);
-            pixel(19, 21, fur);
-
-            pixel(18, 22, fur);
-            pixel(17, 23, fur);
-
-            pixel(16, 23, fur);
-            pixel(15, 23, fur);
-
-            pixel(14, 22, fur);
-            pixel(13, 22, fur);
-
-            pixel(12, 23, fur);
-            pixel(11, 23, fur);
-
-            pixel(10, 22, fur);
-            pixel(9, 22, fur);
-
-            pixel(8, 21, fur);
-            pixel(8, 20, fur);
-
-
-            /* =============================================
-               HEAD
-               ============================================= */
-
-            pixel(9, 7, fur);
-            pixel(10, 6, fur);
-
-            pixel(11, 5, fur);
-            pixel(12, 4, fur);
-
-            pixel(13, 5, fur);
-            pixel(14, 6, fur);
-
-            pixel(15, 6, fur);
-            pixel(16, 5, fur);
-
-            pixel(17, 4, fur);
-            pixel(18, 5, fur);
-
-            pixel(19, 6, fur);
-            pixel(20, 7, fur);
-
-            pixel(21, 8, fur);
-            pixel(21, 9, fur);
-
-            pixel(22, 10, fur);
-            pixel(22, 11, fur);
-
-            pixel(21, 12, fur);
-            pixel(20, 13, fur);
-
-            pixel(19, 14, fur);
-            pixel(18, 14, fur);
-
-            pixel(17, 15, fur);
-            pixel(16, 15, fur);
-
-            pixel(15, 14, fur);
-            pixel(14, 14, fur);
-
-            pixel(13, 13, fur);
-            pixel(12, 13, fur);
-
-            pixel(11, 12, fur);
-            pixel(10, 11, fur);
-
-
-            /* =============================================
-               EARS
-               ============================================= */
-
-            pixel(10, 6, dark);
-            pixel(11, 5, dark);
-            pixel(12, 4, dark);
-
-            pixel(17, 4, dark);
-            pixel(18, 5, dark);
-            pixel(19, 6, dark);
-
-
-            /* =============================================
-               EYES
-               ============================================= */
-
-            if (sleeping) {
-
-                pixel(12, 9, light);
-                pixel(13, 9, light);
-
-                pixel(17, 9, light);
-                pixel(18, 9, light);
-
-            } else {
-
-                pixel(12, 9, light);
-                pixel(13, 9, light);
-
-                pixel(17, 9, light);
-                pixel(18, 9, light);
-
-                pixel(13, 9, dark);
-                pixel(18, 9, dark);
-
-            }
-
-
-            /* =============================================
-               NOSE
-               ============================================= */
-
-            pixel(15, 11, nose);
-
-
-            /* =============================================
-               LEGS
-               ============================================= */
-
-            pixel(10, 22, fur);
-            pixel(10, 23, fur);
-
-            pixel(14, 22, fur);
-            pixel(14, 23, fur);
-
-            pixel(18, 22, fur);
-            pixel(18, 23, fur);
-
-
-            /* =============================================
-               TAIL
-               ============================================= */
-
-            pixel(7, 19, fur);
-            pixel(6, 18, fur);
-            pixel(5, 18, fur);
-            pixel(4, 17, fur);
-
-            pixel(4, 16, fur);
-            pixel(5, 15, fur);
-
-
-            /* =============================================
-               SLEEP Z
-               ============================================= */
-
-            if (sleeping) {
-
-                pixel(22, 6, fur);
-                pixel(23, 6, fur);
-
-                pixel(22, 7, fur);
-
-                pixel(21, 8, fur);
-
-                pixel(22, 8, fur);
-                pixel(23, 8, fur);
-
-            }
-
-
-            /* =============================================
-               CIGARETTE IN MOUTH
-               ============================================= */
-
-            if (smoking) {
-
-                ctx.fillStyle = "#f1eee5";
-
-                ctx.fillRect(
-                    21 * SCALE,
-                    11 * SCALE,
-                    6 * SCALE,
-                    2 * SCALE
-                );
-
-                ctx.fillStyle = "#b43a26";
-
-                ctx.fillRect(
-                    27 * SCALE,
-                    11 * SCALE,
-                    2 * SCALE,
-                    2 * SCALE
-                );
-
-            }
+            event.originalEvent.stopPropagation();
 
         }
 
+    });
 
-        /* =================================================
-           MESSAGE
-           ================================================= */
 
-        function showMessage(text, duration = 800) {
+    /* =====================================================
+       SAVE REFERENCE
+       ===================================================== */
 
-            clearTimeout(messageTimer);
+    markerReferences.push({
+        place: place,
 
-            message.textContent = text;
+        marker: marker,
 
-            message.classList.add("visible");
+        visibleMarker: visibleMarker
+    });
 
-            messageTimer = setTimeout(() => {
 
-                message.classList.remove(
-                    "visible"
-                );
+    /* =====================================================
+       CREATE INDEX ITEM
+       ===================================================== */
 
-            }, duration);
+    const indexItem = document.createElement("button");
 
-        }
+    indexItem.type = "button";
 
+    indexItem.className = "index-item";
 
-        /* =================================================
-           DISTANCE TO CIGARETTE
-           ================================================= */
 
-        function cigaretteIsNearCat() {
+    indexItem.innerHTML = `
+        <span class="index-number">
+            ${String(place.id).padStart(2, "0")}
+        </span>
 
-            const catRect =
-                cat.getBoundingClientRect();
+        <span class="index-name">
+            ${place.name}
+        </span>
 
-            const cigRect =
-                cigarette.getBoundingClientRect();
+        <span class="index-coordinates">
+            ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
+        </span>
 
+        <span class="index-visited">
+            VISITED · ${place.visitedDate} · ${place.visitedTime}
+        </span>
+    `;
 
-            const catX =
-                catRect.left +
-                catRect.width / 2;
 
-            const catY =
-                catRect.top +
-                catRect.height / 2;
+    /* =====================================================
+       INDEX ITEM → MAP
+       ===================================================== */
 
+    indexItem.addEventListener("click", event => {
 
-            const cigX =
-                cigRect.left +
-                cigRect.width / 2;
+        event.preventDefault();
 
-            const cigY =
-                cigRect.top +
-                cigRect.height / 2;
+        event.stopPropagation();
 
 
-            const dx = catX - cigX;
+        /* CLOSE INDEX IMMEDIATELY */
 
-            const dy = catY - cigY;
+        indexPanel.classList.remove("open");
 
 
-            return (
-                Math.sqrt(
-                    dx * dx +
-                    dy * dy
-                ) < 100
-            );
-
-        }
-
-
-        /* =================================================
-           START SMOKING
-           ================================================= */
-
-        function startSmoking() {
-
-            if (cigaretteHeld) {
-                return;
-            }
-
-            if (catState === "fleeing") {
-                return;
-            }
-
-
-            cigaretteHeld = true;
-
-            catState = "smoking";
-
-
-            cigarette.classList.add(
-                "burning"
-            );
-
-            smoke.classList.add(
-                "smoking"
-            );
-
-
-            cat.classList.remove(
-                "cat-sleeping"
-            );
-
-
-            drawCat({
-                sleeping: false,
-                smoking: true
-            });
-
-
-            showMessage("...");
-
-        }
-
-
-        /* =================================================
-           STOP SMOKING
-           ================================================= */
-
-        function stopSmoking() {
-
-            cigaretteHeld = false;
-
-
-            cigarette.classList.remove(
-                "burning"
-            );
-
-            smoke.classList.remove(
-                "smoking"
-            );
-
-
-            if (catState !== "fleeing") {
-
-                catState = "sleeping";
-
-                cat.classList.add(
-                    "cat-sleeping"
-                );
-
-
-                drawCat({
-                    sleeping: true,
-                    smoking: false
-                });
-
-            } else {
-
-                drawCat({
-                    sleeping: false,
-                    smoking: false
-                });
-
-            }
-
-        }
-
-
-        /* =================================================
-           CAT RUNS AWAY
-           ================================================= */
-
-        function flee() {
-
-            if (catState === "fleeing") {
-                return;
-            }
-
-
-            stopSmoking();
-
-
-            catState = "fleeing";
-
-
-            cat.classList.remove(
-                "cat-sleeping"
-            );
-
-
-            cat.classList.add(
-                "cat-fleeing"
-            );
-
-
-            drawCat({
-                sleeping: false,
-                smoking: false
-            });
-
-
-            const direction =
-                Math.random() > 0.5
-                    ? 1
-                    : -1;
-
-
-            cat.style.transition =
-                "transform 0.45s cubic-bezier(.2,.8,.2,1)";
-
-
-            cat.style.transform =
-                `translate(
-                    calc(-50% + ${direction * 180}px),
-                    -50%
-                )`;
-
-
-            showMessage(
-                "HEY!",
-                700
-            );
-
-
-            setTimeout(() => {
-
-                cat.style.transition =
-                    "transform 0.7s cubic-bezier(.2,.8,.2,1)";
-
-
-                cat.style.transform =
-                    "translate(-50%, -50%)";
-
-
-                setTimeout(() => {
-
-                    cat.classList.remove(
-                        "cat-fleeing"
-                    );
-
-                    cat.classList.add(
-                        "cat-sleeping"
-                    );
-
-
-                    catState = "sleeping";
-
-
-                    drawCat({
-                        sleeping: true,
-                        smoking: false
-                    });
-
-                }, 750);
-
-            }, 1200);
-
-        }
-
-
-        /* =================================================
-           CAT CLICK
-           ================================================= */
-
-        cat.addEventListener(
-            "pointerdown",
-            event => {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                flee();
-
-            }
-        );
-
-
-        /* =================================================
-           CIGARETTE DRAG START
-           ================================================= */
-
-        cigarette.addEventListener(
-            "pointerdown",
-            event => {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-
-                cigaretteDragging = true;
-
-                cigarettePointerId =
-                    event.pointerId;
-
-
-                cigarette.classList.add(
-                    "dragging"
-                );
-
-
-                cigarette.setPointerCapture(
-                    event.pointerId
-                );
-
-            }
-        );
-
-
-        /* =================================================
-           CIGARETTE DRAG
-           ================================================= */
-
-        cigarette.addEventListener(
-            "pointermove",
-            event => {
-
-                if (
-                    !cigaretteDragging ||
-                    event.pointerId !==
-                    cigarettePointerId
-                ) {
-                    return;
-                }
-
-
-                event.preventDefault();
-
-
-                const homeRect =
-                    home.getBoundingClientRect();
-
-
-                const x =
-                    event.clientX -
-                    homeRect.left -
-                    22;
-
-
-                const y =
-                    event.clientY -
-                    homeRect.top -
-                    5;
-
-
-                cigarette.style.left =
-                    `${x}px`;
-
-
-                cigarette.style.top =
-                    `${y}px`;
-
-
-                cigarette.style.transform =
-                    "rotate(-12deg)";
-
-
-                if (
-                    !cigaretteHeld &&
-                    cigaretteIsNearCat()
-                ) {
-
-                    startSmoking();
-
-                }
-
-            }
-        );
-
-
-        /* =================================================
-           CIGARETTE RELEASE
-           ================================================= */
-
-        function releaseCigarette(event) {
-
-            if (
-                !cigaretteDragging ||
-                event.pointerId !==
-                cigarettePointerId
-            ) {
-                return;
-            }
-
-
-            cigaretteDragging = false;
-
-            cigarettePointerId = null;
-
-
-            cigarette.classList.remove(
-                "dragging"
-            );
-
-
-            /*
-             * If cigarette is released near the cat,
-             * keep smoking.
-             */
-
-            if (
-                cigaretteIsNearCat() &&
-                catState !== "fleeing"
-            ) {
-
-                startSmoking();
-
-
-                cigarette.style.left =
-                    "calc(72% + 35px)";
-
-
-                cigarette.style.top =
-                    "calc(64% + 7px)";
-
-
-                cigarette.style.transform =
-                    "rotate(-12deg)";
-
-
-                return;
-
-            }
-
-
-            /*
-             * Otherwise the cigarette was taken away.
-             */
-
-            if (cigaretteHeld) {
-
-                stopSmoking();
-
-            }
-
-        }
-
-
-        cigarette.addEventListener(
-            "pointerup",
-            releaseCigarette
-        );
-
-
-        cigarette.addEventListener(
-            "pointercancel",
-            releaseCigarette
-        );
-
-
-        /* =================================================
-           PREVENT NATIVE DRAG
-           ================================================= */
-
-        cigarette.addEventListener(
-            "dragstart",
-            event => {
-
-                event.preventDefault();
-
-            }
-        );
-
-
-        /* =================================================
-           INITIAL DRAW
-           ================================================= */
-
-        drawCat({
-            sleeping: true,
-            smoking: false
-        });
-
-
-        cat.classList.add(
-            "cat-sleeping"
-        );
-
-
-        /* =================================================
-           LITTLE WELCOME
-           ================================================= */
+        /* Tell Leaflet panel is gone */
 
         setTimeout(() => {
 
-            if (catState !== "sleeping") {
+            map.invalidateSize({
+                pan: false
+            });
+
+        }, 50);
+
+
+        /* Close other tooltip */
+
+        closeAllTooltips();
+
+
+        let tooltipOpened = false;
+
+
+        const openTooltipAfterMove = () => {
+
+            if (tooltipOpened) {
                 return;
             }
 
+            tooltipOpened = true;
 
-            cat.classList.remove(
-                "cat-sleeping"
-            );
+            map.off("moveend", openTooltipAfterMove);
 
+            marker.openTooltip();
 
-            cat.classList.add(
-                "cat-waking"
-            );
+        };
 
 
-            drawCat({
-                sleeping: false,
-                smoking: false
-            });
+        map.once("moveend", openTooltipAfterMove);
 
 
-            setTimeout(() => {
+        /* Move to selected place */
 
-                if (catState !== "sleeping") {
-                    return;
-                }
+        map.setView(
+            [place.lat, place.lng],
+            8,
+            {
+                animate: true,
 
-
-                cat.classList.remove(
-                    "cat-waking"
-                );
-
-
-                cat.classList.add(
-                    "cat-sleeping"
-                );
-
-
-                drawCat({
-                    sleeping: true,
-                    smoking: false
-                });
-
-            }, 900);
-
-        }, 700);
-
-    }
-
-
-    /* =====================================================
-       START
-       ===================================================== */
-
-    if (
-        document.readyState ===
-        "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            initCat
+                duration: 0.6
+            }
         );
 
-    } else {
 
-        initCat();
+        /* Safety fallback */
+
+        setTimeout(() => {
+
+            if (!tooltipOpened) {
+
+                tooltipOpened = true;
+
+                map.off("moveend", openTooltipAfterMove);
+
+                marker.openTooltip();
+
+            }
+
+        }, 900);
+
+    });
+
+
+    /* Add item to INDEX */
+
+    indexList.appendChild(indexItem);
+
+});
+
+
+/* =========================================================
+   OPEN INDEX
+   ========================================================= */
+
+indexButton.addEventListener("click", event => {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+    indexPanel.classList.add("open");
+
+});
+
+
+/* =========================================================
+   CLOSE INDEX
+   ========================================================= */
+
+closeIndex.addEventListener("click", event => {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+    indexPanel.classList.remove("open");
+
+});
+
+
+/* =========================================================
+   ENTER THE MAP
+   ========================================================= */
+
+const enterMapButton = document.getElementById("enter-map");
+
+enterMapButton.addEventListener("click", event => {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+    document.getElementById("map").scrollIntoView({
+        behavior: "smooth",
+
+        block: "start"
+    });
+
+});
+
+
+/* =========================================================
+   RETURN HOME
+   ========================================================= */
+
+const homeButton = document.getElementById("home-button");
+
+homeButton.addEventListener("click", event => {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+    indexPanel.classList.remove("open");
+
+    closeAllTooltips();
+
+    document.getElementById("home").scrollIntoView({
+        behavior: "smooth",
+
+        block: "start"
+    });
+
+});
+
+
+/* =========================================================
+   ESCAPE → CLOSE INDEX
+   ========================================================= */
+
+document.addEventListener("keydown", event => {
+
+    if (event.key === "Escape") {
+
+        indexPanel.classList.remove("open");
 
     }
 
-})();
+});
+
+
+/* =========================================================
+   CLICK EMPTY MAP → CLOSE TOOLTIP
+   ========================================================= */
+
+map.on("click", event => {
+
+    if (
+        event.originalEvent &&
+        event.originalEvent.target &&
+        event.originalEvent.target.closest &&
+        event.originalEvent.target.closest(".leaflet-interactive")
+    ) {
+        return;
+    }
+
+
+    closeAllTooltips();
+
+});
+
+
+/* =========================================================
+   FINAL MAP REFRESH
+   ========================================================= */
+
+window.addEventListener("load", () => {
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    }, 300);
+
+});
