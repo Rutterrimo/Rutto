@@ -84,6 +84,7 @@ body {
     background: none;
 
     border: none;
+
     border-bottom: 1px solid #171717;
 
     color: #171717;
@@ -119,6 +120,7 @@ body {
     position: absolute;
 
     left: 50%;
+
     bottom: 22px;
 
     transform: translateX(-50%);
@@ -180,6 +182,18 @@ body {
     background: #e8e6df;
 
     font-family: Arial, Helvetica, sans-serif;
+
+    outline: none !important;
+}
+
+
+.leaflet-container:focus {
+    outline: none !important;
+}
+
+
+.leaflet-container a {
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -192,6 +206,7 @@ body {
 
 .leaflet-control-zoom a {
     width: 28px !important;
+
     height: 28px !important;
 
     line-height: 28px !important;
@@ -208,45 +223,36 @@ body {
 }
 
 
-/* =========================================================
-   LEAFLET MOBILE FOCUS OUTLINE
-   ========================================================= */
-
-/*
-   Leaflet renders CircleMarkers as SVG <path> elements.
-
-   The outline must therefore be removed from the actual
-   .leaflet-interactive path, not only from our custom class.
-
-   This is specifically relevant to Safari/mobile.
-*/
-
-path.leaflet-interactive:focus {
+.leaflet-control-zoom a:focus {
     outline: none !important;
 }
 
 
-path.leaflet-interactive:active {
+/* =========================================================
+   REMOVE MOBILE FOCUS / TAP ARTIFACTS
+   ========================================================= */
+
+.leaflet-pane > svg path {
+    outline: none !important;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+.leaflet-pane > svg path:focus {
+    outline: none !important;
+}
+
+
+.leaflet-pane > svg path:active {
     outline: none !important;
 }
 
 
 .leaflet-interactive {
+    outline: none !important;
+
     -webkit-tap-highlight-color: transparent;
-}
-
-
-/* Our invisible hit target */
-
-.rutto-hit-target {
-    outline: none !important;
-
-    -webkit-tap-highlight-color: transparent !important;
-}
-
-
-.rutto-hit-target:focus {
-    outline: none !important;
 }
 
 
@@ -431,6 +437,12 @@ path.leaflet-interactive:active {
 }
 
 
+#home-button:focus,
+#index-button:focus {
+    outline: none;
+}
+
+
 /* =========================================================
    INDEX PANEL
    ========================================================= */
@@ -455,6 +467,7 @@ path.leaflet-interactive:active {
     transition: transform 0.25s ease;
 
     overflow-x: hidden;
+
     overflow-y: auto;
 
     -webkit-overflow-scrolling: touch;
@@ -529,6 +542,11 @@ path.leaflet-interactive:active {
 }
 
 
+#close-index:focus {
+    outline: none;
+}
+
+
 /* =========================================================
    INDEX ITEMS
    ========================================================= */
@@ -575,6 +593,11 @@ path.leaflet-interactive:active {
 
 .index-item:hover {
     background: rgba(23, 23, 23, 0.05);
+}
+
+
+.index-item:focus {
+    outline: none;
 }
 
 
