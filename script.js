@@ -13,10 +13,10 @@ if ("scrollRestoration" in history) {
 
 
 /* =========================================================
-   FORCE INITIAL POSITION AT HOME
+   INITIAL HOME POSITION
    ========================================================= */
 
-function resetToHome() {
+function goToHomeInstantly() {
 
     window.scrollTo({
         top: 0,
@@ -27,16 +27,34 @@ function resetToHome() {
 }
 
 
-/* Initial position */
+/*
+   Mobile browsers can restore the previous scroll position
+   before Leaflet finishes initializing.
+*/
 
-resetToHome();
+goToHomeInstantly();
 
 
 /* =========================================================
    MAP INITIALIZATION
    ========================================================= */
 
+/*
+   On touch devices we disable Leaflet's keyboard focus.
+
+   Desktop keeps keyboard accessibility.
+
+   This prevents the mobile browser from focusing the map
+   itself and jumping directly to the MAP section.
+*/
+
+const isTouchDevice =
+    L.Browser.touch ||
+    window.matchMedia("(pointer: coarse)").matches;
+
+
 const map = L.map("map-container", {
+
     worldCopyJump: false,
 
     minZoom: 2,
@@ -54,7 +72,10 @@ const map = L.map("map-container", {
 
     tap: true,
 
-    touchZoom: true
+    touchZoom: true,
+
+    keyboard: !isTouchDevice
+
 }).setView([20, 0], 2);
 
 
@@ -114,7 +135,9 @@ function fitWorldToScreen() {
 }
 
 
-/* Initial map sizing */
+/* =========================================================
+   INITIAL MAP SIZING
+   ========================================================= */
 
 setTimeout(() => {
 
@@ -708,12 +731,8 @@ places.forEach(place => {
         event.stopPropagation();
 
 
-        /* CLOSE INDEX IMMEDIATELY */
-
         indexPanel.classList.remove("open");
 
-
-        /* Tell Leaflet panel is gone */
 
         setTimeout(() => {
 
@@ -723,8 +742,6 @@ places.forEach(place => {
 
         }, 50);
 
-
-        /* Close other tooltip */
 
         closeAllTooltips();
 
@@ -750,8 +767,6 @@ places.forEach(place => {
         map.once("moveend", openTooltipAfterMove);
 
 
-        /* Move to selected place */
-
         map.setView(
             [place.lat, place.lng],
             8,
@@ -762,8 +777,6 @@ places.forEach(place => {
             }
         );
 
-
-        /* Safety fallback */
 
         setTimeout(() => {
 
@@ -913,22 +926,20 @@ window.addEventListener("load", () => {
             pan: false
         });
 
-        resetToHome();
-
     }, 300);
 
 });
 
 
 /* =========================================================
-   PAGE SHOW
+   BFCACHE / PAGE RESTORE
    ========================================================= */
 
 window.addEventListener("pageshow", event => {
 
     if (event.persisted) {
 
-        resetToHome();
+        goToHomeInstantly();
 
     }
 
