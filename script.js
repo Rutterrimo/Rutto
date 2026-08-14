@@ -23,11 +23,139 @@ function forceHomePosition() {
 }
 
 
-/*
-   Do this before Leaflet starts.
-*/
-
 forceHomePosition();
+
+
+/* =========================================================
+   CUSTOM CURSOR
+   ========================================================= */
+
+const customCursor = document.createElement("div");
+
+customCursor.id = "rutto-cursor";
+
+customCursor.innerHTML = `
+
+    <div class="cursor-cigarette">
+
+        <span class="smoke smoke-1"></span>
+        <span class="smoke smoke-2"></span>
+        <span class="smoke smoke-3"></span>
+        <span class="smoke smoke-4"></span>
+
+        <span class="cig-ember"></span>
+        <span class="cig-body"></span>
+        <span class="cig-filter"></span>
+
+    </div>
+
+
+    <div class="cursor-arrow">
+
+        <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+
+            <path
+                d="M4 2 L20 11 L13 13 L16 21 L12 22 L9 14 L4 18 Z"
+                fill="#e8e6df"
+                stroke="#171717"
+                stroke-width="1.5"
+                stroke-linejoin="miter"
+            />
+
+        </svg>
+
+    </div>
+
+
+    <div class="cursor-hand">
+
+        <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+
+            <path
+                d="M7 11V6
+                   C7 5 8 4 9 4
+                   C10 4 11 5 11 6
+                   V10
+                   V4
+                   C11 3 12 2 13 2
+                   C14 2 15 3 15 4
+                   V10
+                   V5
+                   C15 4 16 3 17 3
+                   C18 3 19 4 19 5
+                   V11
+                   V8
+                   C19 7 20 6 21 7
+                   C22 8 22 9 22 10
+                   V14
+                   C22 19 19 22 14 22
+                   H11
+                   C8 22 6 20 5 18
+                   L2 13
+                   C1 12 1 11 2 10
+                   C3 9 4 9 5 10
+                   L7 12
+                   Z"
+                fill="#e8e6df"
+                stroke="#171717"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+            />
+
+        </svg>
+
+    </div>
+
+`;
+
+document.body.appendChild(customCursor);
+
+
+/* =========================================================
+   CURSOR STATE
+   ========================================================= */
+
+function setCursorState(state) {
+
+    customCursor.classList.remove(
+        "is-cigarette",
+        "is-arrow",
+        "is-hand"
+    );
+
+    customCursor.classList.add(
+        `is-${state}`
+    );
+
+}
+
+
+setCursorState("cigarette");
+
+
+/* =========================================================
+   CURSOR POSITION
+   ========================================================= */
+
+let cursorX = -100;
+let cursorY = -100;
+
+
+document.addEventListener("mousemove", event => {
+
+    cursorX = event.clientX;
+    cursorY = event.clientY;
+
+    customCursor.style.transform =
+        `translate3d(${cursorX + 2}px, ${cursorY + 2}px, 0)`;
+
+});
 
 
 /* =========================================================
@@ -68,16 +196,6 @@ const map = L.map("map-container", {
 /* =========================================================
    MOBILE MAP FOCUS FIX
    ========================================================= */
-
-/*
-   Leaflet gives the map container a tabindex so that it can
-   receive keyboard focus.
-
-   That is useful on desktop, but unnecessary on touch devices
-   and can cause mobile browsers to move the page to the map.
-
-   On touch devices we remove the focusability completely.
-*/
 
 if (isTouchDevice) {
 
@@ -749,8 +867,7 @@ function findPlaceFromMapTap(event) {
 
         const distance =
             Math.sqrt(
-                dx * dx +
-                dy * dy
+                dx * dx + dy * dy
             );
 
 
@@ -774,18 +891,37 @@ function findPlaceFromMapTap(event) {
 
 
 /* =========================================================
-   MAP TAP / CLICK
+   CURSOR — MAP STATE
    ========================================================= */
 
-/*
-   MOBILE / TOUCH SYSTEM
+function updateMapCursor(reference) {
 
-   This remains exactly as before.
+    if (reference) {
 
-   The visible dots are not interactive Leaflet layers.
-   Instead, a tap anywhere on the map searches for the
-   closest place within 22px and opens its tooltip.
-*/
+        /*
+           Vicino a un luogo:
+           SOLO freccia.
+        */
+
+        setCursorState("arrow");
+
+    } else {
+
+        /*
+           Mappa normale:
+           torna alla sigaretta.
+        */
+
+        setCursorState("cigarette");
+
+    }
+
+}
+
+
+/* =========================================================
+   MAP TAP / CLICK
+   ========================================================= */
 
 map.on("click", event => {
 
@@ -809,170 +945,59 @@ map.on("click", event => {
 
 
 /* =========================================================
-   DESKTOP MOUSE HOVER
+   DESKTOP HOVER
    ========================================================= */
 
 let hoveredReference = null;
 
 
-const mapContainer =
-    map.getContainer();
+map.on("mousemove", event => {
 
-
-/* =========================================================
-   CUSTOM DESKTOP CURSOR
-   ========================================================= */
-
-const ruttoCursor =
-    document.createElement("div");
-
-ruttoCursor.id = "rutto-cursor";
-
-ruttoCursor.innerHTML = `
-    <span class="rutto-cigarette"></span>
-    <span class="rutto-smoke"></span>
-`;
-
-document.body.appendChild(ruttoCursor);
-
-
-/*
-   Custom cursor exists only for fine pointers.
-   Touch behaviour is completely untouched.
-*/
-
-const hasFinePointer =
-    window.matchMedia("(pointer: fine)").matches;
-
-
-if (hasFinePointer) {
-
-    mapContainer.classList.add(
-        "rutto-cursor-active"
-    );
-
-}
-
-
-/* =========================================================
-   DESKTOP MOUSE MOVE
-   ========================================================= */
-
-function handleDesktopMouseMove(event) {
-
-    if (event.pointerType && event.pointerType !== "mouse") {
+    if (L.Browser.touch) {
         return;
     }
 
 
     /*
-       If the map is currently being dragged,
-       Leaflet owns the cursor.
+       CURSORE
     */
-
-    if (
-        mapContainer.classList.contains(
-            "rutto-cursor-dragging"
-        )
-    ) {
-
-        ruttoCursor.classList.remove("visible");
-
-        return;
-
-    }
-
-
-    /*
-       Move the cigarette cursor.
-    */
-
-    if (hasFinePointer) {
-
-        ruttoCursor.style.left =
-            `${event.clientX}px`;
-
-        ruttoCursor.style.top =
-            `${event.clientY}px`;
-
-        ruttoCursor.classList.add("visible");
-
-    }
-
-
-    /*
-       Convert browser mouse position into Leaflet LatLng.
-    */
-
-    const latlng =
-        map.mouseEventToLatLng(event);
-
 
     const reference =
-        findPlaceFromMapTap({
-            latlng: latlng
-        });
+        findPlaceFromMapTap(event);
+
+
+    updateMapCursor(reference);
 
 
     /*
-       Nothing changed.
+       TOOLTIP
     */
 
-    if (reference === hoveredReference) {
+    if (reference !== hoveredReference) {
+
+        if (hoveredReference) {
+            hoveredReference.marker.closeTooltip();
+        }
+
+
+        hoveredReference = reference;
+
+
+        if (hoveredReference) {
+            hoveredReference.marker.openTooltip();
+        }
+
+    }
+
+});
+
+
+map.on("mouseout", () => {
+
+    if (L.Browser.touch) {
         return;
     }
 
-
-    /*
-       Close previous hover tooltip.
-    */
-
-    if (hoveredReference) {
-
-        hoveredReference.marker.closeTooltip();
-
-    }
-
-
-    hoveredReference = reference;
-
-
-    /*
-       Near a place:
-       hide cigarette and restore normal arrow.
-    */
-
-    if (hoveredReference) {
-
-        ruttoCursor.classList.remove("visible");
-
-        mapContainer.classList.add(
-            "rutto-cursor-place"
-        );
-
-        hoveredReference.marker.openTooltip();
-
-        return;
-    }
-
-
-    /*
-       Back to normal map:
-       cigarette returns.
-    */
-
-    mapContainer.classList.remove(
-        "rutto-cursor-place"
-    );
-
-}
-
-
-/* =========================================================
-   DESKTOP MOUSE LEAVE
-   ========================================================= */
-
-function handleDesktopMouseLeave() {
 
     if (hoveredReference) {
 
@@ -983,109 +1008,74 @@ function handleDesktopMouseLeave() {
     }
 
 
-    ruttoCursor.classList.remove("visible");
+    setCursorState("cigarette");
 
-}
-
-
-/* =========================================================
-   DESKTOP MOUSE DOWN
-   ========================================================= */
-
-function handleDesktopMouseDown(event) {
-
-    if (!hasFinePointer) {
-        return;
-    }
-
-    if (event.button !== 0) {
-        return;
-    }
-
-
-    ruttoCursor.classList.remove("visible");
-
-    mapContainer.classList.remove(
-        "rutto-cursor-place"
-    );
-
-    mapContainer.classList.add(
-        "rutto-cursor-dragging"
-    );
-
-}
+});
 
 
 /* =========================================================
-   DESKTOP MOUSE UP
+   DESKTOP DRAG — HAND ONLY WHILE DRAGGING
    ========================================================= */
 
-function handleDesktopMouseUp() {
+map.on("mousedown", () => {
 
-    if (!hasFinePointer) {
+    if (L.Browser.touch) {
         return;
     }
 
 
-    mapContainer.classList.remove(
-        "rutto-cursor-dragging"
-    );
+    setCursorState("hand");
+
+});
+
+
+map.on("mouseup", event => {
+
+    if (L.Browser.touch) {
+        return;
+    }
+
+
+    const reference =
+        findPlaceFromMapTap(event);
+
+
+    updateMapCursor(reference);
+
+});
+
+
+map.on("dragend", () => {
+
+    if (L.Browser.touch) {
+        return;
+    }
 
 
     /*
-       If the mouse is still over a place,
-       keep the normal arrow.
-
-       Otherwise restore the cigarette.
+       Dopo il trascinamento il cursore torna
+       allo stato corretto in base alla posizione.
     */
 
-    if (hoveredReference) {
-
-        ruttoCursor.classList.remove("visible");
-
-        mapContainer.classList.add(
-            "rutto-cursor-place"
-        );
-
-    } else {
-
-        ruttoCursor.classList.add("visible");
-
-        mapContainer.classList.remove(
-            "rutto-cursor-place"
-        );
-
-    }
-
-}
+    const containerPoint = map.mouseEventToContainerPoint({
+        clientX: cursorX,
+        clientY: cursorY
+    });
 
 
-/* =========================================================
-   DESKTOP CURSOR EVENTS
-   ========================================================= */
-
-mapContainer.addEventListener(
-    "mousemove",
-    handleDesktopMouseMove
-);
+    const latLng =
+        map.containerPointToLatLng(containerPoint);
 
 
-mapContainer.addEventListener(
-    "mouseleave",
-    handleDesktopMouseLeave
-);
+    const reference =
+        findPlaceFromMapTap({
+            latlng: latLng
+        });
 
 
-mapContainer.addEventListener(
-    "mousedown",
-    handleDesktopMouseDown
-);
+    updateMapCursor(reference);
 
-
-window.addEventListener(
-    "mouseup",
-    handleDesktopMouseUp
-);
+});
 
 
 /* =========================================================
@@ -1167,6 +1157,9 @@ homeButton.addEventListener("click", event => {
         block: "start"
     });
 
+
+    setCursorState("cigarette");
+
 });
 
 
@@ -1191,11 +1184,6 @@ document.addEventListener("keydown", event => {
 
 window.addEventListener("load", () => {
 
-    /*
-       Give the browser one last explicit instruction:
-       the page starts at HOME, not at the map.
-    */
-
     if (
         window.location.hash === "" &&
         window.scrollY > 0
@@ -1218,11 +1206,6 @@ window.addEventListener("load", () => {
 
     }, 300);
 
-
-    /*
-       Extra mobile safeguard after Leaflet and tiles have
-       finished their first layout pass.
-    */
 
     if (isTouchDevice) {
 
