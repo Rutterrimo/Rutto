@@ -23,107 +23,21 @@ function forceHomePosition() {
 }
 
 
+/*
+   Do this before Leaflet starts.
+*/
+
 forceHomePosition();
-
-
-/* =========================================================
-   CUSTOM CURSOR
-   ========================================================= */
-
-const cigaretteCursor =
-    document.getElementById("rutto-cigarette-cursor");
-
-
-const body =
-    document.body;
-
-
-const isTouchDevice =
-    L.Browser.touch ||
-    window.matchMedia("(pointer: coarse)").matches;
-
-
-/*
-   Cursor states:
-
-   cigarette = custom cigarette
-   arrow     = normal browser arrow
-   dragging  = Leaflet grabbing hand
-*/
-
-function setCigaretteCursor() {
-
-    if (isTouchDevice) {
-        return;
-    }
-
-    body.classList.remove("rutto-arrow-cursor");
-    body.classList.remove("rutto-dragging");
-
-    body.classList.add("rutto-cigarette-mode");
-}
-
-
-function setArrowCursor() {
-
-    if (isTouchDevice) {
-        return;
-    }
-
-    body.classList.remove("rutto-cigarette-mode");
-    body.classList.remove("rutto-dragging");
-
-    body.classList.add("rutto-arrow-cursor");
-}
-
-
-function setDraggingCursor() {
-
-    if (isTouchDevice) {
-        return;
-    }
-
-    body.classList.remove("rutto-cigarette-mode");
-    body.classList.remove("rutto-arrow-cursor");
-
-    body.classList.add("rutto-dragging");
-}
-
-
-/*
-   Start with cigarette on desktop.
-*/
-
-if (!isTouchDevice) {
-
-    setCigaretteCursor();
-
-}
-
-
-/* =========================================================
-   MOVE CUSTOM CIGARETTE
-   ========================================================= */
-
-if (!isTouchDevice) {
-
-    document.addEventListener("mousemove", event => {
-
-        cigaretteCursor.style.transform =
-            `translate3d(
-                ${event.clientX + 7}px,
-                ${event.clientY + 7}px,
-                0
-            ) rotate(-38deg)`;
-
-    });
-
-}
 
 
 /* =========================================================
    MAP INITIALIZATION
    ========================================================= */
+
+const isTouchDevice =
+    L.Browser.touch ||
+    window.matchMedia("(pointer: coarse)").matches;
+
 
 const map = L.map("map-container", {
 
@@ -154,6 +68,16 @@ const map = L.map("map-container", {
 /* =========================================================
    MOBILE MAP FOCUS FIX
    ========================================================= */
+
+/*
+   Leaflet gives the map container a tabindex so that it can
+   receive keyboard focus.
+
+   That is useful on desktop, but unnecessary on touch devices
+   and can cause mobile browsers to move the page to the map.
+
+   On touch devices we remove the focusability completely.
+*/
 
 if (isTouchDevice) {
 
@@ -786,6 +710,8 @@ places.forEach(place => {
     });
 
 
+    /* Add item to INDEX */
+
     indexList.appendChild(indexItem);
 
 });
@@ -823,8 +749,7 @@ function findPlaceFromMapTap(event) {
 
         const distance =
             Math.sqrt(
-                dx * dx +
-                dy * dy
+                dx * dx + dy * dy
             );
 
 
@@ -876,6 +801,13 @@ map.on("click", event => {
    DESKTOP HOVER
    ========================================================= */
 
+/*
+   Because the actual visible circles are no longer interactive,
+   desktop hover is handled by the map itself.
+
+   Moving close to a place opens its tooltip.
+*/
+
 let hoveredReference = null;
 
 
@@ -885,20 +817,6 @@ map.on("mousemove", event => {
         return;
     }
 
-
-    /*
-       IMPORTANT:
-
-       This is the SAME 22px detection used for opening
-       the place tooltip.
-
-       When a place is nearby:
-       cigarette disappears completely
-       normal arrow appears.
-
-       When there is no place nearby:
-       cigarette returns.
-    */
 
     const reference =
         findPlaceFromMapTap(event);
@@ -915,15 +833,7 @@ map.on("mousemove", event => {
 
 
         if (hoveredReference) {
-
-            setArrowCursor();
-
             hoveredReference.marker.openTooltip();
-
-        } else {
-
-            setCigaretteCursor();
-
         }
 
     }
@@ -946,51 +856,6 @@ map.on("mouseout", () => {
 
     }
 
-
-    setCigaretteCursor();
-
-});
-
-
-/* =========================================================
-   DRAG CURSOR
-   ========================================================= */
-
-/*
-   We deliberately let Leaflet handle the actual drag
-   behaviour. We only hide the cigarette while dragging,
-   so the normal Leaflet grabbing hand can be seen.
-*/
-
-map.on("dragstart", () => {
-
-    if (isTouchDevice) {
-        return;
-    }
-
-    setDraggingCursor();
-
-});
-
-
-map.on("dragend", () => {
-
-    if (isTouchDevice) {
-        return;
-    }
-
-    /*
-       After dragging, go back to whichever state the mouse
-       is actually over.
-
-       Leaflet does not necessarily emit a mousemove at this
-       exact moment, so we simply return to cigarette mode.
-       The next mousemove will immediately switch to arrow
-       if the pointer is close to a place.
-    */
-
-    setCigaretteCursor();
-
 });
 
 
@@ -1006,8 +871,6 @@ indexButton.addEventListener("click", event => {
 
     indexPanel.classList.add("open");
 
-    setArrowCursor();
-
 });
 
 
@@ -1022,8 +885,6 @@ closeIndex.addEventListener("click", event => {
     event.stopPropagation();
 
     indexPanel.classList.remove("open");
-
-    setArrowCursor();
 
 });
 
@@ -1077,41 +938,7 @@ homeButton.addEventListener("click", event => {
         block: "start"
     });
 
-
-    setArrowCursor();
-
 });
-
-
-/* =========================================================
-   BUTTON HOVER → ARROW
-   ========================================================= */
-
-if (!isTouchDevice) {
-
-    [
-        enterMapButton,
-        homeButton,
-        indexButton,
-        closeIndex
-    ].forEach(button => {
-
-        button.addEventListener("mouseenter", () => {
-
-            setArrowCursor();
-
-        });
-
-
-        button.addEventListener("mouseleave", () => {
-
-            setCigaretteCursor();
-
-        });
-
-    });
-
-}
 
 
 /* =========================================================
@@ -1135,6 +962,11 @@ document.addEventListener("keydown", event => {
 
 window.addEventListener("load", () => {
 
+    /*
+       Give the browser one last explicit instruction:
+       the page starts at HOME, not at the map.
+    */
+
     if (
         window.location.hash === "" &&
         window.scrollY > 0
@@ -1157,6 +989,11 @@ window.addEventListener("load", () => {
 
     }, 300);
 
+
+    /*
+       Extra mobile safeguard after Leaflet and tiles have
+       finished their first layout pass.
+    */
 
     if (isTouchDevice) {
 
