@@ -13,6 +13,26 @@ if ("scrollRestoration" in history) {
 
 
 /* =========================================================
+   FORCE INITIAL POSITION AT HOME
+   ========================================================= */
+
+function resetToHome() {
+
+    window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto"
+    });
+
+}
+
+
+/* Initial position */
+
+resetToHome();
+
+
+/* =========================================================
    MAP INITIALIZATION
    ========================================================= */
 
@@ -97,7 +117,9 @@ function fitWorldToScreen() {
 /* Initial map sizing */
 
 setTimeout(() => {
+
     fitWorldToScreen();
+
 }, 100);
 
 
@@ -479,7 +501,9 @@ places.forEach(place => {
 
             weight: 0,
 
-            interactive: true
+            interactive: true,
+
+            className: "rutto-hit-target"
         }
     ).addTo(map);
 
@@ -889,6 +913,23 @@ window.addEventListener("load", () => {
             pan: false
         });
 
+        resetToHome();
+
     }, 300);
+
+});
+
+
+/* =========================================================
+   PAGE SHOW
+   ========================================================= */
+
+window.addEventListener("pageshow", event => {
+
+    if (event.persisted) {
+
+        resetToHome();
+
+    }
 
 });
