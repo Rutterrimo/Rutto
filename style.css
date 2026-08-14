@@ -209,26 +209,44 @@ body {
 
 
 /* =========================================================
-   RUTTO MAP HIT TARGET
+   LEAFLET MOBILE FOCUS OUTLINE
    ========================================================= */
+
+/*
+   Leaflet renders CircleMarkers as SVG <path> elements.
+
+   The outline must therefore be removed from the actual
+   .leaflet-interactive path, not only from our custom class.
+
+   This is specifically relevant to Safari/mobile.
+*/
+
+path.leaflet-interactive:focus {
+    outline: none !important;
+}
+
+
+path.leaflet-interactive:active {
+    outline: none !important;
+}
+
+
+.leaflet-interactive {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* Our invisible hit target */
 
 .rutto-hit-target {
     outline: none !important;
 
     -webkit-tap-highlight-color: transparent !important;
-
-    -webkit-focus-ring-color: transparent !important;
 }
 
 
-.rutto-hit-target:focus,
-.rutto-hit-target:active,
-.rutto-hit-target.leaflet-active {
+.rutto-hit-target:focus {
     outline: none !important;
-
-    box-shadow: none !important;
-
-    -webkit-tap-highlight-color: transparent !important;
 }
 
 
@@ -625,6 +643,15 @@ body {
 
 .index-dedication span {
     display: block;
+}
+
+
+.index-dedication strong {
+    display: block;
+
+    margin-top: 4px;
+
+    font-weight: 400;
 }
 
 
