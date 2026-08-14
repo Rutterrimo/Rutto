@@ -61,18 +61,20 @@ body {
 
     font-weight: 500;
 
-    letter-spacing: -0.04em;
+    letter-spacing: -0.055em;
 }
 
 
 .intro p {
-    margin: 18px 0 55px;
+    margin: 17px 0 52px;
 
-    font-size: 15px;
+    font-size: 14px;
 
     font-weight: 400;
 
-    letter-spacing: 0.02em;
+    letter-spacing: 0.015em;
+
+    color: #30302e;
 }
 
 
@@ -92,9 +94,9 @@ body {
 
     font-family: Arial, Helvetica, sans-serif;
 
-    font-size: 12px;
+    font-size: 11px;
 
-    letter-spacing: 0.12em;
+    letter-spacing: 0.13em;
 
     cursor: pointer;
 
@@ -129,9 +131,9 @@ body {
 
     font-size: 8px;
 
-    letter-spacing: 0.14em;
+    letter-spacing: 0.15em;
 
-    opacity: 0.42;
+    opacity: 0.38;
 }
 
 
@@ -261,7 +263,7 @@ body {
 
     font-weight: 500;
 
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
 }
 
 
@@ -274,7 +276,7 @@ body {
 
     padding-bottom: 14px;
 
-    border-bottom: 1px solid rgba(23, 23, 23, 0.25);
+    border-bottom: 1px solid rgba(23, 23, 23, 0.22);
 }
 
 
@@ -295,7 +297,7 @@ body {
 .popup-section > span {
     letter-spacing: 0.08em;
 
-    opacity: 0.65;
+    opacity: 0.58;
 }
 
 
@@ -318,7 +320,7 @@ body {
 
     margin-bottom: 5px;
 
-    font-size: 10px;
+    font-size: 9px;
 }
 
 
@@ -343,11 +345,11 @@ body {
 
     top: 20px;
 
-    background: #e8e6df;
+    background: rgba(232, 230, 223, 0.94);
 
     color: #171717;
 
-    border: 1px solid #171717;
+    border: 1px solid rgba(23, 23, 23, 0.82);
 
     border-radius: 0;
 
@@ -355,9 +357,9 @@ body {
 
     font-family: Arial, Helvetica, sans-serif;
 
-    font-size: 10px;
+    font-size: 9px;
 
-    letter-spacing: 0.1em;
+    letter-spacing: 0.11em;
 
     cursor: pointer;
 
@@ -451,11 +453,11 @@ body {
 
     background: #e8e6df;
 
-    border-bottom: 1px solid rgba(23, 23, 23, 0.25);
+    border-bottom: 1px solid rgba(23, 23, 23, 0.22);
 
-    font-size: 11px;
+    font-size: 10px;
 
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
 }
 
 
@@ -470,9 +472,9 @@ body {
 
     font-family: Arial, Helvetica, sans-serif;
 
-    font-size: 10px;
+    font-size: 9px;
 
-    letter-spacing: 0.08em;
+    letter-spacing: 0.09em;
 
     cursor: pointer;
 
@@ -515,7 +517,7 @@ body {
 
     border: none;
 
-    border-bottom: 1px solid rgba(23, 23, 23, 0.15);
+    border-bottom: 1px solid rgba(23, 23, 23, 0.13);
 
     color: #171717;
 
@@ -532,16 +534,16 @@ body {
 
 
 .index-item:hover {
-    background: rgba(23, 23, 23, 0.05);
+    background: rgba(23, 23, 23, 0.035);
 }
 
 
 .index-number {
     grid-row: 1 / 4;
 
-    font-size: 10px;
+    font-size: 9px;
 
-    opacity: 0.5;
+    opacity: 0.42;
 }
 
 
@@ -549,17 +551,21 @@ body {
     font-size: 13px;
 
     line-height: 1.3;
+
+    letter-spacing: -0.01em;
 }
 
 
 .index-coordinates {
     margin-top: 4px;
 
-    font-size: 10px;
+    font-size: 9px;
 
     line-height: 1.3;
 
-    opacity: 0.55;
+    opacity: 0.48;
+
+    font-variant-numeric: tabular-nums;
 }
 
 
@@ -570,9 +576,9 @@ body {
 
     line-height: 1.3;
 
-    letter-spacing: 0.07em;
+    letter-spacing: 0.075em;
 
-    opacity: 0.42;
+    opacity: 0.38;
 
     text-transform: uppercase;
 }
