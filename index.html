@@ -32,9 +32,10 @@
         href="style.css"
     >
 
-    <!-- Leaflet CSS with SRI and crossorigin -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
 
 </head>
 
@@ -57,67 +58,59 @@
             <button
                 id="enter-map"
                 class="enter-button"
-                type="button"
-                aria-controls="map"
-                aria-label="Enter the map"
             >
                 ENTER THE MAP
             </button>
 
         </div>
 
-        <!-- Footer text requested (uppercase, less saturated) -->
-        <div class="home-footer" aria-hidden="true">
+
+        <div class="no-ratings">
             NO RATINGS. NO RECOMMENDATIONS.
         </div>
 
     </main>
 
 
-    <section id="map" aria-label="Map section">
+    <section id="map">
 
-        <button id="home-button" type="button" aria-label="Go to home">
+        <button id="home-button">
             HOME
         </button>
 
-        <button id="index-button" type="button" aria-expanded="false" aria-controls="index-panel" aria-label="Open index">
+        <button id="index-button">
             INDEX
         </button>
 
 
-        <aside id="index-panel" role="region" aria-labelledby="index-heading" aria-hidden="true">
+        <aside id="index-panel">
+
             <div class="index-header">
 
-                <span id="index-heading">
+                <span>
                     INDEX
                 </span>
 
-                <button id="close-index" type="button" aria-label="Close index">
+                <button id="close-index">
                     CLOSE
                 </button>
 
             </div>
 
-            <div id="index-list" role="list"></div>
+
+            <div id="index-list"></div>
 
         </aside>
 
 
-        <!-- Accessible map container -->
-        <div id="map-container" role="application" aria-label="Interactive map" tabindex="0"></div>
-
-        <noscript>
-            <p>
-                This site requires JavaScript to show the interactive map. Please enable JavaScript or view the static index.
-            </p>
-        </noscript>
+        <div id="map-container"></div>
 
     </section>
 
 
-    <!-- Leaflet JS with SRI and crossorigin -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
 
     <script src="script.js"></script>
 
