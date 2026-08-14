@@ -209,6 +209,24 @@ body {
 
 
 /* =========================================================
+   LEAFLET MAP POINTS
+   ========================================================= */
+
+.leaflet-interactive {
+    outline: none !important;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+.leaflet-interactive:focus {
+    outline: none !important;
+
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
    RUTTO TOOLTIP
    ========================================================= */
 
