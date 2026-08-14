@@ -13,40 +13,26 @@ if ("scrollRestoration" in history) {
 
 
 /* =========================================================
-   INITIAL HOME POSITION
+   FORCE INITIAL HOME POSITION
    ========================================================= */
 
-function goToHomeInstantly() {
+function forceHomePosition() {
 
-    window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "auto"
-    });
+    window.scrollTo(0, 0);
 
 }
 
 
 /*
-   Mobile browsers can restore the previous scroll position
-   before Leaflet finishes initializing.
+   Do this before Leaflet starts.
 */
 
-goToHomeInstantly();
+forceHomePosition();
 
 
 /* =========================================================
    MAP INITIALIZATION
    ========================================================= */
-
-/*
-   On touch devices we disable Leaflet's keyboard focus.
-
-   Desktop keeps keyboard accessibility.
-
-   This prevents the mobile browser from focusing the map
-   itself and jumping directly to the MAP section.
-*/
 
 const isTouchDevice =
     L.Browser.touch ||
@@ -77,6 +63,31 @@ const map = L.map("map-container", {
     keyboard: !isTouchDevice
 
 }).setView([20, 0], 2);
+
+
+/* =========================================================
+   MOBILE MAP FOCUS FIX
+   ========================================================= */
+
+/*
+   Leaflet gives the map container a tabindex so that it can
+   receive keyboard focus.
+
+   That is useful on desktop, but unnecessary on touch devices
+   and can cause mobile browsers to move the page to the map.
+
+   On touch devices we remove the focusability completely.
+*/
+
+if (isTouchDevice) {
+
+    const mapContainer = map.getContainer();
+
+    mapContainer.removeAttribute("tabindex");
+
+    mapContainer.blur();
+
+}
 
 
 /* =========================================================
@@ -132,6 +143,7 @@ function fitWorldToScreen() {
     map.invalidateSize({
         pan: false
     });
+
 }
 
 
@@ -477,7 +489,7 @@ function closeAllTooltips() {
 
 
 /* =========================================================
-   CREATE MARKERS AND INDEX
+   CREATE MARKERS
    ========================================================= */
 
 places.forEach(place => {
@@ -487,7 +499,7 @@ places.forEach(place => {
        VISIBLE DOT
        ===================================================== */
 
-    const visibleMarker = L.circleMarker(
+    const marker = L.circleMarker(
         [place.lat, place.lng],
         {
             radius: 3,
@@ -501,32 +513,6 @@ places.forEach(place => {
             weight: 0,
 
             interactive: false
-        }
-    ).addTo(map);
-
-
-    /* =====================================================
-       INVISIBLE TOUCH TARGET
-       ===================================================== */
-
-    const marker = L.circleMarker(
-        [place.lat, place.lng],
-        {
-            radius: 14,
-
-            color: "#000000",
-
-            opacity: 0,
-
-            fillColor: "#000000",
-
-            fillOpacity: 0,
-
-            weight: 0,
-
-            interactive: true,
-
-            className: "rutto-hit-target"
         }
     ).addTo(map);
 
@@ -609,84 +595,13 @@ places.forEach(place => {
 
 
     /* =====================================================
-       DESKTOP HOVER
-       ===================================================== */
-
-    marker.on("mouseover", () => {
-
-        if (!L.Browser.touch) {
-            marker.openTooltip();
-        }
-
-    });
-
-
-    marker.on("mouseout", () => {
-
-        if (!L.Browser.touch) {
-            marker.closeTooltip();
-        }
-
-    });
-
-
-    /* =====================================================
-       CLICK / TAP
-       ===================================================== */
-
-    marker.on("click", event => {
-
-        if (event.originalEvent) {
-
-            event.originalEvent.preventDefault();
-
-            event.originalEvent.stopPropagation();
-
-        }
-
-
-        if (marker.isTooltipOpen()) {
-
-            marker.closeTooltip();
-
-        } else {
-
-            closeAllTooltips();
-
-            marker.openTooltip();
-
-        }
-
-    });
-
-
-    /* =====================================================
-       TOUCHSTART
-       ===================================================== */
-
-    marker.on("touchstart", event => {
-
-        if (event.originalEvent) {
-
-            event.originalEvent.preventDefault();
-
-            event.originalEvent.stopPropagation();
-
-        }
-
-    });
-
-
-    /* =====================================================
        SAVE REFERENCE
        ===================================================== */
 
     markerReferences.push({
         place: place,
 
-        marker: marker,
-
-        visibleMarker: visibleMarker
+        marker: marker
     });
 
 
@@ -803,6 +718,148 @@ places.forEach(place => {
 
 
 /* =========================================================
+   FIND NEAREST PLACE FROM MAP TAP
+   ========================================================= */
+
+function findPlaceFromMapTap(event) {
+
+    const tapPoint =
+        map.latLngToContainerPoint(event.latlng);
+
+
+    let closestPlace = null;
+
+    let closestDistance = Infinity;
+
+
+    markerReferences.forEach(reference => {
+
+        const markerPoint =
+            map.latLngToContainerPoint(
+                reference.marker.getLatLng()
+            );
+
+
+        const dx =
+            tapPoint.x - markerPoint.x;
+
+        const dy =
+            tapPoint.y - markerPoint.y;
+
+
+        const distance =
+            Math.sqrt(
+                dx * dx + dy * dy
+            );
+
+
+        if (
+            distance < closestDistance &&
+            distance <= 22
+        ) {
+
+            closestDistance = distance;
+
+            closestPlace = reference;
+
+        }
+
+    });
+
+
+    return closestPlace;
+
+}
+
+
+/* =========================================================
+   MAP TAP / CLICK
+   ========================================================= */
+
+map.on("click", event => {
+
+    const reference =
+        findPlaceFromMapTap(event);
+
+
+    if (reference) {
+
+        closeAllTooltips();
+
+        reference.marker.openTooltip();
+
+        return;
+    }
+
+
+    closeAllTooltips();
+
+});
+
+
+/* =========================================================
+   DESKTOP HOVER
+   ========================================================= */
+
+/*
+   Because the actual visible circles are no longer interactive,
+   desktop hover is handled by the map itself.
+
+   Moving close to a place opens its tooltip.
+*/
+
+let hoveredReference = null;
+
+
+map.on("mousemove", event => {
+
+    if (L.Browser.touch) {
+        return;
+    }
+
+
+    const reference =
+        findPlaceFromMapTap(event);
+
+
+    if (reference !== hoveredReference) {
+
+        if (hoveredReference) {
+            hoveredReference.marker.closeTooltip();
+        }
+
+
+        hoveredReference = reference;
+
+
+        if (hoveredReference) {
+            hoveredReference.marker.openTooltip();
+        }
+
+    }
+
+});
+
+
+map.on("mouseout", () => {
+
+    if (L.Browser.touch) {
+        return;
+    }
+
+
+    if (hoveredReference) {
+
+        hoveredReference.marker.closeTooltip();
+
+        hoveredReference = null;
+
+    }
+
+});
+
+
+/* =========================================================
    OPEN INDEX
    ========================================================= */
 
@@ -836,7 +893,9 @@ closeIndex.addEventListener("click", event => {
    ENTER THE MAP
    ========================================================= */
 
-const enterMapButton = document.getElementById("enter-map");
+const enterMapButton =
+    document.getElementById("enter-map");
+
 
 enterMapButton.addEventListener("click", event => {
 
@@ -844,9 +903,9 @@ enterMapButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
+
     document.getElementById("map").scrollIntoView({
         behavior: "smooth",
-
         block: "start"
     });
 
@@ -857,7 +916,9 @@ enterMapButton.addEventListener("click", event => {
    RETURN HOME
    ========================================================= */
 
-const homeButton = document.getElementById("home-button");
+const homeButton =
+    document.getElementById("home-button");
+
 
 homeButton.addEventListener("click", event => {
 
@@ -865,9 +926,11 @@ homeButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
+
     indexPanel.classList.remove("open");
 
     closeAllTooltips();
+
 
     document.getElementById("home").scrollIntoView({
         behavior: "smooth",
@@ -894,31 +957,29 @@ document.addEventListener("keydown", event => {
 
 
 /* =========================================================
-   CLICK EMPTY MAP → CLOSE TOOLTIP
-   ========================================================= */
-
-map.on("click", event => {
-
-    if (
-        event.originalEvent &&
-        event.originalEvent.target &&
-        event.originalEvent.target.closest &&
-        event.originalEvent.target.closest(".leaflet-interactive")
-    ) {
-        return;
-    }
-
-
-    closeAllTooltips();
-
-});
-
-
-/* =========================================================
    FINAL MAP REFRESH
    ========================================================= */
 
 window.addEventListener("load", () => {
+
+    /*
+       Give the browser one last explicit instruction:
+       the page starts at HOME, not at the map.
+    */
+
+    if (
+        window.location.hash === "" &&
+        window.scrollY > 0
+    ) {
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "auto"
+        });
+
+    }
+
 
     setTimeout(() => {
 
@@ -928,18 +989,49 @@ window.addEventListener("load", () => {
 
     }, 300);
 
+
+    /*
+       Extra mobile safeguard after Leaflet and tiles have
+       finished their first layout pass.
+    */
+
+    if (isTouchDevice) {
+
+        setTimeout(() => {
+
+            if (
+                window.location.hash === "" &&
+                !indexPanel.classList.contains("open")
+            ) {
+
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: "auto"
+                });
+
+            }
+
+        }, 600);
+
+    }
+
 });
 
 
 /* =========================================================
-   BFCACHE / PAGE RESTORE
+   PAGE RESTORE
    ========================================================= */
 
 window.addEventListener("pageshow", event => {
 
     if (event.persisted) {
 
-        goToHomeInstantly();
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "auto"
+        });
 
     }
 
