@@ -17,6 +17,7 @@ if ("scrollRestoration" in history) {
    ========================================================= */
 
 const map = L.map("map-container", {
+
     worldCopyJump: false,
 
     minZoom: 2,
@@ -34,7 +35,10 @@ const map = L.map("map-container", {
 
     tap: true,
 
-    touchZoom: true
+    touchZoom: true,
+
+    dragging: true
+
 }).setView([20, 0], 2);
 
 
@@ -97,7 +101,9 @@ function fitWorldToScreen() {
 /* Initial map sizing */
 
 setTimeout(() => {
+
     fitWorldToScreen();
+
 }, 100);
 
 
@@ -113,13 +119,9 @@ window.addEventListener("resize", () => {
 
     resizeTimer = setTimeout(() => {
 
-        map.invalidateSize({
-            pan: false
-        });
-
         fitWorldToScreen();
 
-    }, 200);
+    }, 150);
 
 });
 
@@ -152,239 +154,156 @@ const places = [
     {
         id: 1,
         name: "Kafana Šindra",
-        lat: 44.813938,
-        lng: 20.456848,
-
-        visitedDate: "SEP 2025",
-        visitedTime: "LATE EVENING / NIGHT",
-
+        lat: 44.81394,
+        lng: 20.45596,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
-
         toilets: "Squat toilets, unisex, very dirty.",
-
         notes: ""
     },
-
 
     {
         id: 2,
         name: "Langosi, mici, cafea",
-        lat: 45.850244,
-        lng: 22.980534,
-
-        visitedDate: "FEB 2026",
-        visitedTime: "MIDDAY",
-
+        lat: 45.8642,
+        lng: 22.9684,
         smoking: "No indoor area",
         music: "No",
         locals: "Yes",
         gambling: "No",
-
         toilets: "Chemical toilets, extremely dirty, unisex.",
-
         notes: ""
     },
-
 
     {
         id: 3,
         name: "Dabar",
-        lat: 43.093869,
-        lng: 18.158703,
-
-        visitedDate: "AUG 2023",
-        visitedTime: "SUNSET",
-
+        lat: 43.09365,
+        lng: 18.15879,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Unknown",
-
         toilets: "Normal. Men and women separated.",
-
         notes: ""
     },
-
 
     {
         id: 4,
         name: "Pri Hladniku",
-        lat: 45.926297,
-        lng: 14.043176,
-
-        visitedDate: "JUL 2025",
-        visitedTime: "LATE AFTERNOON",
-
+        lat: 45.926166,
+        lng: 14.043124,
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "No",
-
         toilets: "Normal. Men and women separated.",
-
         notes: ""
     },
-
 
     {
         id: 5,
         name: "Restaurant Bastion La Strada",
-        lat: 46.219208,
-        lng: 24.791609,
-
-        visitedDate: "FEB 2026",
-        visitedTime: "LATE EVENING / NIGHT",
-
+        lat: 46.219019,
+        lng: 24.791593,
         smoking: "Unknown",
         music: "Yes",
         locals: "No",
         gambling: "Unknown",
-
         toilets: "Normal. Men and women separated.",
-
         notes: ""
     },
-
 
     {
         id: 6,
         name: "Caffe Bar Milano",
-        lat: 45.432485,
-        lng: 14.905419,
-
-        visitedDate: "AUG 2026",
-        visitedTime: "MORNING / MIDDAY",
-
+        lat: 45.4278,
+        lng: 14.9111,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
-
         toilets: "Unknown",
-
         notes: ""
     },
-
 
     {
         id: 7,
         name: "Caffe Bar Gold",
-        lat: 45.325111,
-        lng: 15.695395,
-
-        visitedDate: "AUG 2026",
-        visitedTime: "AFTERNOON",
-
+        lat: 45.32495,
+        lng: 15.695158,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "No",
-
         toilets: "Normal. Men and women separated.",
-
         notes: ""
     },
-
 
     {
         id: 8,
         name: "Magical Cavern",
-        lat: 50.081553,
-        lng: 14.400084,
-
-        visitedDate: "AUG 2019",
-        visitedTime: "AFTERNOON",
-
+        lat: 50.0814,
+        lng: 14.4002,
         smoking: "No",
         music: "No",
         locals: "No",
         gambling: "No",
-
         toilets: "Unisex. Looks like a private laundry room.",
-
         notes: ""
     },
-
 
     {
         id: 9,
         name: "Birtija",
-        lat: 43.860294,
-        lng: 18.431862,
-
-        visitedDate: "SEP 2024",
-        visitedTime: "LATE EVENING",
-
+        lat: 43.86155,
+        lng: 18.43528,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Unknown",
-
         toilets: "Unknown",
-
         notes: ""
     },
-
 
     {
         id: 10,
         name: "Lucky Bar",
-        lat: 45.514442,
-        lng: 9.869044,
-
-        visitedDate: "DEC 2025",
-        visitedTime: "BEFORE DINNER",
-
+        lat: 45.5159,
+        lng: 9.8680,
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "Yes",
-
         toilets: "Unisex, extremely dirty.",
-
         notes: ""
     },
-
 
     {
         id: 11,
         name: "Sala Admiral",
-        lat: 45.409563,
-        lng: 9.934405,
-
-        visitedDate: "JUN 2026",
-        visitedTime: "MORNING",
-
+        lat: 45.40830,
+        lng: 9.93608,
         smoking: "Yes",
         music: "No",
         locals: "Yes",
         gambling: "Yes",
-
         toilets: "Unknown",
-
         notes: ""
     },
-
 
     {
         id: 12,
         name: "Bar 10 Damijana Kodelija",
-        lat: 45.881229,
-        lng: 14.002382,
-
-        visitedDate: "AUG 2026",
-        visitedTime: "BEFORE LUNCH",
-
+        lat: 45.8836,
+        lng: 14.0230,
         smoking: "No",
         music: "No",
         locals: "Yes",
         gambling: "No",
-
         toilets: "Normal. Men and women separated.",
-
         notes: ""
     }
 
@@ -395,13 +314,17 @@ const places = [
    INDEX ELEMENTS
    ========================================================= */
 
-const indexList = document.getElementById("index-list");
+const indexList =
+    document.getElementById("index-list");
 
-const indexButton = document.getElementById("index-button");
+const indexButton =
+    document.getElementById("index-button");
 
-const indexPanel = document.getElementById("index-panel");
+const indexPanel =
+    document.getElementById("index-panel");
 
-const closeIndex = document.getElementById("close-index");
+const closeIndex =
+    document.getElementById("close-index");
 
 
 /* =========================================================
@@ -412,7 +335,7 @@ const markerReferences = [];
 
 
 /* =========================================================
-   CLOSE ALL OPEN TOOLTIPS
+   CLOSE ALL TOOLTIPS
    ========================================================= */
 
 function closeAllTooltips() {
@@ -420,10 +343,12 @@ function closeAllTooltips() {
     markerReferences.forEach(reference => {
 
         if (
-            reference.marker &&
-            reference.marker.isTooltipOpen()
+            reference.hitMarker &&
+            reference.hitMarker.isTooltipOpen()
         ) {
-            reference.marker.closeTooltip();
+
+            reference.hitMarker.closeTooltip();
+
         }
 
     });
@@ -432,7 +357,7 @@ function closeAllTooltips() {
 
 
 /* =========================================================
-   CREATE MARKERS AND INDEX
+   CREATE MARKERS + INDEX
    ========================================================= */
 
 places.forEach(place => {
@@ -440,11 +365,15 @@ places.forEach(place => {
 
     /* =====================================================
        VISIBLE DOT
+
+       IMPORTANT:
+       This remains visually 3px.
        ===================================================== */
 
     const visibleMarker = L.circleMarker(
         [place.lat, place.lng],
         {
+
             radius: 3,
 
             color: "#3a3a38",
@@ -456,17 +385,28 @@ places.forEach(place => {
             weight: 0,
 
             interactive: false
+
         }
     ).addTo(map);
 
 
     /* =====================================================
        INVISIBLE TOUCH TARGET
+
+       IMPORTANT:
+       This is the actual interactive marker.
+
+       Visible dot = 3px
+       Touch target = 14px
+
+       The user therefore does NOT need to hit
+       the tiny visible dot exactly on a phone.
        ===================================================== */
 
-    const marker = L.circleMarker(
+    const hitMarker = L.circleMarker(
         [place.lat, place.lng],
         {
+
             radius: 14,
 
             color: "#000000",
@@ -480,6 +420,7 @@ places.forEach(place => {
             weight: 0,
 
             interactive: true
+
         }
     ).addTo(map);
 
@@ -517,7 +458,6 @@ places.forEach(place => {
 
             </div>
 
-
             <div class="popup-section">
 
                 <span>TOILETS</span>
@@ -525,7 +465,6 @@ places.forEach(place => {
                 <p>${place.toilets}</p>
 
             </div>
-
 
             <div class="popup-section">
 
@@ -540,13 +479,14 @@ places.forEach(place => {
 
 
     /* =====================================================
-       BIND TOOLTIP
+       TOOLTIP
        ===================================================== */
 
-    marker.bindTooltip(
+    hitMarker.bindTooltip(
         popupContent,
         {
-            direction: "top",
+
+            direction: "auto",
 
             offset: [0, -10],
 
@@ -556,7 +496,10 @@ places.forEach(place => {
 
             interactive: true,
 
+            sticky: false,
+
             permanent: false
+
         }
     );
 
@@ -565,29 +508,40 @@ places.forEach(place => {
        DESKTOP HOVER
        ===================================================== */
 
-    marker.on("mouseover", () => {
+    hitMarker.on("mouseover", () => {
 
         if (!L.Browser.touch) {
-            marker.openTooltip();
+
+            closeAllTooltips();
+
+            hitMarker.openTooltip();
+
         }
 
     });
 
 
-    marker.on("mouseout", () => {
+    hitMarker.on("mouseout", () => {
 
         if (!L.Browser.touch) {
-            marker.closeTooltip();
+
+            hitMarker.closeTooltip();
+
         }
 
     });
 
 
     /* =====================================================
-       CLICK / TAP
+       MOBILE + DESKTOP CLICK / TAP
        ===================================================== */
 
-    marker.on("click", event => {
+    hitMarker.on("click", event => {
+
+        /*
+         * Prevent the same tap from becoming
+         * a click on the map underneath.
+         */
 
         if (event.originalEvent) {
 
@@ -598,15 +552,34 @@ places.forEach(place => {
         }
 
 
-        if (marker.isTooltipOpen()) {
+        /*
+         * Toggle current tooltip.
+         */
 
-            marker.closeTooltip();
+        if (hitMarker.isTooltipOpen()) {
+
+            hitMarker.closeTooltip();
 
         } else {
 
             closeAllTooltips();
 
-            marker.openTooltip();
+            hitMarker.openTooltip();
+
+        }
+
+    });
+
+
+    /* =====================================================
+       TOUCHSTART
+       ===================================================== */
+
+    hitMarker.on("touchstart", event => {
+
+        if (event.originalEvent) {
+
+            event.originalEvent.stopPropagation();
 
         }
 
@@ -618,11 +591,13 @@ places.forEach(place => {
        ===================================================== */
 
     markerReferences.push({
+
         place: place,
 
-        marker: marker,
+        hitMarker: hitMarker,
 
         visibleMarker: visibleMarker
+
     });
 
 
@@ -630,12 +605,12 @@ places.forEach(place => {
        CREATE INDEX ITEM
        ===================================================== */
 
-    const indexItem = document.createElement("button");
+    const indexItem =
+        document.createElement("button");
 
     indexItem.type = "button";
 
     indexItem.className = "index-item";
-
 
     indexItem.innerHTML = `
         <span class="index-number">
@@ -649,15 +624,11 @@ places.forEach(place => {
         <span class="index-coordinates">
             ${place.lat.toFixed(4)}, ${place.lng.toFixed(4)}
         </span>
-
-        <span class="index-visited">
-            VISITED · ${place.visitedDate} · ${place.visitedTime}
-        </span>
     `;
 
 
     /* =====================================================
-       INDEX ITEM → MAP
+       INDEX → MAP
        ===================================================== */
 
     indexItem.addEventListener("click", event => {
@@ -667,12 +638,23 @@ places.forEach(place => {
         event.stopPropagation();
 
 
-        /* CLOSE INDEX IMMEDIATELY */
+        /*
+         * Close INDEX immediately.
+         */
 
         indexPanel.classList.remove("open");
 
 
-        /* Tell Leaflet panel is gone */
+        /*
+         * Close existing tooltip.
+         */
+
+        closeAllTooltips();
+
+
+        /*
+         * Wait briefly for the panel to disappear.
+         */
 
         setTimeout(() => {
 
@@ -680,63 +662,71 @@ places.forEach(place => {
                 pan: false
             });
 
-        }, 50);
+
+            /*
+             * Move to selected place.
+             */
+
+            let tooltipOpened = false;
 
 
-        /* Close other tooltip */
+            const openTooltipAfterMove = () => {
 
-        closeAllTooltips();
-
-
-        let tooltipOpened = false;
-
-
-        const openTooltipAfterMove = () => {
-
-            if (tooltipOpened) {
-                return;
-            }
-
-            tooltipOpened = true;
-
-            map.off("moveend", openTooltipAfterMove);
-
-            marker.openTooltip();
-
-        };
-
-
-        map.once("moveend", openTooltipAfterMove);
-
-
-        /* Move to selected place */
-
-        map.setView(
-            [place.lat, place.lng],
-            8,
-            {
-                animate: true,
-
-                duration: 0.6
-            }
-        );
-
-
-        /* Safety fallback */
-
-        setTimeout(() => {
-
-            if (!tooltipOpened) {
+                if (tooltipOpened) {
+                    return;
+                }
 
                 tooltipOpened = true;
 
-                map.off("moveend", openTooltipAfterMove);
+                map.off(
+                    "moveend",
+                    openTooltipAfterMove
+                );
 
-                marker.openTooltip();
+                hitMarker.openTooltip();
 
-            }
+            };
 
-        }, 900);
+
+            map.once(
+                "moveend",
+                openTooltipAfterMove
+            );
+
+
+            map.setView(
+                [place.lat, place.lng],
+                8,
+                {
+                    animate: true,
+                    duration: 0.6
+                }
+            );
+
+
+            /*
+             * Safety fallback.
+             */
+
+            setTimeout(() => {
+
+                if (!tooltipOpened) {
+
+                    tooltipOpened = true;
+
+                    map.off(
+                        "moveend",
+                        openTooltipAfterMove
+                    );
+
+                    hitMarker.openTooltip();
+
+                }
+
+            }, 900);
+
+
+        }, 250);
 
     });
 
@@ -758,7 +748,17 @@ indexButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
+
     indexPanel.classList.add("open");
+
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    }, 250);
 
 });
 
@@ -773,16 +773,28 @@ closeIndex.addEventListener("click", event => {
 
     event.stopPropagation();
 
+
     indexPanel.classList.remove("open");
+
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    }, 250);
 
 });
 
 
 /* =========================================================
-   ENTER THE MAP
+   ENTER MAP
    ========================================================= */
 
-const enterMapButton = document.getElementById("enter-map");
+const enterMapButton =
+    document.getElementById("enter-map");
+
 
 enterMapButton.addEventListener("click", event => {
 
@@ -790,11 +802,20 @@ enterMapButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
+
     document.getElementById("map").scrollIntoView({
         behavior: "smooth",
-
         block: "start"
     });
+
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    }, 500);
 
 });
 
@@ -803,7 +824,9 @@ enterMapButton.addEventListener("click", event => {
    RETURN HOME
    ========================================================= */
 
-const homeButton = document.getElementById("home-button");
+const homeButton =
+    document.getElementById("home-button");
+
 
 homeButton.addEventListener("click", event => {
 
@@ -811,13 +834,14 @@ homeButton.addEventListener("click", event => {
 
     event.stopPropagation();
 
+
     indexPanel.classList.remove("open");
 
     closeAllTooltips();
 
+
     document.getElementById("home").scrollIntoView({
         behavior: "smooth",
-
         block: "start"
     });
 
@@ -845,13 +869,22 @@ document.addEventListener("keydown", event => {
 
 map.on("click", event => {
 
+    /*
+     * If the event originated from an interactive
+     * marker, leave its tooltip alone.
+     */
+
     if (
         event.originalEvent &&
         event.originalEvent.target &&
         event.originalEvent.target.closest &&
-        event.originalEvent.target.closest(".leaflet-interactive")
+        event.originalEvent.target.closest(
+            ".leaflet-interactive"
+        )
     ) {
+
         return;
+
     }
 
 
