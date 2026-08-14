@@ -32,10 +32,19 @@
         href="style.css"
     >
 
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    >
+    <!-- Minimal CSS to ensure .hidden works even if style.css is missing.
+         Optionally move this to style.css -->
+    <style>
+      .hidden { display: none !important; }
+      /* Improve focus outline for keyboard users */
+      :focus { outline: 3px solid #3b82f6; outline-offset: 2px; }
+      /* Basic styling for the index panel when visible (adapt in style.css) */
+      #index-panel { background: #fff; border-left: 1px solid #ddd; padding: 1rem; max-width: 320px; }
+    </style>
+
+    <!-- Leaflet CSS with SRI and crossorigin -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
 
 </head>
 
@@ -58,6 +67,9 @@
             <button
                 id="enter-map"
                 class="enter-button"
+                type="button"
+                aria-controls="map"
+                aria-label="Enter the map"
             >
                 ENTER THE MAP
             </button>
@@ -67,45 +79,54 @@
     </main>
 
 
-    <section id="map">
+    <section id="map" aria-label="Map section">
 
-        <button id="home-button">
+        <button id="home-button" type="button" aria-label="Go to home">
             HOME
         </button>
 
-        <button id="index-button">
+        <button id="index-button" type="button" aria-expanded="false" aria-controls="index-panel" aria-label="Open index">
             INDEX
         </button>
 
 
-        <aside id="index-panel">
+        <aside id="index-panel" role="region" aria-labelledby="index-heading" aria-hidden="true" class="hidden">
 
             <div class="index-header">
 
-                <span>
+                <span id="index-heading">
                     INDEX
                 </span>
 
-                <button id="close-index">
+                <button id="close-index" type="button" aria-label="Close index">
                     CLOSE
                 </button>
 
             </div>
 
-            <div id="index-list"></div>
+            <!-- Use a semantic list for the index; populate with JS -->
+            <ul id="index-list" role="list"></ul>
 
         </aside>
 
 
-        <div id="map-container"></div>
+        <!-- Give the map container an accessible name and allow keyboard focus -->
+        <div id="map-container" role="application" aria-label="Interactive map" tabindex="0"></div>
+
+        <noscript>
+            <p>
+                This site requires JavaScript to show the interactive map. Please enable JavaScript or view the static index.
+            </p>
+        </noscript>
 
     </section>
 
 
-    <script
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    ></script>
+    <!-- Leaflet JS with SRI and crossorigin -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 
+    <!-- Main script (see script.js below) -->
     <script src="script.js"></script>
 
 </body>
