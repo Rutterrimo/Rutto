@@ -32,16 +32,6 @@
         href="style.css"
     >
 
-    <!-- Minimal CSS to ensure .hidden works even if style.css is missing.
-         Optionally move this to style.css -->
-    <style>
-      .hidden { display: none !important; }
-      /* Improve focus outline for keyboard users */
-      :focus { outline: 3px solid #3b82f6; outline-offset: 2px; }
-      /* Basic styling for the index panel when visible (adapt in style.css) */
-      #index-panel { background: #fff; border-left: 1px solid #ddd; padding: 1rem; max-width: 320px; }
-    </style>
-
     <!-- Leaflet CSS with SRI and crossorigin -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
@@ -90,8 +80,7 @@
         </button>
 
 
-        <aside id="index-panel" role="region" aria-labelledby="index-heading" aria-hidden="true" class="hidden">
-
+        <aside id="index-panel" role="region" aria-labelledby="index-heading" aria-hidden="true">
             <div class="index-header">
 
                 <span id="index-heading">
@@ -104,13 +93,12 @@
 
             </div>
 
-            <!-- Use a semantic list for the index; populate with JS -->
-            <ul id="index-list" role="list"></ul>
+            <div id="index-list" role="list"></div>
 
         </aside>
 
 
-        <!-- Give the map container an accessible name and allow keyboard focus -->
+        <!-- Accessible map container -->
         <div id="map-container" role="application" aria-label="Interactive map" tabindex="0"></div>
 
         <noscript>
@@ -126,7 +114,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 
-    <!-- Main script (see script.js below) -->
     <script src="script.js"></script>
 
 </body>
