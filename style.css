@@ -23,52 +23,27 @@ body {
     overflow-x: hidden;
 
     /*
-       DEFAULT CURSOR
-       Cigarette with pixel smoke.
-    */
+       RUTTO CURSOR
 
+       Cigarette is the default cursor.
+       Hotspot is positioned near the cigarette filter/tip.
+    */
     cursor:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg transform='rotate(-25 20 20)'%3E%3Crect x='9' y='17' width='22' height='7' fill='%23e8e6df' stroke='%23171717' stroke-width='1.4'/%3E%3Crect x='27' y='17' width='4' height='7' fill='%23e87535'/%3E%3Crect x='32' y='14' width='2' height='2' fill='%23171717' opacity='.55'/%3E%3Crect x='34' y='11' width='2' height='2' fill='%23171717' opacity='.38'/%3E%3Crect x='31' y='9' width='2' height='2' fill='%23171717' opacity='.25'/%3E%3C/g%3E%3C/svg%3E")
-        5 20,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect x='8' y='39' width='10' height='5' fill='%23e88932' transform='rotate(-24 13 41.5)'/%3E%3Crect x='17' y='35' width='32' height='6' fill='%23eee9dd' stroke='%23171717' stroke-width='1.2' transform='rotate(-24 33 38)'/%3E%3Crect x='44' y='23' width='7' height='6' fill='%23d7d1c5' stroke='%23171717' stroke-width='1.2' transform='rotate(-24 47.5 26)'/%3E%3Crect x='50' y='18' width='3' height='4' fill='%23bcb7ae'/%3E%3Crect x='53' y='12' width='3' height='4' fill='%23bcb7ae'/%3E%3Crect x='51' y='7' width='3' height='3' fill='%23bcb7ae'/%3E%3C/svg%3E")
+        8 42,
         auto;
 }
 
 
-/* =========================================================
-   CURSOR SYSTEM
-   ========================================================= */
-
 /*
-   Arrow cursor.
+   NORMAL SYSTEM ARROW
 
-   This is the cursor used for:
-   - ENTER THE MAP
-   - HOME
-   - INDEX
-   - CLOSE
-   - places on the map
+   Used for buttons and places.
 */
-
-body.rutto-arrow,
-body.rutto-arrow * {
-    cursor:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M7 3 L7 25 L13 19 L17 28 L21 26 L17 17 L25 17 Z' fill='%23e8e6df' stroke='%23171717' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E")
-        6 3,
-        auto !important;
-}
-
-
-/*
-   During actual map dragging we use the normal
-   closed-hand cursor.
-
-   This rule comes after the arrow rules so that
-   dragging always wins.
-*/
-
-body.rutto-dragging,
-body.rutto-dragging * {
-    cursor: grabbing !important;
+button,
+a,
+.rutto-place-hover {
+    cursor: default;
 }
 
 
@@ -145,7 +120,7 @@ body.rutto-dragging * {
 
     letter-spacing: 0.12em;
 
-    cursor: inherit;
+    cursor: default;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -216,6 +191,27 @@ body.rutto-dragging * {
     padding: 0;
 
     z-index: 1;
+
+    /*
+       Default map cursor = cigarette.
+       Leaflet's drag behaviour can override this while dragging.
+    */
+    cursor:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Crect x='8' y='39' width='10' height='5' fill='%23e88932' transform='rotate(-24 13 41.5)'/%3E%3Crect x='17' y='35' width='32' height='6' fill='%23eee9dd' stroke='%23171717' stroke-width='1.2' transform='rotate(-24 33 38)'/%3E%3Crect x='44' y='23' width='7' height='6' fill='%23d7d1c5' stroke='%23171717' stroke-width='1.2' transform='rotate(-24 47.5 26)'/%3E%3Crect x='50' y='18' width='3' height='4' fill='%23bcb7ae'/%3E%3Crect x='53' y='12' width='3' height='4' fill='%23bcb7ae'/%3E%3Crect x='51' y='7' width='3' height='3' fill='%23bcb7ae'/%3E%3C/svg%3E")
+        8 42,
+        auto;
+}
+
+
+/*
+   IMPORTANT:
+
+   When JS detects that the mouse is close to a place,
+   the cigarette disappears and the browser's normal arrow
+   becomes the cursor.
+*/
+#map-container.rutto-place-hover {
+    cursor: default !important;
 }
 
 
@@ -232,13 +228,6 @@ body.rutto-dragging * {
     font-family: Arial, Helvetica, sans-serif;
 
     outline: none !important;
-
-    /*
-       Important:
-       Leaflet itself must not replace the cigarette cursor.
-    */
-
-    cursor: inherit !important;
 }
 
 
@@ -251,6 +240,10 @@ body.rutto-dragging * {
     -webkit-tap-highlight-color: transparent;
 }
 
+
+/* =========================================================
+   LEAFLET ZOOM
+   ========================================================= */
 
 .leaflet-control-zoom {
     margin-bottom: 12px !important;
@@ -274,7 +267,7 @@ body.rutto-dragging * {
 
     font-size: 14px !important;
 
-    cursor: inherit !important;
+    cursor: default !important;
 
     -webkit-tap-highlight-color: transparent;
 }
@@ -464,7 +457,7 @@ body.rutto-dragging * {
 
     letter-spacing: 0.1em;
 
-    cursor: inherit;
+    cursor: default;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -586,7 +579,7 @@ body.rutto-dragging * {
 
     letter-spacing: 0.08em;
 
-    cursor: inherit;
+    cursor: default;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -640,7 +633,7 @@ body.rutto-dragging * {
 
     font-family: Arial, Helvetica, sans-serif;
 
-    cursor: inherit;
+    cursor: default;
 
     -webkit-tap-highlight-color: transparent;
 
