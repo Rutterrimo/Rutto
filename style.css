@@ -24,23 +24,16 @@ body.map-active {
     overflow: hidden;
 }
 
-/*
-=========================================================
-INTRO
-=========================================================
-*/
-
+/* INTRO */
 .intro {
-    position: relative; /* needed for footer placement */
+    position: relative;
     width: 100%;
     height: 100vh;
     height: 100dvh;
     min-height: 100dvh;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     text-align: center;
 }
 
@@ -52,7 +45,6 @@ INTRO
 
 .intro h1 {
     margin: 0;
-
     font-size: clamp(56px, 8vw, 110px);
     font-weight: 500;
     letter-spacing: -0.04em;
@@ -60,7 +52,6 @@ INTRO
 
 .intro p {
     margin: 18px 0 55px;
-
     font-size: 15px;
     font-weight: 400;
     letter-spacing: 0.02em;
@@ -70,20 +61,14 @@ INTRO
     background: none;
     border: none;
     border-bottom: 1px solid #171717;
-
     color: #171717;
-
     padding: 0 0 4px;
-
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
     letter-spacing: 0.12em;
-
     cursor: pointer;
-
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
-
     transition: opacity 0.2s ease;
 }
 
@@ -91,7 +76,7 @@ INTRO
     opacity: 0.45;
 }
 
-/* Home footer text */
+/* Footer: uppercase and less saturated like in history */
 .home-footer {
     position: absolute;
     left: 0;
@@ -99,90 +84,79 @@ INTRO
     bottom: calc(12px + env(safe-area-inset-bottom));
     text-align: center;
     font-size: 12px;
-    color: #171717;
-    opacity: 0.7;
+    color: rgba(23, 23, 23, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 400;
     pointer-events: none;
 }
 
-/*
-=========================================================
-MAP
-=========================================================
-*/
-
+/* MAP */
 #map {
     position: relative;
-
     width: 100%;
     height: 100vh;
     height: 100dvh;
     min-height: 100dvh;
-
     margin: 0;
     padding: 0;
-
     overflow: hidden;
 }
 
 #map-container {
     position: absolute;
-
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     margin: 0;
     padding: 0;
-
     z-index: 1;
 }
 
-/*
-=========================================================
-LEAFLET
-=========================================================
-*/
+/* LEAFLET */
 .leaflet-container {
     width: 100%;
     height: 100%;
-
     background: #e8e6df;
-
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/*
-Accessibility: visible focus styles (do not remove outline)
-*/
+/* Focus styles: visible only for keyboard users via :focus-visible */
+/* Default: remove browser focus outline for non-keyboard interactions */
 :focus {
+    outline: none;
+}
+:focus-visible {
     outline: 3px solid #3b82f6;
     outline-offset: 2px;
 }
 
-/* For Leaflet interactive elements ensure keyboard focus is visible */
+/* Remove default focus outlines on Leaflet graphical elements so no blue box on mobile */
 .leaflet-interactive:focus,
 .leaflet-container:focus,
 .leaflet-container svg:focus,
 .leaflet-container path:focus {
-    outline: 3px solid #3b82f6 !important;
-    outline-offset: 2px !important;
+    outline: none !important;
 }
 
-/*
-Remove tap highlight on WebKit browsers.
-*/
-.leaflet-container,
-.leaflet-container * {
+/* Remove tap highlight on WebKit (mobile) */
+*,
+button,
+a {
     -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
-/*
-=========================================================
-ZOOM CONTROLS
-=========================================================
-*/
+/* Additionally disable outline on touch devices only (preserve keyboard outlines) */
+@media (pointer: coarse) {
+    button:focus,
+    .index-item:focus,
+    .leaflet-interactive:focus {
+        outline: none !important;
+    }
+}
 
+/* ZOOM CONTROLS */
 .leaflet-control-zoom {
     margin-bottom: 12px !important;
     margin-left: 12px !important;
@@ -192,39 +166,23 @@ ZOOM CONTROLS
     width: 28px !important;
     height: 28px !important;
     line-height: 28px !important;
-
     background: #e8e6df !important;
     color: #171717 !important;
-
     border: 1px solid #171717 !important;
-
     font-size: 14px !important;
-
     -webkit-tap-highlight-color: transparent;
-
     box-shadow: none !important;
 }
 
-/*
-=========================================================
-RUTTO TOOLTIP
-=========================================================
-*/
-
+/* RUTTO TOOLTIP */
 .rutto-tooltip {
     background: #e8e6df !important;
-
     border: 1px solid #171717 !important;
     border-radius: 0 !important;
-
     box-shadow: none !important;
-
     color: #171717 !important;
-
     padding: 0 !important;
-
     font-family: Arial, Helvetica, sans-serif;
-
     pointer-events: auto;
 }
 
@@ -236,128 +194,43 @@ RUTTO TOOLTIP
     margin: 0 !important;
 }
 
-/*
-=========================================================
-POPUP CONTENT
-=========================================================
-*/
-
+/* POPUP */
 .place-popup {
     width: 250px;
     max-width: calc(100vw - 40px);
-
     padding: 16px;
 }
 
 .place-popup h3 {
     margin: 0 0 18px 0;
-
     font-size: 17px;
     font-weight: 500;
-
     letter-spacing: -0.02em;
-
     overflow-wrap: anywhere;
 }
 
-.categories {
-    display: flex;
-    flex-direction: column;
-
-    gap: 7px;
-
-    padding-bottom: 14px;
-
-    border-bottom: 1px solid rgba(23, 23, 23, 0.25);
-}
-
-.categories div {
-    display: flex;
-    justify-content: space-between;
-
-    gap: 15px;
-
-    font-size: 10px;
-    line-height: 1.3;
-}
-
-.categories span,
-.popup-section > span {
-    letter-spacing: 0.08em;
-    opacity: 0.65;
-}
-
-.categories strong {
-    font-weight: 500;
-    text-transform: uppercase;
-
-    text-align: right;
-}
-
-.popup-section {
-    padding-top: 13px;
-}
-
-.popup-section > span {
-    display: block;
-
-    margin-bottom: 5px;
-
-    font-size: 10px;
-}
-
-.popup-section p {
-    margin: 0;
-
-    font-size: 12px;
-    line-height: 1.45;
-
-    overflow-wrap: anywhere;
-}
-
-/*
-=========================================================
-HOME + INDEX BUTTONS
-=========================================================
-*/
-
+/* INDEX BUTTONS */
 #home-button,
 #index-button {
     position: absolute;
-
     z-index: 1200;
-
     top: 20px;
-
     background: #e8e6df;
     color: #171717;
-
     border: 1px solid #171717;
     border-radius: 0;
-
     padding: 9px 12px;
-
     font-family: Arial, Helvetica, sans-serif;
     font-size: 10px;
     letter-spacing: 0.1em;
-
     cursor: pointer;
-
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
-
-    transition:
-        background 0.15s ease,
-        color 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
-#home-button {
-    left: 20px;
-}
-
-#index-button {
-    right: 20px;
-}
+#home-button { left: 20px; }
+#index-button { right: 20px; }
 
 #home-button:hover,
 #index-button:hover {
@@ -365,142 +238,78 @@ HOME + INDEX BUTTONS
     color: #e8e6df;
 }
 
-/* visible focus styles for these controls (replaces outline:none) */
-#home-button:focus,
-#index-button:focus,
-#close-index:focus,
-.index-item:focus {
+/* Focus visible only for keyboard users */
+#home-button:focus-visible,
+#index-button:focus-visible,
+#close-index:focus-visible,
+.index-item:focus-visible {
     outline: 3px solid #3b82f6;
     outline-offset: 2px;
 }
 
-/*
-=========================================================
-INDEX PANEL
-=========================================================
-*/
-
+/* INDEX PANEL */
 #index-panel {
     position: absolute;
-
     z-index: 1300;
-
     top: 0;
     right: 0;
-
     width: min(330px, 86vw);
     height: 100%;
-
     background: #e8e6df;
-
     border-left: 1px solid #171717;
-
     transform: translate3d(100%, 0, 0);
-
-    transition:
-        transform 0.25s ease,
-        visibility 0s linear 0.25s;
-
+    transition: transform 0.25s ease, visibility 0s linear 0.25s;
     overflow-x: hidden;
     overflow-y: auto;
-
     -webkit-overflow-scrolling: touch;
-
     overscroll-behavior: contain;
-
     visibility: hidden;
 }
 
-/* open state */
 #index-panel.open {
     transform: translate3d(0, 0, 0);
     visibility: visible;
-    transition:
-        transform 0.25s ease,
-        visibility 0s linear 0s;
+    transition: transform 0.25s ease, visibility 0s linear 0s;
 }
 
-/*
-=========================================================
-INDEX HEADER
-=========================================================
-*/
-
+/* INDEX HEADER */
 .index-header {
     position: sticky;
-
     top: 0;
-
     z-index: 2;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     padding: 20px;
-
     background: #e8e6df;
-
     border-bottom: 1px solid rgba(23, 23, 23, 0.25);
-
     font-size: 11px;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(23,23,23,0.85);
 }
 
-#close-index {
-    background: none;
-    border: none;
-
-    padding: 0;
-
-    color: #171717;
-
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.08em;
-
-    cursor: pointer;
-
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-}
-
-#close-index:hover {
-    opacity: 0.45;
-}
-
-/*
-=========================================================
-INDEX ITEMS — force 3 visual rows per item, prevent name wrap
-=========================================================
-*/
-
+/* INDEX ITEMS: force 3 rows */
 #index-list {
     display: flex;
     flex-direction: column;
 }
 
-/* Each item is a 3-row grid: number | name (row1) | coords (row2) | visited (row3) */
 .index-item {
     width: 100%;
-
     display: grid;
     grid-template-columns: 30px 1fr;
-    grid-template-rows: auto auto auto; /* exactly three rows */
+    grid-template-rows: auto auto auto;
     column-gap: 10px;
-
     padding: 12px 20px;
-    min-height: 66px; /* ensures space for three rows on small screens */
+    min-height: 66px;
     box-sizing: border-box;
-
     background: none;
     border: none;
     border-bottom: 1px solid rgba(23, 23, 23, 0.15);
-
     color: #171717;
     text-align: left;
     font-family: Arial, Helvetica, sans-serif;
-
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
@@ -510,7 +319,6 @@ INDEX ITEMS — force 3 visual rows per item, prevent name wrap
     background: rgba(23, 23, 23, 0.05);
 }
 
-/* Number occupies the full height (3 rows) */
 .index-number {
     grid-row: 1 / 4;
     align-self: center;
@@ -519,7 +327,6 @@ INDEX ITEMS — force 3 visual rows per item, prevent name wrap
     white-space: nowrap;
 }
 
-/* Name sits on the first row, single line with ellipsis */
 .index-name {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
@@ -528,9 +335,9 @@ INDEX ITEMS — force 3 visual rows per item, prevent name wrap
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: rgba(23,23,23,0.95);
 }
 
-/* Coordinates on second row */
 .index-coordinates {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
@@ -539,148 +346,49 @@ INDEX ITEMS — force 3 visual rows per item, prevent name wrap
     line-height: 1.2;
     opacity: 0.55;
     white-space: nowrap;
+    color: rgba(23,23,23,0.6);
 }
 
-/* Visited/meta on third row, small and single line */
 .index-visited {
     grid-column: 2 / 3;
     grid-row: 3 / 4;
     font-size: 10px;
     line-height: 1.2;
-    color: #171717;
+    color: rgba(23,23,23,0.6);
     opacity: 0.7;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/*
-=========================================================
-MOBILE
-=========================================================
-*/
-
+/* MOBILE */
 @media (max-width: 600px) {
-
-    .intro h1 {
-        font-size: clamp(52px, 18vw, 80px);
-    }
-
-    .intro p {
-        margin-top: 14px;
-        margin-bottom: 45px;
-
-        font-size: 13px;
-    }
-
-    #home-button,
-    #index-button {
+    .intro h1 { font-size: clamp(52px, 18vw, 80px); }
+    .intro p { margin-top: 14px; margin-bottom: 45px; font-size: 13px; }
+    #home-button, #index-button {
         top: calc(12px + env(safe-area-inset-top));
-
         padding: 9px 10px;
-
         font-size: 9px;
-
         min-height: 34px;
     }
-
-    #home-button {
-        left: 12px;
-    }
-
-    #index-button {
-        right: 12px;
-    }
-
-    /* Reduce index panel width on mobile so it doesn't cover nearly all the screen */
-    #index-panel {
-        width: min(330px, 72vw); /* modified from 86vw to 72vw */
-        border-left: 1px solid #171717;
-    }
-
-    .index-header {
-        padding:
-            calc(16px + env(safe-area-inset-top))
-            18px
-            16px;
-    }
-
-    .index-item {
-        padding: 12px 16px;
-        min-height: 66px;
-    }
-
-    .place-popup {
-        width: 220px;
-        max-width: calc(100vw - 24px);
-
-        padding: 14px;
-    }
-
-    .place-popup h3 {
-        font-size: 16px;
-    }
-
-    .categories div {
-        gap: 10px;
-    }
-
-    .leaflet-control-zoom {
-        margin-bottom:
-            calc(12px + env(safe-area-inset-bottom)) !important;
-
-        margin-left: 12px !important;
-    }
-
-    .leaflet-control-zoom a {
-        width: 32px !important;
-        height: 32px !important;
-        line-height: 32px !important;
-    }
+    #home-button { left: 12px; }
+    #index-button { right: 12px; }
+    #index-panel { width: min(330px, 72vw); border-left: 1px solid #171717; }
+    .index-header { padding: calc(16px + env(safe-area-inset-top)) 18px 16px; }
+    .index-item { padding: 12px 16px; min-height: 66px; }
+    .place-popup { width: 220px; max-width: calc(100vw - 24px); padding: 14px; }
 }
 
-/*
-=========================================================
-VERY SMALL PHONES
-=========================================================
-*/
-
+/* VERY SMALL PHONES */
 @media (max-width: 380px) {
-
-    .intro h1 {
-        font-size: 52px;
-    }
-
-    .intro p {
-        font-size: 12px;
-    }
-
-    .place-popup {
-        width: min(220px, calc(100vw - 24px));
-    }
-
-    .categories div {
-        gap: 7px;
-    }
+    .intro h1 { font-size: 52px; }
+    .intro p { font-size: 12px; }
+    .place-popup { width: min(220px, calc(100vw - 24px)); }
 }
 
-/*
-=========================================================
-REDUCE MOTION
-=========================================================
-*/
-
+/* REDUCE MOTION */
 @media (prefers-reduced-motion: reduce) {
-
-    html {
-        scroll-behavior: auto;
-    }
-
-    #index-panel {
-        transition: none;
-    }
-
-    .enter-button {
-        transition: none;
-    }
+    html { scroll-behavior: auto; }
+    #index-panel { transition: none; }
+    .enter-button { transition: none; }
 }
