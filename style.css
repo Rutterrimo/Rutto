@@ -694,6 +694,259 @@ body {
 
 
 /* =========================================================
+   RUTTO CUSTOM CURSOR
+   ========================================================= */
+
+/*
+   Il cursore personalizzato esiste solo con mouse/puntatore fine.
+   Su touch non viene modificato nulla.
+*/
+
+@media (pointer: fine) {
+
+    body,
+    button,
+    a,
+    .leaflet-container {
+        cursor: none !important;
+    }
+
+
+    #rutto-cursor {
+        position: fixed;
+
+        left: 0;
+        top: 0;
+
+        width: 46px;
+        height: 46px;
+
+        pointer-events: none;
+
+        z-index: 99999;
+
+        transform: translate3d(-100px, -100px, 0);
+
+        display: block;
+
+        opacity: 1;
+
+        will-change: transform;
+    }
+
+
+    /* -----------------------------------------------------
+       STATES
+       ----------------------------------------------------- */
+
+    #rutto-cursor .cursor-cigarette,
+    #rutto-cursor .cursor-arrow,
+    #rutto-cursor .cursor-hand {
+        position: absolute;
+
+        inset: 0;
+
+        display: none;
+    }
+
+
+    #rutto-cursor.is-cigarette .cursor-cigarette {
+        display: block;
+    }
+
+
+    #rutto-cursor.is-arrow .cursor-arrow {
+        display: block;
+    }
+
+
+    #rutto-cursor.is-hand .cursor-hand {
+        display: block;
+    }
+
+
+    /* -----------------------------------------------------
+       CIGARETTE
+       ----------------------------------------------------- */
+
+    .cursor-cigarette {
+        position: absolute;
+
+        width: 46px;
+        height: 46px;
+    }
+
+
+    /*
+       Il corpo e il filtro sono perfettamente allineati.
+    */
+
+    .cursor-cigarette .cig-body {
+        position: absolute;
+
+        left: 7px;
+        top: 24px;
+
+        width: 18px;
+        height: 4px;
+
+        background: #e8e6df;
+
+        border-top: 1px solid #171717;
+        border-bottom: 1px solid #171717;
+    }
+
+
+    .cursor-cigarette .cig-filter {
+        position: absolute;
+
+        left: 25px;
+        top: 24px;
+
+        width: 7px;
+        height: 4px;
+
+        background: #c87532;
+
+        border-top: 1px solid #171717;
+        border-bottom: 1px solid #171717;
+    }
+
+
+    /*
+       Puntina accesa.
+    */
+
+    .cursor-cigarette .cig-ember {
+        position: absolute;
+
+        left: 3px;
+        top: 23px;
+
+        width: 5px;
+        height: 6px;
+
+        background: #e36b22;
+
+        border: 1px solid #171717;
+    }
+
+
+    .cursor-cigarette .cig-ember::after {
+        content: "";
+
+        position: absolute;
+
+        left: 1px;
+        top: 1px;
+
+        width: 2px;
+        height: 2px;
+
+        background: #ff9b38;
+    }
+
+
+    /* -----------------------------------------------------
+       PIXEL SMOKE
+       ----------------------------------------------------- */
+
+    .cursor-cigarette .smoke {
+        position: absolute;
+
+        background: #777773;
+
+        opacity: 0.65;
+
+        image-rendering: pixelated;
+    }
+
+
+    .cursor-cigarette .smoke-1 {
+        left: 5px;
+        top: 16px;
+
+        width: 3px;
+        height: 5px;
+    }
+
+
+    .cursor-cigarette .smoke-2 {
+        left: 8px;
+        top: 11px;
+
+        width: 3px;
+        height: 5px;
+    }
+
+
+    .cursor-cigarette .smoke-3 {
+        left: 11px;
+        top: 7px;
+
+        width: 3px;
+        height: 4px;
+    }
+
+
+    .cursor-cigarette .smoke-4 {
+        left: 9px;
+        top: 3px;
+
+        width: 3px;
+        height: 4px;
+    }
+
+
+    /* -----------------------------------------------------
+       ARROW
+       ----------------------------------------------------- */
+
+    .cursor-arrow {
+        width: 46px;
+        height: 46px;
+    }
+
+
+    .cursor-arrow svg {
+        width: 22px;
+        height: 22px;
+
+        position: absolute;
+
+        left: 2px;
+        top: 2px;
+
+        display: block;
+    }
+
+
+    /* -----------------------------------------------------
+       HAND — ONLY WHILE DRAGGING
+       ----------------------------------------------------- */
+
+    .cursor-hand {
+        width: 46px;
+        height: 46px;
+    }
+
+
+    .cursor-hand svg {
+        width: 24px;
+        height: 24px;
+
+        position: absolute;
+
+        left: 1px;
+        top: 1px;
+
+        display: block;
+    }
+
+}
+
+
+/* =========================================================
    MOBILE
    ========================================================= */
 
@@ -863,187 +1116,6 @@ body {
 
     .enter-button {
         transition: none;
-    }
-
-}
-
-
-/* =========================================================
-   RUTTO — CUSTOM DESKTOP CURSOR
-   ========================================================= */
-
-@media (pointer: fine) {
-
-    #map-container.rutto-cursor-active {
-        cursor: none !important;
-    }
-
-
-    #map-container.rutto-cursor-place {
-        cursor: default !important;
-    }
-
-
-    #map-container.rutto-cursor-dragging {
-        cursor: grabbing !important;
-    }
-
-
-    #rutto-cursor {
-        position: fixed;
-
-        left: 0;
-        top: 0;
-
-        width: 28px;
-        height: 28px;
-
-        z-index: 9999;
-
-        pointer-events: none;
-
-        transform: translate(-3px, -3px);
-
-        display: none;
-    }
-
-
-    #rutto-cursor.visible {
-        display: block;
-    }
-
-
-    #rutto-cursor.dragging {
-        display: none;
-    }
-
-
-    /* =====================================================
-       CIGARETTE
-       ===================================================== */
-
-    .rutto-cigarette {
-        position: absolute;
-
-        left: 5px;
-        top: 14px;
-
-        width: 17px;
-        height: 4px;
-
-        background: #d8d5ca;
-
-        border: 1px solid #171717;
-
-        transform: rotate(-35deg);
-
-        transform-origin: center;
-    }
-
-
-    .rutto-cigarette::before {
-        content: "";
-
-        position: absolute;
-
-        left: -4px;
-        top: -1px;
-
-        width: 4px;
-        height: 4px;
-
-        background: #b88961;
-
-        border: 1px solid #171717;
-    }
-
-
-    .rutto-cigarette::after {
-        content: "";
-
-        position: absolute;
-
-        right: -3px;
-        top: 0;
-
-        width: 3px;
-        height: 2px;
-
-        background: #f08a24;
-
-        box-shadow:
-            0 1px 0 #f08a24;
-    }
-
-
-    /* =====================================================
-       PIXEL SMOKE
-       ===================================================== */
-
-    .rutto-smoke {
-        position: absolute;
-
-        left: 20px;
-        top: 2px;
-
-        width: 3px;
-        height: 3px;
-
-        background: #171717;
-
-        opacity: 0.45;
-
-        animation: rutto-smoke 1.4s steps(4, end) infinite;
-    }
-
-
-    .rutto-smoke::before {
-        content: "";
-
-        position: absolute;
-
-        left: -4px;
-        top: -5px;
-
-        width: 3px;
-        height: 3px;
-
-        background: #171717;
-
-        box-shadow:
-            5px -5px 0 #171717;
-
-        opacity: 0.7;
-    }
-
-
-    @keyframes rutto-smoke {
-
-        0% {
-            transform: translate(0, 4px);
-            opacity: 0;
-        }
-
-        25% {
-            transform: translate(2px, 1px);
-            opacity: 0.45;
-        }
-
-        50% {
-            transform: translate(-1px, -3px);
-            opacity: 0.35;
-        }
-
-        75% {
-            transform: translate(2px, -7px);
-            opacity: 0.2;
-        }
-
-        100% {
-            transform: translate(0, -10px);
-            opacity: 0;
-        }
-
     }
 
 }
