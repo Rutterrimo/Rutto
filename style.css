@@ -25,206 +25,6 @@ body {
 
 
 /* =========================================================
-   RUTTO CUSTOM CURSOR
-   ========================================================= */
-
-#rutto-cigarette-cursor {
-    position: fixed;
-
-    left: 0;
-    top: 0;
-
-    width: 34px;
-    height: 34px;
-
-    pointer-events: none;
-
-    z-index: 99999;
-
-    transform:
-        translate3d(-100px, -100px, 0)
-        rotate(-38deg);
-
-    transform-origin: center center;
-
-    display: block;
-}
-
-
-/*
-   When the normal browser cursor is required,
-   the cigarette disappears completely.
-*/
-
-body.rutto-arrow-cursor #rutto-cigarette-cursor,
-body.rutto-dragging #rutto-cigarette-cursor {
-    display: none;
-}
-
-
-/* =========================================================
-   CIGARETTE
-   ========================================================= */
-
-.cigarette {
-    position: absolute;
-
-    left: 7px;
-    top: 15px;
-
-    width: 25px;
-    height: 6px;
-
-    background: #f1eee5;
-
-    border: 1px solid #171717;
-
-    display: flex;
-
-    align-items: center;
-}
-
-
-.cigarette-filter {
-    position: absolute;
-
-    left: 0;
-    top: -1px;
-
-    width: 7px;
-    height: 6px;
-
-    background: #d19a54;
-
-    border-right: 1px solid #171717;
-}
-
-
-.cigarette-tobacco {
-    position: absolute;
-
-    right: -1px;
-    top: -1px;
-
-    width: 4px;
-    height: 6px;
-
-    background: #8a6040;
-
-    border-left: 1px solid #171717;
-}
-
-
-.cigarette-ember {
-    position: absolute;
-
-    right: -4px;
-    top: 1px;
-
-    width: 4px;
-    height: 4px;
-
-    background: #e86f2c;
-
-    box-shadow:
-        0 0 2px #e86f2c,
-        0 0 4px rgba(232, 111, 44, 0.45);
-}
-
-
-/* =========================================================
-   PIXELATED SMOKE
-   ========================================================= */
-
-.cigarette-smoke {
-    position: absolute;
-
-    width: 3px;
-    height: 3px;
-
-    background: #171717;
-
-    opacity: 0.35;
-
-    image-rendering: pixelated;
-}
-
-
-.smoke-one {
-    left: 29px;
-    top: 9px;
-
-    animation: cigaretteSmokeOne 1.8s steps(5, end) infinite;
-}
-
-
-.smoke-two {
-    left: 31px;
-    top: 4px;
-
-    animation: cigaretteSmokeTwo 2.1s steps(6, end) infinite;
-}
-
-
-@keyframes cigaretteSmokeOne {
-
-    0% {
-        transform:
-            translate3d(0, 3px, 0);
-
-        opacity: 0;
-    }
-
-    25% {
-        opacity: 0.35;
-    }
-
-    60% {
-        transform:
-            translate3d(3px, -3px, 0);
-
-        opacity: 0.22;
-    }
-
-    100% {
-        transform:
-            translate3d(0, -9px, 0);
-
-        opacity: 0;
-    }
-}
-
-
-@keyframes cigaretteSmokeTwo {
-
-    0% {
-        transform:
-            translate3d(0, 3px, 0);
-
-        opacity: 0;
-    }
-
-    30% {
-        opacity: 0.25;
-    }
-
-    65% {
-        transform:
-            translate3d(-3px, -4px, 0);
-
-        opacity: 0.15;
-    }
-
-    100% {
-        transform:
-            translate3d(2px, -11px, 0);
-
-        opacity: 0;
-    }
-}
-
-
-/* =========================================================
    INTRO
    ========================================================= */
 
@@ -297,7 +97,7 @@ body.rutto-dragging #rutto-cigarette-cursor {
 
     letter-spacing: 0.12em;
 
-    cursor: default;
+    cursor: pointer;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -397,39 +197,6 @@ body.rutto-dragging #rutto-cigarette-cursor {
 }
 
 
-/*
-   Normal map state:
-   the custom cigarette is visible, therefore the native
-   browser cursor is hidden.
-*/
-
-body.rutto-cigarette-mode #map-container,
-body.rutto-cigarette-mode #map-container .leaflet-container {
-    cursor: none !important;
-}
-
-
-/*
-   When close to a place, the cigarette is hidden and the
-   normal arrow is restored.
-*/
-
-body.rutto-arrow-cursor #map-container,
-body.rutto-arrow-cursor #map-container .leaflet-container {
-    cursor: default !important;
-}
-
-
-/*
-   During dragging Leaflet gets its hand back.
-*/
-
-body.rutto-dragging #map-container,
-body.rutto-dragging #map-container .leaflet-container {
-    cursor: grabbing !important;
-}
-
-
 .leaflet-control-zoom {
     margin-bottom: 12px !important;
 
@@ -451,8 +218,6 @@ body.rutto-dragging #map-container .leaflet-container {
     border: 1px solid #171717 !important;
 
     font-size: 14px !important;
-
-    cursor: default !important;
 
     -webkit-tap-highlight-color: transparent;
 }
@@ -642,7 +407,7 @@ body.rutto-dragging #map-container .leaflet-container {
 
     letter-spacing: 0.1em;
 
-    cursor: default;
+    cursor: pointer;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -764,7 +529,7 @@ body.rutto-dragging #map-container .leaflet-container {
 
     letter-spacing: 0.08em;
 
-    cursor: default;
+    cursor: pointer;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -818,7 +583,7 @@ body.rutto-dragging #map-container .leaflet-container {
 
     font-family: Arial, Helvetica, sans-serif;
 
-    cursor: default;
+    cursor: pointer;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -933,11 +698,6 @@ body.rutto-dragging #map-container .leaflet-container {
    ========================================================= */
 
 @media (max-width: 600px) {
-
-    #rutto-cigarette-cursor {
-        display: none !important;
-    }
-
 
     .intro h1 {
         font-size: clamp(52px, 18vw, 80px);
@@ -1103,11 +863,6 @@ body.rutto-dragging #map-container .leaflet-container {
 
     .enter-button {
         transition: none;
-    }
-
-
-    #rutto-cigarette-cursor .cigarette-smoke {
-        animation: none;
     }
 
 }
