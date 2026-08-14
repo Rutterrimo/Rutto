@@ -668,7 +668,7 @@ places.forEach(place => {
         </span>
 
         <span class="index-visited">
-            VISITED · ${place.visitedDate} · ${place.visitedTime}
+            ${place.visitedDate} · ${place.visitedTime}
         </span>
     `;
 
