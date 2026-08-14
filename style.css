@@ -21,6 +21,54 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 
     overflow-x: hidden;
+
+    /*
+       DEFAULT CURSOR
+       Cigarette with pixel smoke.
+    */
+
+    cursor:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg transform='rotate(-25 20 20)'%3E%3Crect x='9' y='17' width='22' height='7' fill='%23e8e6df' stroke='%23171717' stroke-width='1.4'/%3E%3Crect x='27' y='17' width='4' height='7' fill='%23e87535'/%3E%3Crect x='32' y='14' width='2' height='2' fill='%23171717' opacity='.55'/%3E%3Crect x='34' y='11' width='2' height='2' fill='%23171717' opacity='.38'/%3E%3Crect x='31' y='9' width='2' height='2' fill='%23171717' opacity='.25'/%3E%3C/g%3E%3C/svg%3E")
+        5 20,
+        auto;
+}
+
+
+/* =========================================================
+   CURSOR SYSTEM
+   ========================================================= */
+
+/*
+   Arrow cursor.
+
+   This is the cursor used for:
+   - ENTER THE MAP
+   - HOME
+   - INDEX
+   - CLOSE
+   - places on the map
+*/
+
+body.rutto-arrow,
+body.rutto-arrow * {
+    cursor:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M7 3 L7 25 L13 19 L17 28 L21 26 L17 17 L25 17 Z' fill='%23e8e6df' stroke='%23171717' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E")
+        6 3,
+        auto !important;
+}
+
+
+/*
+   During actual map dragging we use the normal
+   closed-hand cursor.
+
+   This rule comes after the arrow rules so that
+   dragging always wins.
+*/
+
+body.rutto-dragging,
+body.rutto-dragging * {
+    cursor: grabbing !important;
 }
 
 
@@ -97,7 +145,7 @@ body {
 
     letter-spacing: 0.12em;
 
-    cursor: pointer;
+    cursor: inherit;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -184,6 +232,13 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 
     outline: none !important;
+
+    /*
+       Important:
+       Leaflet itself must not replace the cigarette cursor.
+    */
+
+    cursor: inherit !important;
 }
 
 
@@ -218,6 +273,8 @@ body {
     border: 1px solid #171717 !important;
 
     font-size: 14px !important;
+
+    cursor: inherit !important;
 
     -webkit-tap-highlight-color: transparent;
 }
@@ -407,7 +464,7 @@ body {
 
     letter-spacing: 0.1em;
 
-    cursor: pointer;
+    cursor: inherit;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -529,7 +586,7 @@ body {
 
     letter-spacing: 0.08em;
 
-    cursor: pointer;
+    cursor: inherit;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -583,7 +640,7 @@ body {
 
     font-family: Arial, Helvetica, sans-serif;
 
-    cursor: pointer;
+    cursor: inherit;
 
     -webkit-tap-highlight-color: transparent;
 
@@ -690,259 +747,6 @@ body {
     letter-spacing: 0.01em;
 
     text-transform: none;
-}
-
-
-/* =========================================================
-   RUTTO CUSTOM CURSOR
-   ========================================================= */
-
-/*
-   Il cursore personalizzato esiste solo con mouse/puntatore fine.
-   Su touch non viene modificato nulla.
-*/
-
-@media (pointer: fine) {
-
-    body,
-    button,
-    a,
-    .leaflet-container {
-        cursor: none !important;
-    }
-
-
-    #rutto-cursor {
-        position: fixed;
-
-        left: 0;
-        top: 0;
-
-        width: 46px;
-        height: 46px;
-
-        pointer-events: none;
-
-        z-index: 99999;
-
-        transform: translate3d(-100px, -100px, 0);
-
-        display: block;
-
-        opacity: 1;
-
-        will-change: transform;
-    }
-
-
-    /* -----------------------------------------------------
-       STATES
-       ----------------------------------------------------- */
-
-    #rutto-cursor .cursor-cigarette,
-    #rutto-cursor .cursor-arrow,
-    #rutto-cursor .cursor-hand {
-        position: absolute;
-
-        inset: 0;
-
-        display: none;
-    }
-
-
-    #rutto-cursor.is-cigarette .cursor-cigarette {
-        display: block;
-    }
-
-
-    #rutto-cursor.is-arrow .cursor-arrow {
-        display: block;
-    }
-
-
-    #rutto-cursor.is-hand .cursor-hand {
-        display: block;
-    }
-
-
-    /* -----------------------------------------------------
-       CIGARETTE
-       ----------------------------------------------------- */
-
-    .cursor-cigarette {
-        position: absolute;
-
-        width: 46px;
-        height: 46px;
-    }
-
-
-    /*
-       Il corpo e il filtro sono perfettamente allineati.
-    */
-
-    .cursor-cigarette .cig-body {
-        position: absolute;
-
-        left: 7px;
-        top: 24px;
-
-        width: 18px;
-        height: 4px;
-
-        background: #e8e6df;
-
-        border-top: 1px solid #171717;
-        border-bottom: 1px solid #171717;
-    }
-
-
-    .cursor-cigarette .cig-filter {
-        position: absolute;
-
-        left: 25px;
-        top: 24px;
-
-        width: 7px;
-        height: 4px;
-
-        background: #c87532;
-
-        border-top: 1px solid #171717;
-        border-bottom: 1px solid #171717;
-    }
-
-
-    /*
-       Puntina accesa.
-    */
-
-    .cursor-cigarette .cig-ember {
-        position: absolute;
-
-        left: 3px;
-        top: 23px;
-
-        width: 5px;
-        height: 6px;
-
-        background: #e36b22;
-
-        border: 1px solid #171717;
-    }
-
-
-    .cursor-cigarette .cig-ember::after {
-        content: "";
-
-        position: absolute;
-
-        left: 1px;
-        top: 1px;
-
-        width: 2px;
-        height: 2px;
-
-        background: #ff9b38;
-    }
-
-
-    /* -----------------------------------------------------
-       PIXEL SMOKE
-       ----------------------------------------------------- */
-
-    .cursor-cigarette .smoke {
-        position: absolute;
-
-        background: #777773;
-
-        opacity: 0.65;
-
-        image-rendering: pixelated;
-    }
-
-
-    .cursor-cigarette .smoke-1 {
-        left: 5px;
-        top: 16px;
-
-        width: 3px;
-        height: 5px;
-    }
-
-
-    .cursor-cigarette .smoke-2 {
-        left: 8px;
-        top: 11px;
-
-        width: 3px;
-        height: 5px;
-    }
-
-
-    .cursor-cigarette .smoke-3 {
-        left: 11px;
-        top: 7px;
-
-        width: 3px;
-        height: 4px;
-    }
-
-
-    .cursor-cigarette .smoke-4 {
-        left: 9px;
-        top: 3px;
-
-        width: 3px;
-        height: 4px;
-    }
-
-
-    /* -----------------------------------------------------
-       ARROW
-       ----------------------------------------------------- */
-
-    .cursor-arrow {
-        width: 46px;
-        height: 46px;
-    }
-
-
-    .cursor-arrow svg {
-        width: 22px;
-        height: 22px;
-
-        position: absolute;
-
-        left: 2px;
-        top: 2px;
-
-        display: block;
-    }
-
-
-    /* -----------------------------------------------------
-       HAND — ONLY WHILE DRAGGING
-       ----------------------------------------------------- */
-
-    .cursor-hand {
-        width: 46px;
-        height: 46px;
-    }
-
-
-    .cursor-hand svg {
-        width: 24px;
-        height: 24px;
-
-        position: absolute;
-
-        left: 1px;
-        top: 1px;
-
-        display: block;
-    }
-
 }
 
 
