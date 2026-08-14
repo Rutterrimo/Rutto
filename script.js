@@ -27,138 +27,6 @@ forceHomePosition();
 
 
 /* =========================================================
-   CUSTOM CURSOR
-   ========================================================= */
-
-const customCursor = document.createElement("div");
-
-customCursor.id = "rutto-cursor";
-
-customCursor.innerHTML = `
-
-    <div class="cursor-cigarette">
-
-        <span class="smoke smoke-1"></span>
-        <span class="smoke smoke-2"></span>
-        <span class="smoke smoke-3"></span>
-        <span class="smoke smoke-4"></span>
-
-        <span class="cig-ember"></span>
-        <span class="cig-body"></span>
-        <span class="cig-filter"></span>
-
-    </div>
-
-
-    <div class="cursor-arrow">
-
-        <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-        >
-
-            <path
-                d="M4 2 L20 11 L13 13 L16 21 L12 22 L9 14 L4 18 Z"
-                fill="#e8e6df"
-                stroke="#171717"
-                stroke-width="1.5"
-                stroke-linejoin="miter"
-            />
-
-        </svg>
-
-    </div>
-
-
-    <div class="cursor-hand">
-
-        <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-        >
-
-            <path
-                d="M7 11V6
-                   C7 5 8 4 9 4
-                   C10 4 11 5 11 6
-                   V10
-                   V4
-                   C11 3 12 2 13 2
-                   C14 2 15 3 15 4
-                   V10
-                   V5
-                   C15 4 16 3 17 3
-                   C18 3 19 4 19 5
-                   V11
-                   V8
-                   C19 7 20 6 21 7
-                   C22 8 22 9 22 10
-                   V14
-                   C22 19 19 22 14 22
-                   H11
-                   C8 22 6 20 5 18
-                   L2 13
-                   C1 12 1 11 2 10
-                   C3 9 4 9 5 10
-                   L7 12
-                   Z"
-                fill="#e8e6df"
-                stroke="#171717"
-                stroke-width="1.4"
-                stroke-linejoin="round"
-            />
-
-        </svg>
-
-    </div>
-
-`;
-
-document.body.appendChild(customCursor);
-
-
-/* =========================================================
-   CURSOR STATE
-   ========================================================= */
-
-function setCursorState(state) {
-
-    customCursor.classList.remove(
-        "is-cigarette",
-        "is-arrow",
-        "is-hand"
-    );
-
-    customCursor.classList.add(
-        `is-${state}`
-    );
-
-}
-
-
-setCursorState("cigarette");
-
-
-/* =========================================================
-   CURSOR POSITION
-   ========================================================= */
-
-let cursorX = -100;
-let cursorY = -100;
-
-
-document.addEventListener("mousemove", event => {
-
-    cursorX = event.clientX;
-    cursorY = event.clientY;
-
-    customCursor.style.transform =
-        `translate3d(${cursorX + 2}px, ${cursorY + 2}px, 0)`;
-
-});
-
-
-/* =========================================================
    MAP INITIALIZATION
    ========================================================= */
 
@@ -587,6 +455,150 @@ const markerReferences = [];
 
 
 /* =========================================================
+   CURSOR
+   ========================================================= */
+
+/*
+   Only desktop gets the custom cursor behaviour.
+
+   Touch behaviour is left completely untouched.
+*/
+
+function setArrowCursor() {
+
+    if (!isTouchDevice) {
+        document.body.classList.add("rutto-arrow");
+    }
+
+}
+
+
+function removeArrowCursor() {
+
+    if (!isTouchDevice) {
+        document.body.classList.remove("rutto-arrow");
+    }
+
+}
+
+
+function startMapDragCursor() {
+
+    if (!isTouchDevice) {
+
+        document.body.classList.remove("rutto-arrow");
+
+        document.body.classList.add("rutto-dragging");
+
+    }
+
+}
+
+
+function stopMapDragCursor() {
+
+    if (!isTouchDevice) {
+
+        document.body.classList.remove("rutto-dragging");
+
+    }
+
+}
+
+
+/*
+   Buttons should always use the arrow.
+*/
+
+if (!isTouchDevice) {
+
+    const cursorArrowElements = [
+        document.getElementById("enter-map"),
+        document.getElementById("home-button"),
+        document.getElementById("index-button"),
+        document.getElementById("close-index")
+    ];
+
+
+    cursorArrowElements.forEach(element => {
+
+        if (!element) {
+            return;
+        }
+
+
+        element.addEventListener("mouseenter", () => {
+
+            setArrowCursor();
+
+        });
+
+
+        element.addEventListener("mouseleave", () => {
+
+            removeArrowCursor();
+
+        });
+
+    });
+
+}
+
+
+/*
+   Map dragging:
+
+   cigarette → hand while actually dragging
+   hand → cigarette when released
+*/
+
+if (!isTouchDevice) {
+
+    const mapContainer = map.getContainer();
+
+
+    mapContainer.addEventListener("mousedown", () => {
+
+        startMapDragCursor();
+
+    });
+
+
+    window.addEventListener("mouseup", () => {
+
+        stopMapDragCursor();
+
+        /*
+           If the mouse is currently over a place,
+           restore the arrow immediately.
+        */
+
+        if (hoveredReference) {
+
+            setArrowCursor();
+
+        }
+
+    });
+
+
+    map.on("dragstart", () => {
+
+        startMapDragCursor();
+
+    });
+
+
+    map.on("dragend", () => {
+
+        stopMapDragCursor();
+
+    });
+
+}
+
+
+/* =========================================================
    CLOSE ALL OPEN TOOLTIPS
    ========================================================= */
 
@@ -828,8 +840,6 @@ places.forEach(place => {
     });
 
 
-    /* Add item to INDEX */
-
     indexList.appendChild(indexItem);
 
 });
@@ -861,6 +871,7 @@ function findPlaceFromMapTap(event) {
         const dx =
             tapPoint.x - markerPoint.x;
 
+
         const dy =
             tapPoint.y - markerPoint.y;
 
@@ -886,35 +897,6 @@ function findPlaceFromMapTap(event) {
 
 
     return closestPlace;
-
-}
-
-
-/* =========================================================
-   CURSOR — MAP STATE
-   ========================================================= */
-
-function updateMapCursor(reference) {
-
-    if (reference) {
-
-        /*
-           Vicino a un luogo:
-           SOLO freccia.
-        */
-
-        setCursorState("arrow");
-
-    } else {
-
-        /*
-           Mappa normale:
-           torna alla sigaretta.
-        */
-
-        setCursorState("cigarette");
-
-    }
 
 }
 
@@ -958,19 +940,39 @@ map.on("mousemove", event => {
     }
 
 
-    /*
-       CURSORE
-    */
-
     const reference =
         findPlaceFromMapTap(event);
 
 
-    updateMapCursor(reference);
+    /*
+       CURSOR:
+       near place = arrow
+       elsewhere = cigarette
+
+       While dragging, the grabbing cursor wins.
+    */
+
+    if (reference) {
+
+        hoveredReference = reference;
+
+        if (!document.body.classList.contains("rutto-dragging")) {
+            setArrowCursor();
+        }
+
+    } else {
+
+        hoveredReference = null;
+
+        if (!document.body.classList.contains("rutto-dragging")) {
+            removeArrowCursor();
+        }
+
+    }
 
 
     /*
-       TOOLTIP
+       Existing tooltip behaviour.
     */
 
     if (reference !== hoveredReference) {
@@ -992,6 +994,41 @@ map.on("mousemove", event => {
 });
 
 
+/* =========================================================
+   DESKTOP HOVER — CORRECT TOOLTIP STATE
+   ========================================================= */
+
+map.on("mousemove", event => {
+
+    if (L.Browser.touch) {
+        return;
+    }
+
+
+    const reference =
+        findPlaceFromMapTap(event);
+
+
+    if (reference === hoveredReference) {
+        return;
+    }
+
+
+    if (hoveredReference) {
+        hoveredReference.marker.closeTooltip();
+    }
+
+
+    hoveredReference = reference;
+
+
+    if (hoveredReference) {
+        hoveredReference.marker.openTooltip();
+    }
+
+});
+
+
 map.on("mouseout", () => {
 
     if (L.Browser.touch) {
@@ -1008,72 +1045,11 @@ map.on("mouseout", () => {
     }
 
 
-    setCursorState("cigarette");
+    if (!document.body.classList.contains("rutto-dragging")) {
 
-});
+        removeArrowCursor();
 
-
-/* =========================================================
-   DESKTOP DRAG — HAND ONLY WHILE DRAGGING
-   ========================================================= */
-
-map.on("mousedown", () => {
-
-    if (L.Browser.touch) {
-        return;
     }
-
-
-    setCursorState("hand");
-
-});
-
-
-map.on("mouseup", event => {
-
-    if (L.Browser.touch) {
-        return;
-    }
-
-
-    const reference =
-        findPlaceFromMapTap(event);
-
-
-    updateMapCursor(reference);
-
-});
-
-
-map.on("dragend", () => {
-
-    if (L.Browser.touch) {
-        return;
-    }
-
-
-    /*
-       Dopo il trascinamento il cursore torna
-       allo stato corretto in base alla posizione.
-    */
-
-    const containerPoint = map.mouseEventToContainerPoint({
-        clientX: cursorX,
-        clientY: cursorY
-    });
-
-
-    const latLng =
-        map.containerPointToLatLng(containerPoint);
-
-
-    const reference =
-        findPlaceFromMapTap({
-            latlng: latLng
-        });
-
-
-    updateMapCursor(reference);
 
 });
 
@@ -1156,9 +1132,6 @@ homeButton.addEventListener("click", event => {
 
         block: "start"
     });
-
-
-    setCursorState("cigarette");
 
 });
 
