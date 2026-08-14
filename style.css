@@ -722,9 +722,11 @@ body {
 
 
     #index-panel {
-        width: 100%;
+        width: 88%;
 
-        border-left: none;
+        max-width: 330px;
+
+        border-left: 1px solid #171717;
     }
 
 
