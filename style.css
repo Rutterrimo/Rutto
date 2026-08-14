@@ -6,26 +6,19 @@ html {
     scroll-behavior: smooth;
     margin: 0;
     padding: 0;
-    width: 100%;
 }
 
 body {
     margin: 0;
     padding: 0;
-    width: 100%;
-    min-height: 100%;
+
     background: #e8e6df;
     color: #171717;
+
     font-family: Arial, Helvetica, sans-serif;
+
     overflow-x: hidden;
 }
-
-
-/*
-=========================================================
-MAP ACTIVE
-=========================================================
-*/
 
 body.map-active {
     overflow: hidden;
@@ -43,7 +36,6 @@ INTRO
 
     height: 100vh;
     height: 100dvh;
-    min-height: 100dvh;
 
     display: flex;
 
@@ -124,7 +116,6 @@ MAP
 
     height: 100vh;
     height: 100dvh;
-    min-height: 100dvh;
 
     margin: 0;
     padding: 0;
@@ -162,43 +153,6 @@ LEAFLET
     font-family: Arial, Helvetica, sans-serif;
 }
 
-
-/*
-=========================================================
-REMOVE MOBILE FOCUS / TAP HIGHLIGHT
-=========================================================
-*/
-
-.leaflet-interactive,
-.leaflet-interactive:focus,
-.leaflet-interactive:active {
-    outline: none !important;
-}
-
-.leaflet-container:focus {
-    outline: none !important;
-}
-
-.leaflet-container svg {
-    outline: none !important;
-}
-
-.leaflet-container path {
-    outline: none !important;
-}
-
-.leaflet-container,
-.leaflet-container * {
-    -webkit-tap-highlight-color: transparent;
-}
-
-
-/*
-=========================================================
-ZOOM CONTROLS
-=========================================================
-*/
-
 .leaflet-control-zoom {
     margin-bottom: 12px !important;
 
@@ -220,8 +174,6 @@ ZOOM CONTROLS
     font-size: 14px !important;
 
     -webkit-tap-highlight-color: transparent;
-
-    outline: none !important;
 }
 
 
@@ -402,13 +354,6 @@ HOME + INDEX BUTTONS
     color: #e8e6df;
 }
 
-#home-button:focus,
-#index-button:focus,
-#close-index:focus,
-.index-item:focus {
-    outline: none;
-}
-
 
 /*
 =========================================================
@@ -425,7 +370,6 @@ INDEX PANEL
     right: 0;
 
     width: min(330px, 86vw);
-
     height: 100%;
 
     background: #e8e6df;
@@ -624,7 +568,7 @@ MOBILE
 
     #home-button,
     #index-button {
-        top: calc(12px + env(safe-area-inset-top));
+        top: 12px;
 
         padding: 9px 10px;
 
@@ -640,10 +584,6 @@ MOBILE
     #index-button {
         right: 12px;
     }
-
-    /*
-    INDEX REMAINS A SIDE PANEL ON MOBILE
-    */
 
     #index-panel {
         width: min(330px, 86vw);
@@ -667,7 +607,7 @@ MOBILE
     .place-popup {
         width: 220px;
 
-        max-width: calc(100vw - 24px);
+        max-width: calc(100vw - 32px);
 
         padding: 14px;
     }
@@ -681,8 +621,7 @@ MOBILE
     }
 
     .leaflet-control-zoom {
-        margin-bottom:
-            calc(12px + env(safe-area-inset-bottom)) !important;
+        margin-bottom: 12px !important;
 
         margin-left: 12px !important;
     }
@@ -719,23 +658,6 @@ VERY SMALL PHONES
 
     .categories div {
         gap: 7px;
-    }
-
-    .index-item {
-        padding:
-            16px 16px;
-    }
-
-    .index-name {
-        font-size: 12px;
-    }
-
-    .index-coordinates {
-        font-size: 9px;
-    }
-
-    .index-visited {
-        font-size: 7px;
     }
 }
 
