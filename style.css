@@ -209,20 +209,26 @@ body {
 
 
 /* =========================================================
-   LEAFLET MAP POINTS
+   RUTTO MAP HIT TARGET
    ========================================================= */
 
-.leaflet-interactive {
+.rutto-hit-target {
     outline: none !important;
 
-    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent !important;
+
+    -webkit-focus-ring-color: transparent !important;
 }
 
 
-.leaflet-interactive:focus {
+.rutto-hit-target:focus,
+.rutto-hit-target:active,
+.rutto-hit-target.leaflet-active {
     outline: none !important;
 
     box-shadow: none !important;
+
+    -webkit-tap-highlight-color: transparent !important;
 }
 
 
