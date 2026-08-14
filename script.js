@@ -448,154 +448,17 @@ const closeIndex = document.getElementById("close-index");
 
 
 /* =========================================================
+   MAP CONTAINER
+   ========================================================= */
+
+const mapContainer = map.getContainer();
+
+
+/* =========================================================
    MARKER REFERENCES
    ========================================================= */
 
 const markerReferences = [];
-
-
-/* =========================================================
-   CURSOR
-   ========================================================= */
-
-/*
-   Only desktop gets the custom cursor behaviour.
-
-   Touch behaviour is left completely untouched.
-*/
-
-function setArrowCursor() {
-
-    if (!isTouchDevice) {
-        document.body.classList.add("rutto-arrow");
-    }
-
-}
-
-
-function removeArrowCursor() {
-
-    if (!isTouchDevice) {
-        document.body.classList.remove("rutto-arrow");
-    }
-
-}
-
-
-function startMapDragCursor() {
-
-    if (!isTouchDevice) {
-
-        document.body.classList.remove("rutto-arrow");
-
-        document.body.classList.add("rutto-dragging");
-
-    }
-
-}
-
-
-function stopMapDragCursor() {
-
-    if (!isTouchDevice) {
-
-        document.body.classList.remove("rutto-dragging");
-
-    }
-
-}
-
-
-/*
-   Buttons should always use the arrow.
-*/
-
-if (!isTouchDevice) {
-
-    const cursorArrowElements = [
-        document.getElementById("enter-map"),
-        document.getElementById("home-button"),
-        document.getElementById("index-button"),
-        document.getElementById("close-index")
-    ];
-
-
-    cursorArrowElements.forEach(element => {
-
-        if (!element) {
-            return;
-        }
-
-
-        element.addEventListener("mouseenter", () => {
-
-            setArrowCursor();
-
-        });
-
-
-        element.addEventListener("mouseleave", () => {
-
-            removeArrowCursor();
-
-        });
-
-    });
-
-}
-
-
-/*
-   Map dragging:
-
-   cigarette → hand while actually dragging
-   hand → cigarette when released
-*/
-
-if (!isTouchDevice) {
-
-    const mapContainer = map.getContainer();
-
-
-    mapContainer.addEventListener("mousedown", () => {
-
-        startMapDragCursor();
-
-    });
-
-
-    window.addEventListener("mouseup", () => {
-
-        stopMapDragCursor();
-
-        /*
-           If the mouse is currently over a place,
-           restore the arrow immediately.
-        */
-
-        if (hoveredReference) {
-
-            setArrowCursor();
-
-        }
-
-    });
-
-
-    map.on("dragstart", () => {
-
-        startMapDragCursor();
-
-    });
-
-
-    map.on("dragend", () => {
-
-        stopMapDragCursor();
-
-    });
-
-}
 
 
 /* =========================================================
@@ -614,6 +477,42 @@ function closeAllTooltips() {
         }
 
     });
+
+}
+
+
+/* =========================================================
+   PLACE CURSOR
+   ========================================================= */
+
+/*
+   The cigarette is the normal map cursor.
+
+   When the mouse comes close to a place,
+   this class changes the cursor to the normal system arrow.
+
+   Nothing here affects touch.
+*/
+
+function setPlaceCursor(active) {
+
+    if (isTouchDevice) {
+        return;
+    }
+
+    if (active) {
+
+        mapContainer.classList.add(
+            "rutto-place-hover"
+        );
+
+    } else {
+
+        mapContainer.classList.remove(
+            "rutto-place-hover"
+        );
+
+    }
 
 }
 
@@ -840,6 +739,8 @@ places.forEach(place => {
     });
 
 
+    /* Add item to INDEX */
+
     indexList.appendChild(indexItem);
 
 });
@@ -870,7 +771,6 @@ function findPlaceFromMapTap(event) {
 
         const dx =
             tapPoint.x - markerPoint.x;
-
 
         const dy =
             tapPoint.y - markerPoint.y;
@@ -945,35 +845,18 @@ map.on("mousemove", event => {
 
 
     /*
-       CURSOR:
-       near place = arrow
-       elsewhere = cigarette
+       CURSOR
 
-       While dragging, the grabbing cursor wins.
+       Near a place:
+       cigarette OFF
+       normal arrow ON
+
+       Anywhere else:
+       cigarette ON
     */
 
-    if (reference) {
+    setPlaceCursor(Boolean(reference));
 
-        hoveredReference = reference;
-
-        if (!document.body.classList.contains("rutto-dragging")) {
-            setArrowCursor();
-        }
-
-    } else {
-
-        hoveredReference = null;
-
-        if (!document.body.classList.contains("rutto-dragging")) {
-            removeArrowCursor();
-        }
-
-    }
-
-
-    /*
-       Existing tooltip behaviour.
-    */
 
     if (reference !== hoveredReference) {
 
@@ -989,41 +872,6 @@ map.on("mousemove", event => {
             hoveredReference.marker.openTooltip();
         }
 
-    }
-
-});
-
-
-/* =========================================================
-   DESKTOP HOVER — CORRECT TOOLTIP STATE
-   ========================================================= */
-
-map.on("mousemove", event => {
-
-    if (L.Browser.touch) {
-        return;
-    }
-
-
-    const reference =
-        findPlaceFromMapTap(event);
-
-
-    if (reference === hoveredReference) {
-        return;
-    }
-
-
-    if (hoveredReference) {
-        hoveredReference.marker.closeTooltip();
-    }
-
-
-    hoveredReference = reference;
-
-
-    if (hoveredReference) {
-        hoveredReference.marker.openTooltip();
     }
 
 });
@@ -1045,11 +893,7 @@ map.on("mouseout", () => {
     }
 
 
-    if (!document.body.classList.contains("rutto-dragging")) {
-
-        removeArrowCursor();
-
-    }
+    setPlaceCursor(false);
 
 });
 
