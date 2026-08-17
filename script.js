@@ -220,7 +220,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Squat toilets, unisex, very dirty.",
+        toilets: "Squat toilets, unisex.",
 
         notes: ""
     },
@@ -240,7 +240,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Chemical toilets, extremely dirty, unisex.",
+        toilets: "Chemical toilets, unisex.",
 
         notes: ""
     },
@@ -260,7 +260,7 @@ const places = [
         locals: "Yes",
         gambling: "Unknown",
 
-        toilets: "Normal. Men and women separated.",
+        toilets: "Men and women separated.",
 
         notes: ""
     },
@@ -280,7 +280,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Normal. Men and women separated.",
+        toilets: "Men and women separated.",
 
         notes: ""
     },
@@ -300,7 +300,7 @@ const places = [
         locals: "No",
         gambling: "Unknown",
 
-        toilets: "Normal. Men and women separated.",
+        toilets: "Men and women separated.",
 
         notes: ""
     },
@@ -340,7 +340,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Normal. Men and women separated.",
+        toilets: "Men and women separated.",
 
         notes: ""
     },
@@ -400,7 +400,7 @@ const places = [
         locals: "Yes",
         gambling: "Yes",
 
-        toilets: "Unisex, extremely dirty.",
+        toilets: "Unisex.",
 
         notes: ""
     },
@@ -440,7 +440,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Normal. Men and women separated.",
+        toilets: "Men and women separated.",
 
         notes: ""
     }
