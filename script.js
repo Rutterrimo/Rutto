@@ -447,7 +447,7 @@ const places = [
 
 
    {
-    id: 14,
+    id: 13,
     name: "L'Entre Deux",
     lat: 43.2966667,
     lng: 5.3731167,
@@ -467,7 +467,7 @@ const places = [
 
 
        {
-        id: 13,
+        id: 14,
         name: "Bar Pajaritos",
         lat: 37.8382694,
         lng: -6.4476472,
@@ -475,12 +475,12 @@ const places = [
         visitedDate: "SEP 2026",
         visitedTime: "MORNING",
 
-        smoking: "",
-        music: "",
-        locals: "",
-        gambling: "",
+        smoking: "No" ,
+        music: "No",
+        locals: "Yes",
+        gambling: "Yes",
 
-        toilets: "",
+        toilets: "Men and women separated",
 
         notes: ""
     }
