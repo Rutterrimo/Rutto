@@ -104,7 +104,7 @@ L.control.zoom({
    ========================================================= */
 
 L.tileLayer(
-    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    "https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=cb1_4a4p_1_f98383e81a17105a3da9073c",
     {
         noWrap: true,
 
