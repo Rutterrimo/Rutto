@@ -1,4 +1,3 @@
-```javascript
 /* =========================================================
    RUTTO — MAP SCRIPT
    ========================================================= */
@@ -442,46 +441,6 @@ const places = [
         gambling: "No",
 
         toilets: "Men and women separated.",
-
-        notes: ""
-    },
-
-
-    {
-        id: 13,
-        name: "Bar Pajaritos (Hermanos Ramírez Esteban)",
-        lat: 37.833700,
-        lng: -6.447500,
-
-        visitedDate: "SEP 2026",
-        visitedTime: "MORNING",
-
-        smoking: "",
-        music: "",
-        locals: "",
-        gambling: "",
-
-        toilets: "",
-
-        notes: ""
-    },
-
-
-    {
-        id: 14,
-        name: "L'Entre Deux",
-        lat: 43.296500,
-        lng: 5.369600,
-
-        visitedDate: "SEP 2026",
-        visitedTime: "AFTER LUNCH",
-
-        smoking: "Yes",
-        music: "No",
-        locals: "Unknown",
-        gambling: "No",
-
-        toilets: "Unisex.",
 
         notes: ""
     }
@@ -1002,5 +961,146 @@ closeIndex.addEventListener("click", event => {
    ENTER THE MAP
    ========================================================= */
 
-const enter
-```
+const enterMapButton =
+    document.getElementById("enter-map");
+
+
+enterMapButton.addEventListener("click", event => {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+
+    document.getElementById("map").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+});
+
+
+/* =========================================================
+   RETURN HOME
+   ========================================================= */
+
+const homeButton =
+    document.getElementById("home-button");
+
+
+homeButton.addEventListener("click", event => {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+
+    indexPanel.classList.remove("open");
+
+    closeAllTooltips();
+
+
+    document.getElementById("home").scrollIntoView({
+        behavior: "smooth",
+
+        block: "start"
+    });
+
+});
+
+
+/* =========================================================
+   ESCAPE → CLOSE INDEX
+   ========================================================= */
+
+document.addEventListener("keydown", event => {
+
+    if (event.key === "Escape") {
+
+        indexPanel.classList.remove("open");
+
+    }
+
+});
+
+
+/* =========================================================
+   FINAL MAP REFRESH
+   ========================================================= */
+
+window.addEventListener("load", () => {
+
+    /*
+       Give the browser one last explicit instruction:
+       the page starts at HOME, not at the map.
+    */
+
+    if (
+        window.location.hash === "" &&
+        window.scrollY > 0
+    ) {
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "auto"
+        });
+
+    }
+
+
+    setTimeout(() => {
+
+        map.invalidateSize({
+            pan: false
+        });
+
+    }, 300);
+
+
+    /*
+       Extra mobile safeguard after Leaflet and tiles have
+       finished their first layout pass.
+    */
+
+    if (isTouchDevice) {
+
+        setTimeout(() => {
+
+            if (
+                window.location.hash === "" &&
+                !indexPanel.classList.contains("open")
+            ) {
+
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: "auto"
+                });
+
+            }
+
+        }, 600);
+
+    }
+
+});
+
+
+/* =========================================================
+   PAGE RESTORE
+   ========================================================= */
+
+window.addEventListener("pageshow", event => {
+
+    if (event.persisted) {
+
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "auto"
+        });
+
+    }
+
+});
