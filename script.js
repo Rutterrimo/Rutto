@@ -220,7 +220,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Squat toilets, unisex.",
+        toilets: "Squat toilets, unisex",
 
         notes: ""
     },
@@ -240,7 +240,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Chemical toilets, unisex.",
+        toilets: "Chemical toilets, unisex",
 
         notes: ""
     },
@@ -260,7 +260,7 @@ const places = [
         locals: "Yes",
         gambling: "Unknown",
 
-        toilets: "Men and women separated.",
+        toilets: "Men and women separated",
 
         notes: ""
     },
@@ -280,7 +280,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Men and women separated.",
+        toilets: "Men and women separated",
 
         notes: ""
     },
@@ -300,7 +300,7 @@ const places = [
         locals: "No",
         gambling: "Unknown",
 
-        toilets: "Men and women separated.",
+        toilets: "Men and women separated",
 
         notes: ""
     },
@@ -340,7 +340,7 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Men and women separated.",
+        toilets: "Men and women separated",
 
         notes: ""
     },
@@ -360,7 +360,7 @@ const places = [
         locals: "No",
         gambling: "No",
 
-        toilets: "Unisex. Looks like a private laundry room.",
+        toilets: "Unisex. Looks like a private laundry room",
 
         notes: ""
     },
@@ -400,7 +400,7 @@ const places = [
         locals: "Yes",
         gambling: "Yes",
 
-        toilets: "Unisex.",
+        toilets: "Unisex",
 
         notes: ""
     },
@@ -440,7 +440,47 @@ const places = [
         locals: "Yes",
         gambling: "No",
 
-        toilets: "Men and women separated.",
+        toilets: "Men and women separated",
+
+        notes: ""
+    },
+
+
+   {
+    id: 14,
+    name: "L'Entre Deux",
+    lat: 43.2966667,
+    lng: 5.3731167,
+
+    visitedDate: "SEP 2026",
+    visitedTime: "AFTER LUNCH",
+
+    smoking: "Yes",
+    music: "No",
+    locals: "Unknown",
+    gambling: "No",
+
+    toilets: "Unisex",
+
+    notes: ""
+},
+
+
+       {
+        id: 13,
+        name: "Bar Pajaritos (Hermanos Ramírez Esteban)",
+        lat: 37.8382694,
+        lng: -6.4476472,
+
+        visitedDate: "SEP 2026",
+        visitedTime: "MORNING",
+
+        smoking: "",
+        music: "",
+        locals: "",
+        gambling: "",
+
+        toilets: "",
 
         notes: ""
     }
