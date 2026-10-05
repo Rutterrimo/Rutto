@@ -468,7 +468,7 @@ const places = [
 
        {
         id: 13,
-        name: "Bar Pajaritos (Hermanos Ramírez Esteban)",
+        name: "Bar Pajaritos",
         lat: 37.8382694,
         lng: -6.4476472,
 
